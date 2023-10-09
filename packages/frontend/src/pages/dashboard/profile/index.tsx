@@ -1,4 +1,4 @@
-import { useLanding } from '../../../../front-provider/src';
+import { useLanding } from '../../../front-provider/src';
 import { NextPage } from 'next';
 import { useRef } from 'react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';

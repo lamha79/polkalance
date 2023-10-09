@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { useLanding } from '../../../../front-provider/src';
+import { useLanding } from '../../../front-provider/src';
 import { NextPage } from 'next';
 import DashboardMenu from '../../../components/dashboard/menu/DashboardMenu';
 import PerfectScrollbar from 'react-perfect-scrollbar';

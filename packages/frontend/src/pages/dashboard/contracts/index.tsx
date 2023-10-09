@@ -1,10 +1,10 @@
-import { useLanding } from '../../../../front-provider/src';
+import { useLanding } from '../../../front-provider/src';
 import { NextPage } from 'next';
 import { useRef } from 'react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import DashboardContracts from '../../../components/dashboard/contracts/DashboardContracts';
-import Footer from '../../../../front/components/landing/footer/Footer';
+import Footer from '../../../components/landing/footer/Footer';
 import { Flex } from '@chakra-ui/react';
 
 const DashboardContractsPage: NextPage = () => {
