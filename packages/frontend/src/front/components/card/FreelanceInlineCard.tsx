@@ -52,8 +52,8 @@ const FreelanceInlineCard: FC<FreelanceInlineCardProps> = ({ user }: FreelanceIn
       <Flex ml={{base: '0', lg: 'auto'}} mt={{base: 2, lg: 0}} justifyContent={{base: 'center', lg: 'space-between'}} flexBasis="80%" flexDir={{base: 'column', lg: 'row'}}>
         <Flex columnGap={2} rowGap={2} alignItems="center" flexBasis="60%" flexWrap={{base: 'wrap', xl: 'nowrap'}}>
           {Array.from({ length: 6 }).map((_, k) => {
-            if (user.hasFreelanceProfile?.skills && user.freelanceProfile?.skills[k]) {
-              const skill = user.freelanceProfile?.skills[k];
+            if (user.hasFreelanceProfile) {
+              const skill = user.hasFreelanceProfile;
               skillsLength += skill.length;
               if (skillsLength <= 45) {
                 const colors = getCategoryColorForSkill(skill);
@@ -93,7 +93,7 @@ const FreelanceInlineCard: FC<FreelanceInlineCardProps> = ({ user }: FreelanceIn
             alignItems="center"
           >
             <Flex flexBasis="60%" ml="auto" justifyContent="center">
-              {user.freelanceProfile?.remuneration}
+              {user.hasFreelanceProfile}
             </Flex>
             <Flex flexBasis="10%">/</Flex>
             <Flex flexBasis="30%" ml={1}>
