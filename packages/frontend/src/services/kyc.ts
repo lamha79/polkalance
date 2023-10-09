@@ -1,4 +1,4 @@
-import { privateApi } from '../../front-provider/src/api';
+import { privateApi } from '../front-provider/src/api';
 
 export const checkKycStatus = async () => {
   try {

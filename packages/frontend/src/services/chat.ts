@@ -1,5 +1,5 @@
-import { privateApi } from "../../front-provider/src/api";
-import { ChatInstance, ChatMessage } from "../../utility/src";
+import { privateApi } from "../front-provider/src/api";
+import { ChatInstance, ChatMessage } from "../utility/src";
 
 export interface SendChatMessageProps {
     senderWallet: string;
