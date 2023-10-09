@@ -10,10 +10,10 @@ import {
   Textarea,
   useDisclosure
 } from '@chakra-ui/react';
-import { useCurrentCompany, useCurrentUser, useLanding } from '../../../../front-provider/src';
-import { useGetChatMessages } from '../../../../front/hooks/useGetChatMessages';
-import { useSendMessage } from '../../../../front/hooks/useSendMessage';
-import { ChatInstance, CreateCompany, CreateJob, User, UserTypeEnum } from '../../../../utility/src';
+import { useCurrentCompany, useCurrentUser, useLanding } from '../../../front-provider/src';
+import { useGetChatMessages } from '../../hooks/useGetChatMessages';
+import { useSendMessage } from '../../hooks/useSendMessage';
+import { ChatInstance, CreateCompany, CreateJob, User, UserTypeEnum } from '../../../utility/src';
 import { ChangeEvent, FC, useState, KeyboardEvent, useEffect} from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import ContractModal from '../../contract/ContractModal';
@@ -22,9 +22,9 @@ import SendMsgIcon from '../../icons/SendMsgIcon';
 import ChatContractProposal from './ChatContractProposal';
 import ReceivedMessage from './ReceivedMessage';
 import SentMessage from './SentMessage';
-import { updateRelatedJob } from '../../../../front/services/chat';
+import { updateRelatedJob } from '../../../services/chat';
 import { useRouter } from 'next/router';
-import { useResponsive } from '../../../../front/hooks/useResponsive';
+import { useResponsive } from '../../hooks/useResponsive';
 
 interface ChatMessagesProps {
   id: string;

@@ -1,17 +1,17 @@
 import { Box, Button, Flex, Spinner } from '@chakra-ui/react';
-import { useChatInstance, useCurrentCompany, useCurrentUser, useLanding } from '../../../../front-provider/src';
+import { useChatInstance, useCurrentCompany, useCurrentUser, useLanding } from '../../../front-provider/src';
 import { FC, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import ChatPreview from './ChatPreview';
 import ChatMessages from './ChatMessages';
 import { useRouter } from 'next/router';
-import { useGetJobById } from '../../../../front/hooks/useGetJobById';
-import { ChatAuthorType, ChatInstance, UserTypeEnum } from '../../../../utility/src';
-import { useGetMyChats } from '../../../../front/hooks/useGetMyChats';
-import { useGetUserProfile } from '../../../../front/hooks/useGetUserProfile';
-import { useResponsive } from '../../../../front/hooks/useResponsive';
-import { updateRelatedJob } from '../../../../front/services/chat';
+import { useGetJobById } from '../../hooks/useGetJobById';
+import { ChatAuthorType, ChatInstance, UserTypeEnum } from '../../../utility/src';
+import { useGetMyChats } from '../../hooks/useGetMyChats';
+import { useGetUserProfile } from '../../hooks/useGetUserProfile';
+import { useResponsive } from '../../hooks/useResponsive';
+import { updateRelatedJob } from '../../../services/chat';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 
 const MotionBox = motion(Box);
