@@ -15,8 +15,8 @@
     "packages/*"
   ],
   "engines": {
-    "node": ">=16 <=18",
-    "pnpm": "8"
+    "node": ">=16 <=18.16",
+    "pnpm": "8.8.0"
   },
   "scripts": {
     "dev": "pnpm run --filter frontend dev",
