@@ -1,5 +1,5 @@
 {
-  "name": "@polkalance/monorepo",
+  "name": "@inkathon/monorepo",
   "description": "Full-Stack DApp Boilerplate for Substrate-based networks and ink! Smart Contracts",
   "version": "0.0.1",
   "homepage": "https://inkathon.xyz",
@@ -15,8 +15,8 @@
     "packages/*"
   ],
   "engines": {
-    "node": ">=16 <=18.2",
-    "pnpm": "8.8.0"
+    "node": ">=16 <=18",
+    "pnpm": "8"
   },
   "scripts": {
     "dev": "pnpm run --filter frontend dev",
@@ -29,8 +29,8 @@
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
         "next": "^13.0.0"
       }
     }
