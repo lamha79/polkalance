@@ -1,9 +1,9 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
-import { useLanding } from '../../../../../front-provider/src';
+import { useLanding } from '../../../../front-provider/src';
 import { FC } from 'react';
 import ArrowRightIcon from '../../../icons/ArrowRightIcon';
 import Image from 'next/image';
-import { useResponsive } from '../../../../../front/hooks/useResponsive';
+import { useResponsive } from '../../../hooks/useResponsive';
 
 const ProductCompany: FC = () => {
   const { setSignupModalOpen } = useLanding();

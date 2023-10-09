@@ -1,6 +1,6 @@
 import { CreateCompany } from '@/utility/src';
 import { useCallback, useState } from 'react';
-import { getCompanyByUUID } from '../services/company';
+import { getCompanyByUUID } from '../../services/company';
 
 export const useGetCompanyById = () => {
   const [loading, setLoading] = useState(false);

@@ -12,11 +12,11 @@ import {
   MenuList,
   useDisclosure,
 } from '@chakra-ui/react'
-import { useLanding } from '../../../../front-provider/src'
-import { mostCommonSkill, UserTypeEnum } from '../../../../utility/src'
-import { useColoredBadges } from '../../../hooks/useColoredBadges'
-import { useSearchFreelancer } from '../../../hooks/useSearchFreelancer'
-import { useSearchJob } from '../../../hooks/useSearchJob'
+import { useLanding } from '../../../front-provider/src'
+import { mostCommonSkill, UserTypeEnum } from '../../../utility/src'
+import { useColoredBadges } from '../../hooks/useColoredBadges'
+import { useSearchFreelancer } from '../../hooks/useSearchFreelancer'
+import { useSearchJob } from '../../hooks/useSearchJob'
 
 const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
   const { type } = useLanding()

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { sendChatMessage } from "../services/chat";
+import { sendChatMessage } from "../../services/chat";
 
 export const useSendMessage = () => {
    const sendMessage = useCallback( async (content: string, senderWallet: string, receiverWallet: string, user1Type: string) => {

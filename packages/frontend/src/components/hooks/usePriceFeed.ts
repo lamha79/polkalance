@@ -1,7 +1,6 @@
-import PriceControllerABI from '../abi/PriceController.json';
+import PriceControllerABI from '../../abi/PriceController.json';
 import { useCallback, useEffect, useState } from 'react';
 import { BigNumber, utils } from 'ethers'
-import { useContractRead } from 'wagmi'
 
 export const usePriceFeed = (amountCurrency: string, globalAmount: string) => {
     const [cryptoPrice, setCryptoPrice] = useState<string>()

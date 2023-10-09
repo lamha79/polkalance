@@ -7,8 +7,6 @@ import {
   useBalance,
   useInkathon,
 } from '@scio-labs/use-inkathon'
-import { API_URL } from '../../front-provider/src/api';
-import { SiweMessage } from 'siwe';
 import { useCallback } from 'react';
 
 interface SigupProps {

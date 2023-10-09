@@ -1,7 +1,7 @@
 import { useCurrentCompany } from '../../front-provider/src';
 import { CreateCompany } from '../../utility/src';
 import { useCallback, useState } from 'react';
-import { updateCompany } from '../services/company';
+import { updateCompany } from '../../services/company';
 
 export const useUpdateCompany = () => {
   const [loading, setLoading] = useState(false);

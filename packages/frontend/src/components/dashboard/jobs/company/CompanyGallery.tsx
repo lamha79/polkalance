@@ -1,6 +1,6 @@
 import { Box, Flex, SimpleGrid, Spinner } from '@chakra-ui/react'
-import { useJobs } from '../../../../../front-provider/src'
-import JobCard from '../../../../../front/components/card/JobCard'
+import { useJobs } from '../../../../front-provider/src'
+import JobCard from '../../../../components/card/JobCard'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
 

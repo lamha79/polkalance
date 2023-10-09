@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react';
-import { useLanding } from '../../../../front-provider/src';
+import { useLanding } from '../../../front-provider/src';
 import { FC } from 'react';
 import ProductCompany from './company/ProductCompany';
 import ProductFreelance from './freelance/ProductFreelance';
@@ -7,9 +7,9 @@ import { InView } from 'react-intersection-observer';
 import SearchBar from './SearchBar';
 import Gallery from './Gallery';
 import Partners from './Partners';
-import { UserTypeEnum } from '../../../../utility/src';
-import { SearchFreelancerProvider } from '../../../../front/hooks/useSearchFreelancer';
-import { SearchJobProvider } from '../../../../front/hooks/useSearchJob';
+import { UserTypeEnum } from '../../../utility/src';
+import { SearchFreelancerProvider } from '../../hooks/useSearchFreelancer';
+import { SearchJobProvider } from '../../hooks/useSearchJob';
 
 const Product: FC = () => {
   const { type, handleViewChange } = useLanding();

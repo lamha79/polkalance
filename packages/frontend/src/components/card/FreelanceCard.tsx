@@ -1,10 +1,10 @@
 import { Avatar, Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
-import { useColoredBadges } from '../../../front/hooks/useColoredBadges';
-import { User } from '../../../utility/src';
+import { useColoredBadges } from '../../front/hooks/useColoredBadges';
+import { User } from '../../utility/src';
 import { FC } from 'react';
 import DollarIcon from '../icons/DollarIcon';
 import StarIcon from '../icons/StarIcon';
-import { useResponsive } from '../../../front/hooks/useResponsive';
+import { useResponsive } from '../hooks/useResponsive';
 
 interface FreelanceCardProps {
   user: User;

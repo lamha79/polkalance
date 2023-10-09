@@ -1,5 +1,5 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { useLanding } from '../../../../front-provider/src';
+import { useLanding } from '../../../front-provider/src';
 import { FC } from 'react';
 import { InView } from 'react-intersection-observer';
 import TechnologyCard, { TechnologyCardProps } from '../../card/TechnologyCard';

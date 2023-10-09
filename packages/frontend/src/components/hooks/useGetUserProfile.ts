@@ -1,6 +1,6 @@
 import { User } from '@/utility/src';
 import { useCallback, useEffect, useState } from 'react';
-import { getUserProfile } from '../../front/services/user';
+import { getUserProfile } from '../../services/user';
 
 export const useGetUserProfile = () => {
   const [curUser, setCurUser] = useState<User>();

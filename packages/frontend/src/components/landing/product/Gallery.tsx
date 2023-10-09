@@ -1,14 +1,14 @@
 import { Box, Button, Flex, SimpleGrid, SimpleGridProps, Spinner } from '@chakra-ui/react'
-import { useLanding } from '../../../../front-provider/src'
+import { useLanding } from '../../../front-provider/src'
 import { FC, useEffect, useState } from 'react'
 import FreelanceCard from '../../card/FreelanceCard'
-import { UserTypeEnum } from '../../../../utility/src'
-import { useRecentFreelancer } from '../../../../front/hooks/useRecentFreelancer'
-import { useSearchFreelancer } from '../../../../front/hooks/useSearchFreelancer'
-import { useRecentJob } from '../../../../front/hooks/useRecentJob'
+import { UserTypeEnum } from '../../../utility/src'
+import { useRecentFreelancer } from '../../hooks/useRecentFreelancer'
+import { useSearchFreelancer } from '../../hooks/useSearchFreelancer'
+import { useRecentJob } from '../../hooks/useRecentJob'
 import JobCard from '../../card/JobCard'
-import { useSearchJob } from '../../../../front/hooks/useSearchJob'
-import { useResponsive } from '../../../../front/hooks/useResponsive'
+import { useSearchJob } from '../../hooks/useSearchJob'
+import { useResponsive } from '../../hooks/useResponsive'
 
 const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
   const { type, setSignupModalOpen } = useLanding()

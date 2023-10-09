@@ -1,11 +1,11 @@
 import { Flex, Box, Button } from '@chakra-ui/react'
-import { useLanding } from '../../../../front-provider/src'
+import { useLanding } from '../../../front-provider/src'
 import { FC } from 'react'
 import { InView } from 'react-intersection-observer'
 import ArrowRightIcon from '../../icons/ArrowRightIcon'
 import Image from 'next/image'
-import { UserTypeEnum } from '../../../../utility/src'
-import { useResponsive } from '../../../../front/hooks/useResponsive'
+import { UserTypeEnum } from '../../../utility/src'
+import { useResponsive } from '../../hooks/useResponsive'
 
 //Import font
 import '@fontsource/comfortaa'

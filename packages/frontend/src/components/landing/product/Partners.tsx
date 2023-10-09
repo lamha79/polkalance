@@ -3,7 +3,7 @@ import { Autoplay } from 'swiper'
 import 'swiper/css'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { FC } from 'react'
-import { useResponsive } from '../../../../front/hooks/useResponsive'
+import { useResponsive } from '../../hooks/useResponsive'
 import { table } from 'console'
 
 const Partners: FC<FlexProps> = ({ ...props }: FlexProps) => {

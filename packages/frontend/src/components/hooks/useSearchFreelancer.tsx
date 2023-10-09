@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { useCurrentUser, useLanding } from '../../front-provider/src';
 import { User, UserTypeEnum } from '../../utility/src';
-import { searchFreelancers, searchFreelancersLogged } from '../services/search';
+import { searchFreelancers, searchFreelancersLogged } from '../../services/search';
 import { createContext, ReactNode, useContext, useState, useCallback, useEffect } from 'react';
 
 type SearchFreelancersContextInterface = {

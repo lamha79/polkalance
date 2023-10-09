@@ -1,6 +1,6 @@
 import { ChatMessage } from "@/utility/src";
 import { useCallback, useEffect, useState } from "react";
-import { getMessagesInChat } from "../services/chat";
+import { getMessagesInChat } from "../../services/chat";
 
 export const useGetChatMessages = (id: string) => {
     const [curMessages, setCurMessages] = useState<ChatMessage[]>([]);

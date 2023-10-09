@@ -18,10 +18,10 @@ import {
   Visibility,
   WorkAvailability,
   workLocationOptions
-} from '../../../../utility/src';
-import { useCreateJob } from '../../../../front/hooks/useCreateJob';
+} from '../../../utility/src';
+import { useCreateJob } from '../../hooks/useCreateJob';
 import { useRouter } from 'next/router';
-import { useLanding } from '../../../../front-provider/src';
+import { useLanding } from '../../../front-provider/src';
 
 const MotionBox = motion(Box);
 
