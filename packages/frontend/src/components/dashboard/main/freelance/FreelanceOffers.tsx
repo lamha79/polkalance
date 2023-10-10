@@ -20,9 +20,9 @@ const FreelanceOffers: FC = () => {
   };
 
   useEffect(() => {
-    if (user && user.freelanceProfile?.skills) {
+    if (user && user.hasFreelanceProfile) {
       setFetching(true);
-      handleSearch(1, 2, user.freelanceProfile.skills);
+      handleSearch(1, 2, []);
     }
   }, [user]);
 

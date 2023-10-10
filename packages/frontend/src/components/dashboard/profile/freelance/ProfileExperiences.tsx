@@ -1,5 +1,5 @@
 import { Avatar, Box, Flex } from '@chakra-ui/react';
-import { getDateDiff, User } from '../../../utility/src';
+import { getDateDiff, User } from '../../../../utility/src';
 import { FC } from 'react';
 
 interface ProfileExperienceProps {
@@ -25,9 +25,9 @@ const ProfileExperiences: FC<ProfileExperienceProps> = ({ curUser }) => {
         </Box>
       </Flex>
       <Flex flexDir="column">
-        {curUser?.freelanceProfile?.experiences &&
-          curUser.freelanceProfile?.experiences.length > 0 &&
-          curUser.freelanceProfile.experiences.map((v, k) => (
+        {/* {curUser?.hasfreelanceProfile &&
+          curUser.hasfreelanceProfile?.experiences.length > 0 &&
+          curUser.hasfreelanceProfile.map((v, k) => (
             <Flex key={k} p={4} alignItems="start">
           <Avatar w="48px" h="48px" borderRadius="16px" my="auto" />
           <Flex flexDir="column" ml={4}>
@@ -44,7 +44,7 @@ const ProfileExperiences: FC<ProfileExperienceProps> = ({ curUser }) => {
             </Box>
           </Flex>
             </Flex>
-          ))}
+          ))} */}
       </Flex>
     </Flex>
   );

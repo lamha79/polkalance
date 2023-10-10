@@ -43,8 +43,8 @@ const FreelanceResume: FC = () => {
       const { longDesc } = values;
       const updatedValues: Partial<User> = {};
 
-      if (user.freelanceProfile?.longDesc !== longDesc) {
-        updatedValues.freelanceProfile = { longDesc };
+      if (user.hasFreelanceProfile !== longDesc) {
+        // updatedValues.hasFreelanceProfile = { longDesc };
       }
 
       await updateProfile({
@@ -72,7 +72,7 @@ const FreelanceResume: FC = () => {
         >
           <Formik
             initialValues={{
-              longDesc: user.freelanceProfile?.longDesc ?? ''
+              longDesc: user.hasFreelanceProfile ?? ''
             }}
             validationSchema={validationSchema}
             isInitialValid={false}
@@ -140,7 +140,7 @@ const FreelanceResume: FC = () => {
                 </Flex>
                 {!edit && (
                   <Box textStyle="body2" color="neutral.dsDarkGray" pl={4} pr={{base: 0, lg: 16}}>
-                    {user.freelanceProfile?.longDesc}
+                    {user.hasFreelanceProfile}
                   </Box>
                 )}
                 {edit && (

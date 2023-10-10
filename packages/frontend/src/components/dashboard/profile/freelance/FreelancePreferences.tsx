@@ -75,72 +75,68 @@ const FreelancePreferences: FC = () => {
       const { workLocation, availability, hoursPerWeek, yearsOfExperience } = values;
       const updatedValues: Partial<User> = {};
 
-      if (user.freelanceProfile?.workLocation !== workLocationOptions[workLocation]) {
-        updatedValues.freelanceProfile = {
-          ...updatedValues.freelanceProfile,
-          workLocation: workLocationOptions[workLocation]
-        };
+      if (user.hasFreelanceProfile !== workLocationOptions[workLocation]) {
+        // updatedValues.hasFreelanceProfile = {
+        //   updatedValues.hasFreelanceProfile,
+        //   workLocation: workLocationOptions[workLocation]
+        // };
       }
 
-      if (user.freelanceProfile?.availability !== availabilityOptions[availability]) {
-        updatedValues.freelanceProfile = {
-          ...updatedValues.freelanceProfile,
-          availability: availabilityOptions[availability]
-        };
-        if (availability !== 'notAvailable') {
-          updatedValues.freelanceProfile = {
-            ...updatedValues.freelanceProfile,
-            situation: 'Available'
-          };
-        } else {
-          updatedValues.freelanceProfile = {
-            ...updatedValues.freelanceProfile,
-            situation: 'Unavailable'
-          };
-        }
+      if (user?.hasFreelanceProfile == "") {
+        // updatedValues.hasFreelanceProfile = {
+        //   ...updatedValues.hasFreelanceProfile,
+        //   availability: availabilityOptions[availability]
+        //};
+        // if (availability !== 'notAvailable') {
+        //   updatedValues.freelanceProfile = {
+        //     ...updatedValues.freelanceProfile,
+        //     situation: 'Available'
+        //   };
+        // } else {
+        //   updatedValues.freelanceProfile = {
+        //     ...updatedValues.freelanceProfile,
+        //     situation: 'Unavailable'
+        //   };
+        // }
       }
 
-      if (user.freelanceProfile?.hoursPerWeek !== parseInt(hoursPerWeek)) {
-        updatedValues.freelanceProfile = {
-          ...updatedValues.freelanceProfile,
-          hoursPerWeek: parseInt(hoursPerWeek)
-        };
-      }
+      // if (user.freelanceProfile?.hoursPerWeek !== parseInt(hoursPerWeek)) {
+      //   updatedValues.freelanceProfile = {
+      //     ...updatedValues.freelanceProfile,
+      //     hoursPerWeek: parseInt(hoursPerWeek)
+      //   };
+      // }
 
-      if (user.freelanceProfile?.yearsOfExperience !== yearsOfExperience) {
-        updatedValues.freelanceProfile = { ...updatedValues.freelanceProfile, yearsOfExperience };
-      }
+      // if (user.freelanceProfile?.yearsOfExperience !== yearsOfExperience) {
+      //   updatedValues.freelanceProfile = { ...updatedValues.freelanceProfile, yearsOfExperience };
+      // }
 
-      await updateProfile({
-        wallet: user.wallet,
-        email: user.email,
-        currentUserType: user.currentUserType,
-        ...updatedValues
-      });
-      setEdit(false);
+      // await updateProfile({
+      //   wallet: user.wallet,
+      //   email: user.email,
+      //   currentUserType: user.currentUserType,
+      //   ...updatedValues
+      // });
+      // setEdit(false);
     }
   };
 
   useEffect(() => {
-    if (!edit) {
-      if (user?.freelanceProfile?.workLocation) {
-        setSelectedWorkLocation(
-          findKeyByValue(user?.freelanceProfile?.workLocation, workLocationOptions) ?? ''
-        );
-      }
+    // if (!edit) {
+    //   if (user?.freelanceProfile?.workLocation) {
+    //     setSelectedWorkLocation(
+    //       findKeyByValue(user?.freelanceProfile?.workLocation, workLocationOptions) ?? ''
+    //     );
+    //   }
 
-      if (user?.freelanceProfile?.availability) {
-        setSelectedAvailability(
-          findKeyByValue(user?.freelanceProfile?.availability, availabilityOptions) ?? ''
-        );
-      }
-    }
+    //   if (user?.freelanceProfile?.availability) {
+    //     setSelectedAvailability(
+    //       findKeyByValue(user?.freelanceProfile?.availability, availabilityOptions) ?? ''
+    //     );
+    //   }
+    // }
   }, [
-    availabilityOptions,
-    edit,
-    user?.freelanceProfile?.availability,
-    user?.freelanceProfile?.workLocation,
-    workLocationOptions
+    
   ]);
 
   return (
@@ -159,14 +155,14 @@ const FreelancePreferences: FC = () => {
         >
           <Formik
             initialValues={{
-              workLocation: user.freelanceProfile?.workLocation
-                ? findKeyByValue(user.freelanceProfile?.workLocation, workLocationOptions) ?? ''
+              workLocation: user.hasFreelanceProfile
+                ? findKeyByValue(user.hasFreelanceProfile, workLocationOptions) ?? ''
                 : '',
-              availability: user.freelanceProfile?.availability
-                ? findKeyByValue(user.freelanceProfile?.availability, availabilityOptions) ?? ''
+              availability: user.hasFreelanceProfile
+                ? findKeyByValue(user.hasFreelanceProfile, availabilityOptions) ?? ''
                 : '',
-              hoursPerWeek: user.freelanceProfile?.hoursPerWeek?.toString() ?? '',
-              yearsOfExperience: user.freelanceProfile?.yearsOfExperience ?? ''
+              hoursPerWeek: user.hasFreelanceProfile ?? '',
+              yearsOfExperience: user.hasFreelanceProfile ?? ''
             }}
             validationSchema={validationSchema}
             isInitialValid={false}
@@ -195,7 +191,7 @@ const FreelancePreferences: FC = () => {
                   setFieldValue('workLocation', value, true);
                 }
                 if (
-                  workLocationOptions[selectedWorkLocation] === user.freelanceProfile?.workLocation
+                  workLocationOptions[selectedWorkLocation] === user.hasFreelanceProfile
                 ) {
                   setFieldTouched('workLocation', false);
                 }
@@ -211,7 +207,7 @@ const FreelancePreferences: FC = () => {
                   setFieldValue('availability', value, true);
                 }
                 if (
-                  availabilityOptions[selectedAvailability] === user.freelanceProfile?.availability
+                  availabilityOptions[selectedAvailability] === user.hasFreelanceProfile
                 ) {
                   setFieldTouched('availability', false);
                 }
@@ -278,7 +274,7 @@ const FreelancePreferences: FC = () => {
                   </Flex>
                   {!edit && (
                     <Flex gap={2} flexWrap={{base: 'wrap', lg: 'nowrap'}}>
-                      {user.freelanceProfile?.workLocation && (
+                      {user.hasFreelanceProfile && (
                         <Badge
                           color="neutral.black"
                           bgColor="neutral.gray"
@@ -287,10 +283,10 @@ const FreelancePreferences: FC = () => {
                           borderColor={'none'}
                           variant="filter"
                         >
-                          {user.freelanceProfile?.workLocation}
+                          {user.hasFreelanceProfile}
                         </Badge>
                       )}
-                      {user.freelanceProfile?.situation && (
+                      {user.hasFreelanceProfile && (
                         <Badge
                           color="neutral.black"
                           bgColor="neutral.gray"
@@ -299,10 +295,10 @@ const FreelancePreferences: FC = () => {
                           borderColor={'none'}
                           variant="filter"
                         >
-                          {user.freelanceProfile?.situation}
+                          {user.hasFreelanceProfile}
                         </Badge>
                       )}
-                      {user.freelanceProfile?.availability && (
+                      {user.hasFreelanceProfile && (
                         <Badge
                           color="neutral.black"
                           bgColor="neutral.gray"
@@ -311,11 +307,11 @@ const FreelancePreferences: FC = () => {
                           borderColor={'none'}
                           variant="filter"
                         >
-                          {user.freelanceProfile?.availability}
+                          {user.hasFreelanceProfile}
                         </Badge>
                       )}
-                      {user.freelanceProfile?.hoursPerWeek !== 0 &&
-                        user.freelanceProfile?.hoursPerWeek && (
+                      {user.hasFreelanceProfile &&
+                        user.hasFreelanceProfile && (
                           <Badge
                             color="neutral.black"
                             bgColor="neutral.gray"
@@ -324,10 +320,10 @@ const FreelancePreferences: FC = () => {
                             borderColor={'none'}
                             variant="filter"
                           >
-                            {user.freelanceProfile?.hoursPerWeek.toString()} hrs/week
+                            {user.hasFreelanceProfile.toString()} hrs/week
                           </Badge>
                         )}
-                      {user.freelanceProfile?.yearsOfExperience && (
+                      {user.hasFreelanceProfile && (
                         <Badge
                           color="neutral.black"
                           bgColor="neutral.gray"
@@ -337,9 +333,9 @@ const FreelancePreferences: FC = () => {
                           variant="filter"
                           mr={2}
                         >
-                          {user.freelanceProfile?.yearsOfExperience}{' '}
-                          {user.freelanceProfile?.yearsOfExperience != undefined &&
-                          parseInt(user.freelanceProfile?.yearsOfExperience) > 1
+                          {user.hasFreelanceProfile}{' '}
+                          {user.hasFreelanceProfile != undefined &&
+                          parseInt(user.hasFreelanceProfile) > 1
                             ? 'Years'
                             : 'Year'}{' '}
                           of Exp
@@ -501,6 +497,7 @@ const FreelancePreferences: FC = () => {
       )}
     </>
   );
+  
 };
 
 export default FreelancePreferences;

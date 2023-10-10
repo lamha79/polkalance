@@ -1,5 +1,5 @@
 import { Avatar, Badge, Box, Button, Flex, Text } from '@chakra-ui/react';
-import { useColoredBadges } from '../../front/hooks/useColoredBadges';
+import { useColoredBadges } from '../hooks/useColoredBadges';
 import { User } from '../../utility/src';
 import { FC } from 'react';
 import DollarIcon from '../icons/DollarIcon';
@@ -68,7 +68,7 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
                 lineHeight="150%"
                 color="neutral.black"
               >
-                {user.freelanceProfile?.remuneration} /hr
+                {user.hasFreelanceProfile} /hr
               </Text>
               <Box color="brand.green" ml={1}>
                 <DollarIcon />
@@ -98,7 +98,7 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
         </Text>
       </Flex>
       <Flex mt={2} flexWrap='wrap' rowGap={2}>
-        {user.freelanceProfile?.situation && (
+        {user.hasFreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -107,10 +107,10 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             variant="filter"
             mr={2}
           >
-            {user.freelanceProfile?.situation}
+            {user.hasFreelanceProfile}
           </Badge>
         )}
-        {user.freelanceProfile?.availability && (
+        {user.hasFreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -119,10 +119,10 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             variant="filter"
             mr={2}
           >
-            {user.freelanceProfile?.availability}
+            {user.hasFreelanceProfile}
           </Badge>
         )}
-        {user.freelanceProfile?.workLocation && (
+        {user.hasFreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -131,10 +131,10 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             variant="filter"
             mr={2}
           >
-            {user.freelanceProfile?.workLocation}
+            {user.hasFreelanceProfile}
           </Badge>
         )}
-        {user.freelanceProfile?.hoursPerWeek !== 0 && user.freelanceProfile?.hoursPerWeek && (
+        {user.hasFreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -144,10 +144,10 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             variant="filter"
             mr={2}
           >
-            {user.freelanceProfile?.hoursPerWeek.toString()} hrs/week
+            {user.hasFreelanceProfile.toString()} hrs/week
           </Badge>
         )}
-        {user.freelanceProfile?.yearsOfExperience && (
+        {user.hasFreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -156,9 +156,9 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             variant="filter"
             mr={2}
           >
-            {user.freelanceProfile?.yearsOfExperience}{' '}
-            {user.freelanceProfile?.yearsOfExperience != undefined &&
-            parseInt(user.freelanceProfile?.yearsOfExperience) > 1
+            {user.hasFreelanceProfile}{' '}
+            {user.hasFreelanceProfile != undefined &&
+            parseInt(user.hasFreelanceProfile) > 1
               ? 'Years'
               : 'Year'}{' '}
             of Exp
@@ -174,13 +174,13 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
           lineHeight="150%"
           color="neutral.dsGray"
         >
-          {user.freelanceProfile?.longDesc}
+          {user.hasFreelanceProfile}
         </Text>
       </Flex>
       <Flex mt={4} flexWrap="wrap" rowGap={2}>
         {Array.from({ length: 6 }).map((_, k) => {
-          if (user.freelanceProfile?.skills && user.freelanceProfile?.skills[k]) {
-            const skill = user.freelanceProfile?.skills[k];
+          if (user.hasFreelanceProfile && user.hasFreelanceProfile) {
+            const skill = user.hasFreelanceProfile;
             skillsLength += skill.length;
             if (skillsLength <= skillLimit) {
               const colors = getCategoryColorForSkill(skill);

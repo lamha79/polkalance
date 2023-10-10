@@ -23,7 +23,7 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
         Preferences
       </Box>
       <Flex gap={2} flexWrap="wrap">
-        {curUser.freelanceProfile?.workLocation && (
+        {/* {curUser.freelanceProfile?.workLocation && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -88,7 +88,7 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
               : 'Year'}{' '}
             of Exp
           </Badge>
-        )}
+        )} */}
       </Flex>
     </Flex>
   );

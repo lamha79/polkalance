@@ -1,7 +1,7 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
 import DashboardCard from '../../../card/DashbordCard';
 import { FC } from 'react';
-import ArrowRightIcon from '../../../../front/components/icons/ArrowRightIcon';
+import ArrowRightIcon from '../../../../components/icons/ArrowRightIcon';
 
 const CompanyInformations: FC = () => {
   return (

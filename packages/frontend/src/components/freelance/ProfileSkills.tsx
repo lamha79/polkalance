@@ -25,7 +25,7 @@ const ProfileSkills: FC<ProfileSkillsProps> = ({ curUser }) => {
         Skills & Expertise
       </Box>
       <Flex flexWrap="wrap" gap={2}>
-        {curUser.freelanceProfile &&
+        {/* {curUser.freelanceProfile &&
           curUser.freelanceProfile.skills &&
           curUser.freelanceProfile.skills.map((v, k) => {
             const colors = getCategoryColorForSkill(v);
@@ -42,7 +42,7 @@ const ProfileSkills: FC<ProfileSkillsProps> = ({ curUser }) => {
                 {v}
               </Badge>
             );
-          })}
+          })} */}
       </Flex>
     </Flex>
   );

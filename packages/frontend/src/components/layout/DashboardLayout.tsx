@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import DashboardMenu from '../dashboard/menu/DashboardMenu';
 import { ReactNode, useEffect } from 'react';
 import { UserTypeEnum } from '../../utility/src';
-import { useResponsive } from '../../front/hooks/useResponsive';
+import { useResponsive } from '../hooks/useResponsive';
 
 interface DashboardLayoutProps {
   children: ReactNode;

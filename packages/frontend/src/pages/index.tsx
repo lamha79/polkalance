@@ -50,11 +50,11 @@
 import { Flex } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import { useCurrentUser, useLanding } from '../front-provider/src';
-import Product from '../front/components/landing/product/Product';
-import Technology from '../front/components/landing/technology/Technology';
-import Community from '../front/components/landing/community/Community';
-import Contact from '../front/components/landing/contact/Contact';
-import Footer from '../front/components/landing/footer/Footer';
+import Product from '../components/landing/product/Product';
+import Technology from '../components/landing/technology/Technology';
+import Community from '../components/landing/community/Community';
+import Contact from '../components/landing/contact/Contact';
+import Footer from '../components/landing/footer/Footer';
 import { useRouter } from 'next/router';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 

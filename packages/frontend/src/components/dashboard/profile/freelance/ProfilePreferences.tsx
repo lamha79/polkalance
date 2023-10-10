@@ -23,7 +23,7 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
         Preferences
       </Box>
       <Flex gap={2} flexWrap="wrap">
-        {curUser.freelanceProfile?.workLocation && (
+        {curUser.hasfreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -32,10 +32,10 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             borderColor={'none'}
             variant="filter"
           >
-            {curUser.freelanceProfile?.workLocation}
+            {curUser.hasfreelanceProfile}
           </Badge>
         )}
-        {curUser.freelanceProfile?.situation && (
+        {curUser.hasfreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -44,10 +44,10 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             borderColor={'none'}
             variant="filter"
           >
-            {curUser.freelanceProfile?.situation}
+            {curUser.hasfreelanceProfile}
           </Badge>
         )}
-        {curUser.freelanceProfile?.availability && (
+        {curUser.hasfreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -56,10 +56,10 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             borderColor={'none'}
             variant="filter"
           >
-            {curUser.freelanceProfile?.availability}
+            {curUser.hasfreelanceProfile}
           </Badge>
         )}
-        {curUser.freelanceProfile?.hoursPerWeek !== 0 && curUser.freelanceProfile?.hoursPerWeek && (
+        {curUser.hasfreelanceProfile !== 0 && curUser.hasfreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -68,10 +68,10 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             borderColor={'none'}
             variant="filter"
           >
-            {curUser.freelanceProfile?.hoursPerWeek.toString()} hrs/week
+            {curUser.hasfreelanceProfile.toString()} hrs/week
           </Badge>
         )}
-        {curUser.freelanceProfile?.yearsOfExperience && (
+        {curUser.hasfreelanceProfile && (
           <Badge
             color="neutral.black"
             bgColor="neutral.gray"
@@ -81,9 +81,9 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             variant="filter"
             mr={2}
           >
-            {curUser.freelanceProfile?.yearsOfExperience}{' '}
-            {curUser.freelanceProfile?.yearsOfExperience != undefined &&
-            parseInt(curUser.freelanceProfile?.yearsOfExperience) > 1
+            {curUser.hasfreelanceProfile}{' '}
+            {curUser.hasfreelanceProfile != undefined &&
+            parseInt(curUser.hasfreelanceProfile) > 1
               ? 'Years'
               : 'Year'}{' '}
             of Exp

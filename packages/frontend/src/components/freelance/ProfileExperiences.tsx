@@ -25,7 +25,7 @@ const ProfileExperiences: FC<ProfileExperienceProps> = ({ curUser }) => {
         </Box>
       </Flex>
       <Flex flexDir="column">
-        {curUser?.freelanceProfile?.experiences &&
+        {/* {curUser?.hasfreelanceProfile &&
           curUser.freelanceProfile?.experiences.length > 0 &&
           curUser.freelanceProfile.experiences.map((v, k) => (
             <Flex key={k} p={4} alignItems="start">
@@ -44,7 +44,7 @@ const ProfileExperiences: FC<ProfileExperienceProps> = ({ curUser }) => {
             </Box>
           </Flex>
             </Flex>
-          ))}
+          ))} */}
       </Flex>
     </Flex>
   );

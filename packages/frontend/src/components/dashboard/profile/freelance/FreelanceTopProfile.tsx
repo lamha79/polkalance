@@ -61,9 +61,9 @@ const FreelanceTopProfile: FC = () => {
       if (user?.lastname !== lastname) {
         updatedValues.lastname = lastname;
       }
-      if (user?.freelanceProfile?.remuneration !== remuneration) {
-        updatedValues.freelanceProfile = {};
-        updatedValues.freelanceProfile.remuneration = remuneration;
+      if (user?.hasFreelanceProfile !== remuneration) {
+        updatedValues.hasFreelanceProfile = "";
+        updatedValues.hasFreelanceProfile = remuneration;
       }
       if (user?.description !== description) {
         updatedValues.description = description;
@@ -85,7 +85,7 @@ const FreelanceTopProfile: FC = () => {
           initialValues={{
             firstname: user.firstname ?? '',
             lastname: user.lastname ?? '',
-            remuneration: user.freelanceProfile?.remuneration ?? '',
+            remuneration: user.hasFreelanceProfile ?? '',
             description: user.description ?? '',
             location: user.location ?? ''
           }}
@@ -173,7 +173,7 @@ const FreelanceTopProfile: FC = () => {
                           lineHeight="120%"
                           color="neutral.black"
                         >
-                          {user.freelanceProfile?.remuneration}
+                          {user.hasFreelanceProfile}
                         </Text>
                         <Text
                           fontFamily="Montserrat"

@@ -1,6 +1,6 @@
 import { Badge, Box, Flex } from '@chakra-ui/react';
-import { useColoredBadges } from '../../../front/hooks/useColoredBadges';
-import { User } from '../../../utility/src';
+import { useColoredBadges } from '../../../hooks/useColoredBadges';
+import { User } from '../../../../utility/src';
 import { FC } from 'react';
 
 interface ProfileSkillsProps {
@@ -25,8 +25,8 @@ const ProfileSkills: FC<ProfileSkillsProps> = ({ curUser }) => {
         Skills & Expertise
       </Box>
       <Flex flexWrap="wrap" gap={2}>
-        {curUser.freelanceProfile &&
-          curUser.freelanceProfile.skills &&
+        {/* {curUser.hasfreelanceProfile &&
+          curUser.hasfreelanceProfile &&
           curUser.freelanceProfile.skills.map((v, k) => {
             const colors = getCategoryColorForSkill(v);
             return (
@@ -42,7 +42,7 @@ const ProfileSkills: FC<ProfileSkillsProps> = ({ curUser }) => {
                 {v}
               </Badge>
             );
-          })}
+          })} */}
       </Flex>
     </Flex>
   );

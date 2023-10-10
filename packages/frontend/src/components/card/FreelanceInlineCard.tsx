@@ -93,7 +93,7 @@ const FreelanceInlineCard: FC<FreelanceInlineCardProps> = ({ user }: FreelanceIn
             alignItems="center"
           >
             <Flex flexBasis="60%" ml="auto" justifyContent="center">
-              {user.freelanceProfile?.remuneration}
+              {user.hasFreelanceProfile}
             </Flex>
             <Flex flexBasis="10%">/</Flex>
             <Flex flexBasis="30%" ml={1}>

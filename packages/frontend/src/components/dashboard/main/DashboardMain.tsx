@@ -9,7 +9,7 @@ import FreelanceOpportunities from './freelance/FreelanceOpportunities';
 import { UserTypeEnum } from '../../../utility/src';
 import CompanyInformations from './company/CompanyInformations';
 import CompanyOffers from './company/CompanyOffers';
-import { SearchJobProvider } from '../../../front/hooks/useSearchJob';
+import { SearchJobProvider } from '../../hooks/useSearchJob';
 
 const MotionBox = motion(Box);
 

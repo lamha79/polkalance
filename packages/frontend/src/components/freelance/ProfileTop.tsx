@@ -79,7 +79,7 @@ const ProfileTop: FC<ProfileTopProps> = ({ curUser }) => {
               lineHeight="120%"
               color="neutral.black"
             >
-              {curUser.freelanceProfile?.remuneration}
+              {curUser.hasFreelanceProfile}
             </Text>
             <Text
               fontFamily="Montserrat"

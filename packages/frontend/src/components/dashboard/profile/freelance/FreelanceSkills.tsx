@@ -67,15 +67,15 @@ const FreelanceSkills: FC = () => {
       setSearchResults(['No result']);
     }
     if (!isOpen) onOpen();
-    if (inputRef.current) inputRef.current.focus();
+    // if (inputRef.current) inputRef.current.focus();
   };
 
   const onSubmit = async () => {
     if (user) {
       const updatedValues: Partial<User> = {};
 
-      if (user.freelanceProfile?.skills?.length !== curSkills?.length) {
-        updatedValues.freelanceProfile = { skills: curSkills };
+      if (user.hasFreelanceProfile?.length !== curSkills?.length) {
+        // updatedValues.hasFreelanceProfile = { skills: curSkills };
       }
 
       await updateProfile({
@@ -103,9 +103,9 @@ const FreelanceSkills: FC = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        onClose();
-      }
+      // if (menuRef.current && !menuRef.current.contains(event.target)) {
+      //   onClose();
+      // }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -116,10 +116,10 @@ const FreelanceSkills: FC = () => {
   }, [onClose]);
 
   useEffect(() => {
-    if (user?.freelanceProfile?.skills) {
-      setCurSkills(user?.freelanceProfile?.skills);
+    if (user && user.hasFreelanceProfile) {
+      // setCurSkills(user.hasFreelanceProfile);
     }
-  }, [user?.freelanceProfile?.skills]);
+  }, [user && user.hasFreelanceProfile]);
 
   return (
     <>
@@ -156,13 +156,13 @@ const FreelanceSkills: FC = () => {
                 <Box>
                   <Button
                     variant={
-                      curSkills?.length === user.freelanceProfile?.skills?.length
+                      curSkills?.length === user.hasFreelanceProfile?.length
                         ? 'outline'
                         : 'primary'
                     }
                     type="submit"
                     width="100%"
-                    isDisabled={curSkills?.length === user.freelanceProfile?.skills?.length}
+                    isDisabled={curSkills?.length === user.hasFreelanceProfile?.length}
                     isLoading={loading}
                     loadingText="Updating profile"
                     spinnerPlacement="end"
@@ -193,7 +193,7 @@ const FreelanceSkills: FC = () => {
                 <Flex flexDir="column">
                   <Box position="relative">
                     <InputGroup>
-                      <Input
+                      {/* <Input
                         ref={inputRef}
                         variant="searchBar"
                         value={searchText}
@@ -203,14 +203,14 @@ const FreelanceSkills: FC = () => {
                           setSearchText(e.target.value);
                           searchSkills(e.target.value);
                         }}
-                      />
+                      /> */}
                       <InputRightElement>
                         <Box my="auto" color="rgba(0,0,0,.5)">
                           <SearchIcon />
                         </Box>
                       </InputRightElement>
                     </InputGroup>
-                    <Box ref={menuRef}>
+                    {/* <Box ref={menuRef}>
                       <Menu isOpen={isOpen}>
                         <MenuButton
                           as={Box}
@@ -233,7 +233,7 @@ const FreelanceSkills: FC = () => {
                           ))}
                         </MenuList>
                       </Menu>
-                    </Box>
+                    </Box> */}
                   </Box>
                 </Flex>
                 <Flex flexWrap="wrap" mt={2} w="100%" gap={2}>
@@ -325,9 +325,9 @@ const FreelanceSkills: FC = () => {
                 </Flex>
               </>
             )}
-            {!edit &&
-              user.freelanceProfile &&
-              user.freelanceProfile.skills &&
+            {/* {!edit &&
+              user.user &&
+              user.hasFreelanceProfile.skills &&
               user.freelanceProfile.skills.map((v, k) => {
                 const colors = getCategoryColorForSkill(v);
                 return (
@@ -342,7 +342,7 @@ const FreelanceSkills: FC = () => {
                     {v}
                   </Badge>
                 );
-              })}
+              })} */}
           </Flex>
         </Flex>
       )}

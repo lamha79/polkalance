@@ -12,7 +12,7 @@ const FreelanceExperiences: FC = () => {
   const [curExperience, setCurExperience] = useState<Experience>();
 
   const onEditExperience = (id: string) => {
-    setCurExperience(user?.freelanceProfile?.experiences?.find((v) => v.id === id));
+    // setCurExperience(user?.hasFreelanceProfile.find((v) => v.id === id));
     setShowForm(true);
   };
 
@@ -53,26 +53,13 @@ const FreelanceExperiences: FC = () => {
         <FreelanceExperienceForm experience={curExperience} onClose={() => setShowForm(false)} />
       )}
       {showForm &&
-        user?.freelanceProfile?.experiences &&
-        user.freelanceProfile.experiences.length > 0 && <Divider borderColor="neutral.dsGray" />}
+        user?.hasFreelanceProfile &&
+        user.hasFreelanceProfile && <Divider borderColor="neutral.dsGray" />}
       {user &&
-        user.freelanceProfile?.experiences &&
-        user.freelanceProfile?.experiences?.length > 0 && (
+        user.hasFreelanceProfile &&
+        user.hasFreelanceProfile.length > 0 && (
           <Flex flexDir="column" gap={4} w="100%">
-            {user.freelanceProfile.experiences
-              .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
-              .map((v, k) => (
-                <>
-                  <FreelanceExperiencesLine
-                    key={k}
-                    experience={v}
-                    onEditExperience={onEditExperience}
-                  />
-                  {k !== user.freelanceProfile.experiences.length - 1 && (
-                    <Divider borderColor="neutral.dsGray" />
-                  )}
-                </>
-              ))}
+            
           </Flex>
         )}
     </Flex>
