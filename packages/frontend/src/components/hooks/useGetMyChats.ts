@@ -1,6 +1,6 @@
 import { useChatInstance, useCurrentUser } from "@/front-provider/src";
 import { useCallback, useEffect, useState } from "react";
-import { getChatConversations } from "../../front/services/chat";
+import { getChatConversations } from "../../services/chat";
 import { ChatInstance } from "@/utility/src";
 
 export const useGetMyChats = () => {

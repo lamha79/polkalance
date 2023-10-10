@@ -1,5 +1,5 @@
 import { Badge, Box, Flex } from '@chakra-ui/react';
-import { User } from '../../../utility/src';
+import { User } from '../../../../utility/src';
 import { FC } from 'react';
 
 interface ProfilePreferencesProps {

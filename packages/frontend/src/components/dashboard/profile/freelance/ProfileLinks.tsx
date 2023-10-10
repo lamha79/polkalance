@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { useIconForLink } from '../../../front/hooks/useIconForLink';
-import { User } from '../../../utility/src';
+import { useIconForLink } from '../../../hooks/useIconForLink';
+import { User } from '../../../../utility/src';
 import { FC } from 'react';
 
 interface ProfileLinksProps {

@@ -1,7 +1,7 @@
 import { useCurrentUser } from '@/front-provider/src/user-provider';
 import { Experience, User } from '@/utility/src/index';
 import { useCallback, useState } from 'react';
-import { addExperience, deleteExperience, updateExperience } from '../../front/services/user';
+import { addExperience, deleteExperience, updateExperience } from '../../services/user';
 
 export const useExperiences = () => {
   const [loading, setLoading] = useState(false);

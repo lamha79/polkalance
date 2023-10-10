@@ -32,8 +32,8 @@ import { FC, useMemo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { AiOutlineCheckCircle, AiOutlineDisconnect } from 'react-icons/ai'
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi'
-import { useConnect } from '../../front/hooks/useConnect';
-import { useSignUp } from '@front/hooks/useSignUp'
+import { useConnect } from '../hooks/useConnect';
+import { useSignUp } from '../hooks/useSignUp'
 
 export interface ConnectButtonProps {}
 export const ConnectButton: FC<ConnectButtonProps> = () => {
