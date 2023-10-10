@@ -145,7 +145,7 @@ const FreelanceExperienceForm: FC<FrelanceExperienceFormProps> = ({ experience, 
           w="100%"
           gap={4}
         >
-          <Formik
+          {/* <Formik
             initialValues={{
               company: experience?.company ?? '',
               role: experience?.role ?? '',
@@ -380,7 +380,7 @@ const FreelanceExperienceForm: FC<FrelanceExperienceFormProps> = ({ experience, 
                 </Flex>
               </Form>
             )}
-          </Formik>
+          </Formik> */}
         </Flex>
       )}
     </>

@@ -85,7 +85,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
     accounts,
     setActiveAccount,
   } = useInkathon()
-  const { createJob } = useCreateJob()
+  // const { createJob } = useCreateJob()
   const toast = useToast()
 
   // thêm vào

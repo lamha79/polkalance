@@ -24,8 +24,7 @@ export default function SignUpPage() {
     const [updateIsLoading, setUpdateIsLoading] = useState<boolean>()
 
     
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    const handleSubmit = () => {
         // TODO: Send the job details to your backend server and handle job creation and marketplace integration.
         console.log('Register details:', { name, detail, stringRole });
     };

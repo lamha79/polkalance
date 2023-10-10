@@ -22,7 +22,7 @@ const ProfileResume: FC<ProfileResumeProps> = ({ curUser }) => {
         Resume
       </Box>
       <Box textStyle="body2" color="neutral.dsDarkGray" pl={4} pr={{base: 0, lg: 16}}>
-        {curUser.freelanceProfile?.longDesc}
+        {/* {curUser.freelanceProfile?.longDesc} */}
       </Box>
     </Flex>
   );

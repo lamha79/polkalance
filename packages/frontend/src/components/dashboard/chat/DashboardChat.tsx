@@ -207,7 +207,7 @@ const DashboardChat: FC = () => {
                     </PerfectScrollbar>
                   </Flex>
                 </Flex>
-                <Flex flexDir="column" gap={6} flexBasis="80%">
+                {/* <Flex flexDir="column" gap={6} flexBasis="80%">
                   {activeChat && chats && (
                     <ChatMessages
                       id={activeChat}
@@ -216,7 +216,7 @@ const DashboardChat: FC = () => {
                       onNewChatMessage={() => {setTimeout(() => {setNewChat(undefined); setActiveChat('0');}, 5000)}}
                     />
                   )}
-                </Flex>
+                </Flex> */}
               </Flex>}
               {!fetching && (mobileDisplay || tabletDisplay) && <Flex mt="4" h="100%" flexGrow="1" maxHeight="calc(100vh - 100px)">
               {!chatOpen && <Flex
@@ -261,7 +261,7 @@ const DashboardChat: FC = () => {
                       </Flex>
                     </PerfectScrollbar>
                   </Flex>}
-              {chatOpen &&    <Flex flexDir="column" gap={6} flexBasis="100%">
+              {/* {chatOpen &&    <Flex flexDir="column" gap={6} flexBasis="100%">
                   {activeChat && chats && (
                     <ChatMessages
                       id={activeChat}
@@ -270,7 +270,7 @@ const DashboardChat: FC = () => {
                       onNewChatMessage={() => {setTimeout(() => {setNewChat(undefined); setActiveChat('0');}, 5000)}}
                     />
                   )}
-                </Flex>}
+                </Flex>} */}
                 </Flex>}
               {fetching &&  <Flex
                 flexDir="column"

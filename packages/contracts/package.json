@@ -1,6 +1,6 @@
 {
-  "name": "@inkathon/contracts",
-  "version": "0.0.1",
+  "name": "@polkalance/contracts",
+  "version": "1.0.0",
   "homepage": "https://inkathon.xyz",
   "type": "module",
   "scripts": {

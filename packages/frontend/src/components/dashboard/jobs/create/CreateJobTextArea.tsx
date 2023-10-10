@@ -23,7 +23,6 @@ const CreateJobTextArea: FC<CreateJobTextAreaProps> = ({
         name={name}
         placeholder={placeholder}
         as={Textarea}
-        isInvalid={errors[name] && touched[name]}
         resize="vertical"
         minH="100px"
         maxH="200px"

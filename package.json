@@ -1,7 +1,7 @@
 {
-  "name": "@inkathon/monorepo",
+  "name": "@polkalance/monorepo",
   "description": "Full-Stack DApp Boilerplate for Substrate-based networks and ink! Smart Contracts",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "homepage": "https://inkathon.xyz",
   "repository": {
     "type": "git",

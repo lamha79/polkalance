@@ -1,6 +1,6 @@
 import { privateApi } from '../front-provider/src';
 import { CreateCompany } from '../utility/src';
-import { omit } from 'lodash';
+// import { omit } from 'lodash';
 
 export type CreateNewCompany = (company: Partial<CreateCompany>) => Promise<CreateCompany>;
 
@@ -17,7 +17,7 @@ export const createCompany: CreateNewCompany = async (company) => {
 
 export const updateCompany: UpdateCompany = async (company) => {
   const res = await privateApi.put(`/company/${company.uuid}`, {
-    ...omit(company, ['uuid', 'companyWallet', 'createdAt'])
+    // ...omit(company, ['uuid', 'companyWallet', 'createdAt'])
   });
   return res.data;
 };

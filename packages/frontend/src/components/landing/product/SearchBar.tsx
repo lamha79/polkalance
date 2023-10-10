@@ -59,7 +59,7 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
       selectFilter(filter)
     }
     if (isOpen) onClose()
-    if (inputRef.current) inputRef.current.focus()
+    // if (inputRef.current) inputRef.current.focus()
   }
 
   const searchSkills = (searchText: string) => {
@@ -96,7 +96,7 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
       setSearchResults(['No result'])
     }
     if (!isOpen) onOpen()
-    if (inputRef.current) inputRef.current.focus()
+    // if (inputRef.current) inputRef.current.focus()
   }
 
   useEffect(() => {
@@ -115,9 +115,9 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        onClose()
-      }
+      // if (menuRef.current && !menuRef.current.contains(event.target)) {
+      //   onClose()
+      // }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
@@ -156,7 +156,7 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
       >
         {title}
       </Box>
-      <Box position="relative">
+      {/* <Box position="relative">
         <Input
           ref={inputRef}
           variant="searchBar"
@@ -182,7 +182,7 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
             </MenuList>
           </Menu>
         </Box>
-      </Box>
+      </Box> */}
       <Flex width="100%" mt={3} alignItems="center">
         <Flex maxW="85%" flexWrap="wrap" gap={2}>
           {filters.map((v, k) => {

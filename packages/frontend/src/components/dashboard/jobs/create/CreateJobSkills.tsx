@@ -173,9 +173,6 @@ const CreateJobSkills: FC = () => {
                   {searchResults.map((result, index) => (
                     <MenuItem
                       key={index}
-                      onClick={(e: React.MouseEvent<HTMLElement>) =>
-                        handleItemClick(e.target.textContent as string)
-                      }
                     >
                       {result}
                     </MenuItem>
