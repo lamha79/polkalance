@@ -19,7 +19,7 @@ export default function SearchJobPage() {
   const [categoryQuery, setCategoryQuery] = useState('');
   const { api, activeAccount, activeSigner } = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
-  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Freelankakot)
+  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const [searchJobsResult, setSearchJobsResult] = useState<any[]>([]);
   const handleSearch = (event: { preventDefault: () => void; }) => {
     event.preventDefault();

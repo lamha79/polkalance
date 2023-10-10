@@ -3,7 +3,7 @@ import { SubstrateDeployment } from '@scio-labs/use-inkathon'
 
 export enum ContractIds {
   Greeter = 'greeter',
-  Freelankakot = 'freelankakot',
+  Polkalance = 'polkalance',
 }
 
 export const getDeployments = async (): Promise<SubstrateDeployment[]> => {
@@ -11,10 +11,10 @@ export const getDeployments = async (): Promise<SubstrateDeployment[]> => {
   const deployments = networks
     .map(async (network) => [
       {
-        contractId: ContractIds.Freelankakot,
+        contractId: ContractIds.Polkalance,
         networkId: network,
-        abi: await import(`../../../contracts/deployments/freelankakot/metadata.json`),
-        address: (await import(`../../../contracts/deployments/freelankakot/${network}.ts`)).address,
+        abi: await import(`../../../contracts/deployments/polkalance/metadata.json`),
+        address: (await import(`../../../contracts/deployments/polkalance/${network}.ts`)).address,
       },
     ])
     .reduce(async (acc, curr) => [...(await acc), ...(await curr)], [] as any)

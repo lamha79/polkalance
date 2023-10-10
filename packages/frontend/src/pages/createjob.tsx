@@ -21,7 +21,7 @@ export default function CreateJobPage() {
   const [duration, setDuration] = useState<number>(0);
   const [budget, setBudget] = useState<number>(0);
   const { api, activeAccount, activeSigner } = useInkathon()
-  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Freelankakot)
+  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const [updateIsLoading, setUpdateIsLoading] = useState<boolean>()
   const DECIMAL_NUMBER = 1000000000000;  
 

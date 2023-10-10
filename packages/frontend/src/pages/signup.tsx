@@ -17,7 +17,7 @@ import Head from 'next/head'
 
 export default function SignUpPage() {
     const { api, activeAccount, activeSigner } = useInkathon()
-    const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Freelankakot)
+    const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
     const [name, setName] = useState<string>('');
     const [detail, setDetail] = useState<string>('');
     const [stringRole, setStringrole] = useState<string>('');

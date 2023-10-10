@@ -91,7 +91,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
   // thêm vào
   const [loading, setLoading] = useState(false)
   const { api, activeSigner } = useInkathon()
-  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Freelankakot)
+  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const updateRegister = async (values: FormData) => {
         
     if (!activeAccount || !contract || !activeSigner || !api) {

@@ -91,7 +91,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
   // thêm vào
   const [loading, setLoading] = useState(false)
   const { api, activeSigner } = useInkathon()
-  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Freelankakot)
+  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const updateCreateJob = async (values: FormData) => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return
