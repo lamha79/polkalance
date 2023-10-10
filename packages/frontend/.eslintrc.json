@@ -19,6 +19,7 @@
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-no-target-blank": "off",
     "no-extra-boolean-cast": "off",
+    "@typescript-eslint/no-namespace": "off",
     "prefer-const": "warn"
   }
 }

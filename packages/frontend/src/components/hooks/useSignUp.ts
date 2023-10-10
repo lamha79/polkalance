@@ -43,7 +43,7 @@ export function useSignUp() {
     }: SigupProps): Promise<boolean | string> => {
       if (address) {
         try {
-          
+          address
         } catch (error: any) {
           return error.response.data.message;
         }
