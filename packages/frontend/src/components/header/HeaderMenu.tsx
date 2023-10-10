@@ -14,8 +14,7 @@ const menuElement: MenuElement[] = [
   { id: 'product', label: 'Product' },
   { id: 'technology', label: 'Technology' },
   { id: 'community', label: 'Community' },
-  { id: 'contact', label: 'Contact' },
-  { id: 'createjob', label: 'Create Job' }
+  { id: 'contact', label: 'Contact' }
 ];
 
 interface HeaderMenuProps {
@@ -31,10 +30,6 @@ const HeaderMenu: FC<HeaderMenuProps> = ({ onCloseMenu, noActive = false }) => {
     if (mobileDisplay && onCloseMenu) {
       setCurrentView(id);
       onCloseMenu();
-    }
-    if(id === "createjob") {
-      setCreateJobModalOpen(true);
-      <CreateJobModal />
     }
   };
 
