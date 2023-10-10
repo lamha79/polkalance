@@ -39,8 +39,8 @@ const ContractStartDate: FC = () => {
     
     return <FormControl id="startDate" isRequired flexBasis="50%">
     <FormLabel>Start date</FormLabel>
-    <Field name="startDate" isInvalid={errors.startDate && touched.startDate}>
-      {({ field, form }) => (
+    <Field name="startDate">
+      {/* {({ field, form }) => (
         <SingleDatepicker
           name="startDate"
           date={field.value}
@@ -68,7 +68,7 @@ const ContractStartDate: FC = () => {
             form.setFieldTouched(field.name, true, false);
           }}
         />
-      )}
+      )} */}
     </Field>
     <ErrorMessage name="startDate">
       {(msg) => <Text textStyle="errorMessage">{msg}</Text>}

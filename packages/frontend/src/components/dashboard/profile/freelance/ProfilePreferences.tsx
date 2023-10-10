@@ -22,7 +22,7 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
       <Box textStyle="h4" as="span">
         Preferences
       </Box>
-      <Flex gap={2} flexWrap="wrap">
+      {/* <Flex gap={2} flexWrap="wrap">
         {curUser.hasfreelanceProfile && (
           <Badge
             color="neutral.black"
@@ -81,7 +81,7 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             variant="filter"
             mr={2}
           >
-            {curUser.hasfreelanceProfile}{' '}
+            {curUser.hasfreelanceProfile}
             {curUser.hasfreelanceProfile != undefined &&
             parseInt(curUser.hasfreelanceProfile) > 1
               ? 'Years'
@@ -89,7 +89,7 @@ const ProfilePreferences: FC<ProfilePreferencesProps> = ({ curUser }) => {
             of Exp
           </Badge>
         )}
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };

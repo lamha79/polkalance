@@ -100,7 +100,7 @@ const ContractRelatedJob: FC<SelectorProps> = ({
             {jobs && jobs.map((v, k) => (
             <MenuItem
                 key={k}
-                onClick={() => handleSelection(v.uuid, id, selectedOption, setSelectedOption)}
+                onClick={() => handleSelection(v.uuid, id, 'selectedOption', setSelectedOption)}
             >
                 {v.title}
             </MenuItem>

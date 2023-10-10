@@ -38,7 +38,6 @@ const ContractCurrency: FC<SelectorProps> = ({handleSelection, ...props}) => {
                         }}
                         onBlur={() => setFieldTouched(field.name)}
                         placeholder="Number"
-                        isInvalid={errors.globalAmount !== undefined && touched.globalAmount !== undefined && touched.globalAmount}
                     >
                         <NumberInputField fontWeight="700" />
                         <NumberInputStepper>
@@ -59,13 +58,11 @@ const ContractCurrency: FC<SelectorProps> = ({handleSelection, ...props}) => {
             as={Button}
             variant="select"
             color={selectedOption ? 'neutral.black' : 'neutral.dsGray'}
-            borderColor={isOpen ? 'brand.primary' : errors.amountCurrency && touched.amountCurrency ? 'red' : 'brand.primary'}
+            borderColor={isOpen ? 'brand.primary' : 'red'}
             boxShadow={
             isOpen
                 ? '0 0 0 1px var(--chakra-colors-brand-primary)'
-                : errors.amountCurrency && touched.amountCurrency
-                ? '0 0 0 1px red'
-                : 'none'
+                : '0 0 0 1px red'
             }
             opacity={selectedOption ? 1 : 0.75}
             borderBottomLeftRadius={isOpen ? '0' : '6px'}
@@ -76,7 +73,7 @@ const ContractCurrency: FC<SelectorProps> = ({handleSelection, ...props}) => {
             }
             w="100%"
         >
-            {currencyOptions[selectedOption] || `Currency`}
+            {/* {currencyOptions[selectedOption] || `Currency`} */}
         </MenuButton>
         <MenuList
             mt={-2}
@@ -102,7 +99,7 @@ const ContractCurrency: FC<SelectorProps> = ({handleSelection, ...props}) => {
            {Object.keys(currencyOptions).map((v, k) => (
           <MenuItem
             key={k}
-            onClick={() => handleSelection(v, 'amountCurrency', selectedOption, setSelectedOption)}
+            onClick={() => handleSelection(v, 'amountCurrency', '', setSelectedOption)}
           >
             {currencyOptions[v]}
           </MenuItem>
@@ -110,7 +107,8 @@ const ContractCurrency: FC<SelectorProps> = ({handleSelection, ...props}) => {
         </MenuList>
         <Field name="amountCurrency" type="hidden" />
         </Menu>
-        {errors.amountCurrency && touched.amountCurrency && <Text textStyle="errorMessage">{errors.amountCurrency}</Text>}
+        {/* {errors.amountCurrency && touched.amountCurrency && <Text textStyle="errorMessage">{errors.amountCurrency}
+        </Text>} */}
     </FormControl>
         </Flex>);
 };

@@ -40,7 +40,6 @@ const ContractDuration: FC<SelectorProps> = ({handleSelection, ...props}) => {
                         }}
                         onBlur={() => setFieldTouched(field.name)}
                         placeholder="Number"
-                        isInvalid={errors.workDuration !== undefined && touched.workDuration !== undefined && touched.workDuration}
                     >
                         <NumberInputField fontWeight="700" />
                         <NumberInputStepper>
@@ -62,13 +61,11 @@ const ContractDuration: FC<SelectorProps> = ({handleSelection, ...props}) => {
             as={Button}
             variant="select"
             color={selectedOption ? 'neutral.black' : 'neutral.dsGray'}
-            borderColor={isOpen ? 'brand.primary' : errors.workDurationUnit && touched.workDurationUnit ? 'red' : 'brand.primary'}
+            borderColor={isOpen ? 'brand.primary' : 'red'}
             boxShadow={
             isOpen
                 ? '0 0 0 1px var(--chakra-colors-brand-primary)'
-                : errors.workDurationUnit && touched.workDurationUnit
-                ? '0 0 0 1px red'
-                : 'none'
+                : '0 0 0 1px red'
             }
             opacity={selectedOption ? 1 : 0.75}
             borderBottomLeftRadius={isOpen ? '0' : '6px'}
@@ -79,7 +76,7 @@ const ContractDuration: FC<SelectorProps> = ({handleSelection, ...props}) => {
             }
             w="100%"
         >
-            {durationUnitOptions[selectedOption] || `Unit`}
+            {/* {durationUnitOptions[selectedOption] || `Unit`} */}
         </MenuButton>
         <MenuList
             mt={-2}
@@ -105,7 +102,7 @@ const ContractDuration: FC<SelectorProps> = ({handleSelection, ...props}) => {
            {Object.keys(durationUnitOptions).map((v, k) => (
           <MenuItem
             key={k}
-            onClick={() => handleSelection(v, 'workDurationUnit', selectedOption, setSelectedOption)}
+            onClick={() => handleSelection(v, 'workDurationUnit', 'selectedOption', setSelectedOption)}
           >
             {durationUnitOptions[v]}
           </MenuItem>
@@ -113,7 +110,7 @@ const ContractDuration: FC<SelectorProps> = ({handleSelection, ...props}) => {
         </MenuList>
         <Field name="workDurationUnit" type="hidden" />
         </Menu>
-        {errors.workDurationUnit && touched.workDurationUnit && <Text textStyle="errorMessage">{errors.workDurationUnit}</Text>}
+        {/* {errors.workDurationUnit && touched.workDurationUnit && <Text textStyle="errorMessage">{errors.workDurationUnit}</Text>} */}
     </FormControl>
         </Flex>);
 };
