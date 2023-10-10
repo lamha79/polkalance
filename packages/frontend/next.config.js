@@ -7,4 +7,7 @@
  **/
 let nextConfig = {}
 
+const withTwin = require('./withTwin.js')
+nextConfig = withTwin(nextConfig)
+
 module.exports = nextConfig
