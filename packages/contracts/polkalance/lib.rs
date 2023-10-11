@@ -353,6 +353,21 @@ mod polkalance {
             }
         }
 
+        //check exist wallet
+        #[ink(message)]
+        pub fn check_exist_wallet(&self) -> String {
+            let caller = self.env().caller();
+            match self.personal_account_info.get(caller) {
+                None => return String::from("undifined"),
+                Some(x) => {
+                    match x.role {
+                        AccountRole::FREELANCER => return String::from("freelancer"),
+                        _ => return String::from("company"),
+                    };
+                }
+            }
+        }
+
         // get tất cả open job no parametter
         #[ink(message)]
         pub fn get_all_open_jobs_no_params(&self) -> Result<Vec<Job>, JobError> {
