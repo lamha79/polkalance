@@ -27,7 +27,7 @@ export const CurrentUserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setCurUser] = useState<User | null>(null);
   const [fetchingUser, setFetchingUser] = useState(false);
   const { push, pathname } = useRouter();
-  const { setType } = useLanding();
+  const { type , setType } = useLanding();
 
   const setUser = (user: User | null) => {
     setCurUser(user);
@@ -39,7 +39,8 @@ export const CurrentUserProvider = ({ children }: { children: ReactNode }) => {
         secure: process.env.NODE_ENV === 'production'
       });
       setType(user.currentUserType as UserTypeEnum);
-      if (!pathname.includes('dashboard')) {
+      if ((type ===  UserTypeEnum.Freelancer || type === UserTypeEnum.Company) 
+      && !pathname.includes('dashboard')) {
         push('/dashboard');
       }
     }

@@ -94,7 +94,8 @@
     "axios": "^1.4.0",
     "framer-motion": "^10.12.8",
     "chakra-dayzed-datepicker": "^0.2.8",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "typia":"5.2.0"
   },
   "devDependencies": {
     "@types/node": "latest",

@@ -9,7 +9,7 @@ const chainId = process.env.CHAIN || 'development'
 dotenv.config({ path: `.env.${process.env.CHAIN || 'development'}` })
 
 /**
- * Script that deploys the greeter contract and writes its address to a file.
+ * Script that deploys the polkalance contract and writes its address to a file.
  *
  * Parameters:
  *  - `DIR`: Directory to read deploy files & write contract addresses to (optional, defaults to `./src/deployments`)
@@ -26,12 +26,12 @@ const main = async () => {
   const derivationPath = process.env.ACCOUNT_DERIVATION_PATH || ''
   const { api, account } = await initPolkadotJs(chain, `${accountUri}${derivationPath}`)
 
-  // Deploy greeter contract
-  let { abi, wasm } = await getDeploymentData('greeter')
-  const greeter = await deployContract(api, account, abi, wasm, 'default', [])
+  // Deploy polkalance contract
+  let { abi, wasm } = await getDeploymentData('polkalance')
+  const polkalance = await deployContract(api, account, abi, wasm, 'default', [])
 
   // Write contract addresses to `{contract}/{network}.ts` file(s)
-  await writeContractAddresses(chain.network, { greeter })
+  await writeContractAddresses(chain.network, { polkalance })
 }
 
 main()

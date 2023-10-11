@@ -31,7 +31,7 @@ export const useLogin = (signupModalOpen: boolean) => {
   } = useInkathon()
 
   const login = useCallback(
-    async ({ address, chain }: { address: `0x${string}`; chain: `0x${string}` }) => {
+    async ({ address, chain }: { address: `0x${string}`; chain: `${string}` }) => {
       setIsLoading(true);
       const res = await signIn({ address, chain });
       if (typeof res !== 'string' && res) {
@@ -39,9 +39,9 @@ export const useLogin = (signupModalOpen: boolean) => {
         setType(res.currentUserType);
       } else {
         toast({
-          title: <Text mt={-0.5}>Error while login</Text>,
+          title: <Text mt={-0.5}>Please Sign up</Text>,
           description: typeof res === 'string' ? res : null,
-          status: 'error',
+          status: 'info',
           isClosable: true,
           position: 'top-right'
         });
@@ -54,7 +54,9 @@ export const useLogin = (signupModalOpen: boolean) => {
   useEffect(() => {
     if (!signupModalOpen && !user) {
       if (isConnected && activeChain && activeAccount) {
-        login({ address: `0x${!activeAccount?.address}`, chain: `0x${!activeChain?.network}` });
+        // alert("ADDRESS :::: "+`0x${activeAccount.address}`);
+        // alert("NETWORK :::: "+`${activeChain.network}`);
+        login({ address: `0x${activeAccount.address}`, chain: `${activeChain.network}` });
       }
     }
   }, [activeAccount, activeChain, isConnected, login, signupModalOpen, user]);

@@ -5,12 +5,13 @@ import UserTypeSwitch from "../switch/UserTypeSwitch";
 import BrandLogo from "../logo/BrandLogo";
 import HeaderMenu from "./HeaderMenu";
 import HeaderButton from "./HeaderButton";
-import { useCurrentUser } from "../../front-provider/src";
+import { useCurrentUser, useLanding } from "../../front-provider/src";
 import DashboardMenuContent from "../dashboard/menu/DashboardMenuContent";
 
 const HeaderMobile: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, fetchingUser } = useCurrentUser();
+  const { activeAccountUser } = useLanding()
 
   return (
     <Box>
@@ -30,8 +31,8 @@ const HeaderMobile: FC = () => {
             <BrandLogo />
               <Flex flexDir="column" flexGrow="1">
                   <Box my={8}><HeaderButton onCloseMenu={onClose}/></Box>
-                  {!user && !fetchingUser && <Box my="auto"><HeaderMenu onCloseMenu={onClose}/></Box>}
-                  {user && !fetchingUser && <DashboardMenuContent onCloseMenu={onClose}/>}
+                  {(!user && !activeAccountUser) && <Box my="auto"><HeaderMenu onCloseMenu={onClose}/></Box>}
+                  {(user && activeAccountUser) && <DashboardMenuContent onCloseMenu={onClose}/>}
                   <UserTypeSwitch mt="auto" mx="auto" mb={2} onCloseMenu={onClose}/>
               </Flex>
             </DrawerBody>

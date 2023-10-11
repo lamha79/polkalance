@@ -139,7 +139,6 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
       let active = false;
       if (v.view === '/dashboard') {
         if (pathname === '/dashboard') {
-          push('/dashboard');
           active = true;
         }
       } else {

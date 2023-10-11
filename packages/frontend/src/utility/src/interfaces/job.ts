@@ -59,6 +59,17 @@ export interface CreateJob extends JobKey {
   company?: CreateCompany;
 }
 
+export interface Job extends CreateJob {
+  id: string;
+  name: string; 
+  description: string; 
+  category: string;
+  pay: string;
+  endTime: string; 
+  status: string;
+  personCreate: string
+}
+
 export const workLocationOptions: { [key: string]: string } = {
   fullRemote: 'Full-remote',
   partialRemote: 'Partial-remote',

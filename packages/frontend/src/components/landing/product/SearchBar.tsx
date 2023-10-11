@@ -26,8 +26,8 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
   const { getCategoryColorForSkill, allSkills } = useColoredBadges()
   const [searchResults, setSearchResults] = useState<string[]>([])
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const menuRef = useRef()
-  const inputRef = useRef()
+  const menuRef = useRef(null)
+  const inputRef = useRef(null)
   const [searchText, setSearchText] = useState('')
   const searchFreelancer = useSearchFreelancer()
   const searchJobs = useSearchJob()
@@ -49,14 +49,14 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
     }
   }
 
-  const handleItemClick = (filter: string) => {
+  const handleItemClick = (filter: string | null) => {
     if (filter != 'No result') {
       setSearchText('')
       setSearchResults([])
-      if (!filters.includes(filter)) {
-        setFilters([...filters, filter])
+      if (!filters.includes((filter ? filter : ''))) {
+        setFilters([...filters, (filter ? filter : '')])
       }
-      selectFilter(filter)
+      selectFilter((filter ? filter : ''))
     }
     if (isOpen) onClose()
     // if (inputRef.current) inputRef.current.focus()
@@ -156,7 +156,7 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
       >
         {title}
       </Box>
-      {/* <Box position="relative">
+      <Box position="relative">
         <Input
           ref={inputRef}
           variant="searchBar"
@@ -175,14 +175,14 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
             <MenuButton as={Box} position="absolute" top="85%" left="0" zIndex={1} width="100%" />
             <MenuList>
               {searchResults.map((result, index) => (
-                <MenuItem key={index} onClick={(e) => handleItemClick(e.target.textContent)}>
+                <MenuItem key={index} onClick={(e) => handleItemClick((e.target as HTMLElement).textContent || null)}>
                   {result}
                 </MenuItem>
               ))}
             </MenuList>
           </Menu>
         </Box>
-      </Box> */}
+      </Box>
       <Flex width="100%" mt={3} alignItems="center">
         <Flex maxW="85%" flexWrap="wrap" gap={2}>
           {filters.map((v, k) => {

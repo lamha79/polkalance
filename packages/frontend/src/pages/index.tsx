@@ -83,7 +83,7 @@ const Home: NextPage = () => {
     setActiveAccount,
   } = useInkathon()
 
-  if (user && !pathname.includes('dashboard')) {
+  if ((user && activeAccount) && !pathname.includes('dashboard')) {
     push('/dashboard');
   }
 

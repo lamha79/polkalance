@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { useCurrentUser, useLanding } from '../../front-provider/src';
 import { CreateJob, UserTypeEnum } from '../../utility/src';
-import { searchFreelancers, searchFreelancersLogged, searchJobs } from '../../services/search';
+import { searchFreelancers, searchFreelancersLogged, searchJobs, convertJsonToArray } from '../../services/search';
 import { createContext, ReactNode, useContext, useState, useCallback, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { ContractIds } from '@/deployments/deployments';
+import {
+  contractQuery,
+  decodeOutput,
+  useInkathon,
+  useRegisteredContract,
+} from '@scio-labs/use-inkathon'
 
 type SearchJobContextInterface = {
   jobs: CreateJob[];
@@ -71,7 +79,7 @@ export const SearchJobProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useSearchJob = (elementToDisplay?: number) => {
+export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => {
   const {
     jobs,
     totalResult,
@@ -90,19 +98,38 @@ export const useSearchJob = (elementToDisplay?: number) => {
   } = useContext(SearchJobContext);
   const { user } = useCurrentUser();
   const { type } = useLanding();
+  const { api, activeAccount, activeSigner } = useInkathon()
+  const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
+  const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
 
   useEffect(() => {
     if (elementToDisplay) {
       setElementByPage(elementToDisplay);
       handleSearch(1, elementToDisplay, searchFilters);
     }
-  }, [elementToDisplay, setElementByPage]);
+  }, [elementToDisplay, setElementByPage, searchTerm]);
+
+  const searchJob = async (page: number, limit: number, searchTerm?: string) => {
+    if (!contract || !api) return;
+    setFetchIsLoading(true);
+    try {
+      const result = await contractQuery(api, '', contract, 'get_all_open_jobs', {}, [searchTerm, searchTerm]);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs');
+      if (isError) throw new Error(decodedOutput);
+      return convertJsonToArray(output);
+    } catch (e) {
+      console.error(e);
+      toast.error('Error while fetching get all open jobs. Try again...');
+    } finally {
+      setFetchIsLoading(false);
+    }
+  };
 
   const callGet = useCallback(
     async (page: number, limit: number, searchTerm?: string) => {
       setLoading(true);
       let res = null;
-      res = await searchJobs({ page, limit, searchTerm });
+      res = await searchJob(page, limit, searchTerm);
       if (res) {
         setCurPage(page);
         setJobs([...res.jobs]);
@@ -117,7 +144,7 @@ export const useSearchJob = (elementToDisplay?: number) => {
   const handleSearch = useCallback(
     (page: number, elementByPage: number, filters: string[]) => {
       if (filters.length === 0) {
-        // callGet(page, elementByPage);
+        callGet(page, elementByPage);
       }
       if (filters.length === 1) {
         // callGet(page, elementByPage, filters[0]);

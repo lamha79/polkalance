@@ -36,7 +36,7 @@ export default function SearchJobPage() {
       setSearchJobsResult(output);
     } catch (e) {
       console.error(e);
-      toast.error('Error while fetching greeting. Try again...');
+      toast.error('Error while fetching get all open jobs. Try again...');
       setSearchJobsResult([]);
     } finally {
       setFetchIsLoading(false);
