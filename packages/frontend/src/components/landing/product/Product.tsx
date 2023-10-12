@@ -16,7 +16,7 @@ const Product: FC = () => {
 
   let topContent = <></>;
 
-  if (type == UserTypeEnum.Freelancer) {
+  if (type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) {
     topContent = <ProductFreelance />;
   }
 

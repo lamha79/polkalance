@@ -34,6 +34,7 @@ import { AiOutlineCheckCircle, AiOutlineDisconnect } from 'react-icons/ai'
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi'
 import { useConnect } from '../hooks/useConnect';
 import { useSignUp } from '../hooks/useSignUp'
+import { useLanding } from '@front-provider/src'
 
 export interface ConnectButtonProps {}
 export const ConnectButton: FC<ConnectButtonProps> = () => {
@@ -59,6 +60,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     allSubstrateWallets.filter((w) => w.platforms.includes(SubstrateWalletPlatform.Browser)),
   )
   const isSSR = useIsSSR()
+  const { activeAccountUser} = useLanding();
 
   // Connect Button
   if (!activeAccount)
@@ -124,7 +126,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     <Menu>
       <HStack>
         {/* Account Balance */}
-        {balanceFormatted !== undefined && (
+        {(balanceFormatted !== undefined && !activeAccountUser) && (
           <Button
             py={6}
             pl={5}
@@ -139,7 +141,8 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
           </Button>
         )}
 
-        {/* Account Name, Address, and AZNS-Domain (if assigned) */}
+        {/* Account Name, Address, and AZNS-Domain (if assigned) */
+        !activeAccountUser && 
         <MenuButton
           as={Button}
           rightIcon={<FiChevronDown size={22} />}
@@ -156,6 +159,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
             </Text>
           </VStack>
         </MenuButton>
+        }
       </HStack>
 
       <MenuList

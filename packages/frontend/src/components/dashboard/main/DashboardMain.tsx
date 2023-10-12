@@ -35,7 +35,7 @@ const DashboardMain: FC = () => {
         borderRadius={{base: '32px', lg: "64px"}}
       >
         <AnimatePresence mode="wait">
-          {'Freelance' === UserTypeEnum.Freelancer && (
+          {type === UserTypeEnum.Freelancer && (
             <MotionBox
               key="freelance"
               initial="hidden"

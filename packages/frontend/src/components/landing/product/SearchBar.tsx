@@ -136,7 +136,7 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
         searchFreelancer.setSearchFilters([])
         // searchFreelancer.handleSearch(1, 8, [])
       }
-      if (type === UserTypeEnum.Freelancer) {
+      if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
         searchJobs.setSearchFilters([])
         // searchJobs.handleSearch(1, 8, [])
       }

@@ -11,7 +11,7 @@ import DashboardMenuContent from '../dashboard/menu/DashboardMenuContent';
 
 const Header: FC = () => {
   const { user, fetchingUser } = useCurrentUser();
-  const { hasScroll } = useLanding();
+  const { hasScroll, activeAccountUser } = useLanding();
   const {desktopDisplay, mobileDisplay, tabletDisplay} = useResponsive();
 
   return (
@@ -34,7 +34,7 @@ const Header: FC = () => {
           <UserTypeSwitch ml={12} />
         </Flex>
 
-        {!user && !fetchingUser && (
+        {(!user && !fetchingUser && !activeAccountUser)  && (
           <Flex direction="row" alignItems="center" justifyContent="center">
             <HeaderMenu />
           </Flex>

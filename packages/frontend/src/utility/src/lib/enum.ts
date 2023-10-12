@@ -1,4 +1,5 @@
 export enum UserTypeEnum {
   Freelancer = 'Freelance',
-  Company = 'Teamlead'
+  Company = 'Teamlead',
+  Guest = ''
 }

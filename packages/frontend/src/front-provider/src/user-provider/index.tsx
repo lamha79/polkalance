@@ -78,13 +78,13 @@ export function useCurrentUser() {
   const { push } = useRouter();
 
   const logout = async () => {
-    disconnect?.();
-    await privateApi.get('/auth/logout');
-    push('/');
-    setTimeout(() => {
-      Cookies.remove('authenticated');
-      setUser(null);
-    }, 200);
+    // disconnect?.();
+    // await privateApi.get('/auth/logout');
+    // push('/');
+    // setTimeout(() => {
+    //   Cookies.remove('authenticated');
+    //   setUser(null);
+    // }, 200);
   };
 
   return { user, setUser, logout, fetchingUser, setFetchingUser };

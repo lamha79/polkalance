@@ -23,7 +23,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
   const blurredAt = mobileDisplay || tabletDisplay ? 7 : 6
 
   useEffect(() => {
-    if (type === UserTypeEnum.Freelancer) {
+    if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
       setCaption('Join us and find your perfect offer')
     }
     if (type === UserTypeEnum.Company) {
@@ -88,7 +88,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
             ))}
         </SimpleGrid>
       )}
-      {type == UserTypeEnum.Freelancer && recentJob.loading && (
+      {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && recentJob.loading && (
         <Flex
           flexDir="column"
           justifyContent="center"
@@ -112,7 +112,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
           </Box>
         </Flex>
       )}
-      {type == UserTypeEnum.Freelancer && !recentJob.loading && (
+      {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && !recentJob.loading && (
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
           spacing={8}

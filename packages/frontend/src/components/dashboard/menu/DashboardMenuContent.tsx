@@ -24,7 +24,7 @@ interface DashboardMenuContentProps {
 }
 
 const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
-    const { type } = useLanding();
+    const { type ,activeAccountUser } = useLanding();
     const { pathname, push } = useRouter();
     const { user } = useCurrentUser();
     const { company } = useCurrentCompany();
@@ -86,7 +86,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
       justifyContent={!user ? 'center' : 'start'}
       onClick={() => handleViewChange('/dashboard/profile')}
     >
-      {user && (
+      {(user && activeAccountUser) && (
         <>
           <Box w="48px" h="48px" ml={{base: "auto", lg: 0}}>
             <Avatar />

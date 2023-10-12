@@ -2,11 +2,15 @@ import { Box, Flex, FlexProps, Text } from '@chakra-ui/react';
 import { useCurrentUser, useLanding } from '../../front-provider/src';
 import { changeUserType } from '../../services/user';
 import { FC, useState } from 'react';
-import { UserTypeEnum } from '../../utility/src/index';
+import { User, UserTypeEnum } from '../../utility/src/index';
 import { useResponsive } from '../hooks/useResponsive';
 
 interface UserTypeSwitchProps extends FlexProps{
   onCloseMenu?: () => void
+}
+
+function getUser(user: User) {
+  return user;
 }
 
 const UserTypeSwitch: FC<UserTypeSwitchProps> = ({ onCloseMenu, ...props }) => {
@@ -23,7 +27,23 @@ const UserTypeSwitch: FC<UserTypeSwitchProps> = ({ onCloseMenu, ...props }) => {
     if (user && !isPuting) {
       if (user.currentUserType && user.currentUserType.toLowerCase() !== newType.toLowerCase()) {
         setIsPuting(true);
-        const res = await changeUserType(newType);
+        const res = getUser({
+          email: "",
+          firstname: "LAM",
+          lastname: "HA",
+          description: "",
+          phone: "",
+          language: [],
+          location: "",
+          profilePicture: "",
+          links: [],
+          createdAt: "",
+          updatedAt: "",
+          hasFreelanceProfile: "",
+          currentUserType: newType,
+          tosAcceptedOn: "",
+          wallet: ""
+        });
         setUser(res);
         setIsPuting(false);
       }
@@ -40,7 +60,7 @@ const UserTypeSwitch: FC<UserTypeSwitchProps> = ({ onCloseMenu, ...props }) => {
         transition="all ease-in-out 250ms"
         py={1.5}
         px={4}
-        bgColor={type === UserTypeEnum.Freelancer ? '#fdb81e' : 'none'}
+        bgColor={(type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) ? '#fdb81e' : 'none'}
         cursor="pointer"
         _hover={{ bgColor: 'brand.primaryHover', borderColor: 'brand.primaryHover' }}
         onClick={() => setUserType(UserTypeEnum.Freelancer)}

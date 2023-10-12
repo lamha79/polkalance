@@ -17,13 +17,13 @@ import { useRouter } from 'next/router';
 import { getMyCompanies } from '../services/company';
 import { getMyJobs } from '../services/jobs';
 import CreateJobModal from './modal/CreateJobModal';
-import { User } from '../utility/src';
+import { User, UserTypeEnum } from '../utility/src';
 
 export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const { user, setUser, setFetchingUser } = useCurrentUser();
   const { setCompany, setFetching, fetching } = useCurrentCompany();
   const { setJobs, setJobsFetching, jobsFetching } = useJobs();
-  const { type } = useLanding();
+  const { type, setActiveAccountUser } = useLanding();
   const [isFetching, setIsFetching] = useState(false);
   const authenticatedCookie = Cookies.get('authenticated');
   const { pathname, push } = useRouter();
@@ -58,7 +58,7 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
         createdAt: "",
         updatedAt: "",
         hasFreelanceProfile: "",
-        currentUserType: "Freelance",
+        currentUserType: type,
         tosAcceptedOn: "",
         wallet: ""
       });
@@ -66,6 +66,9 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
       if(res) {
         if (!user) {
           setUser(res);
+          if(type !== UserTypeEnum.Guest) {
+            setActiveAccountUser(true);
+          }
         }
       }
       setIsFetching(false);
@@ -76,6 +79,9 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
     if (authenticatedCookie === 'true' && !user) {
       setIsFetching(true);
       setFetchingUser(true);
+      if(type !== UserTypeEnum.Guest) {
+        setActiveAccountUser(true);
+      }
       isUserLogged();
     }
 

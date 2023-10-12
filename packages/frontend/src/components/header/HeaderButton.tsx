@@ -5,7 +5,7 @@ import { FC } from 'react'
 import LoginButton from '../button/LoginButton'
 import NotificationIcon from '../icons/NotificationIcon'
 import MessageIcon from '../icons/MessageIcon'
-import { shortHash } from '../../utility/src'
+import { UserTypeEnum, shortHash } from '../../utility/src'
 import { useRouter } from 'next/router'
 import { useResponsive } from '../hooks/useResponsive'
 import {
@@ -24,7 +24,7 @@ interface HeaderButtonProps {
 
 const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
   const { user, logout } = useCurrentUser()
-  const { signupModalOpen, setSignupModalOpen , activeAccountUser} = useLanding()
+  const { signupModalOpen, setSignupModalOpen , activeAccountUser, type, setActiveAccountUser} = useLanding()
   const { push, pathname } = useRouter()
   const { mobileDisplay } = useResponsive()
   const { setUser } = useCurrentUser();
@@ -47,6 +47,7 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
     push('/');
     Cookies.remove('authenticated');
     setUser(null);
+    setActiveAccountUser(false);
   }
 
   const handleNavigate = () => {
@@ -58,36 +59,38 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
 
   return (
     <Flex justifyContent={{ base: 'center', lg: 'normal' }}>
-      {!user && (
+        {((!user && !activeAccountUser) || type === UserTypeEnum.Guest) && (
         <>
-          <LoginButton signupModalOpen={signupModalOpen} mr={{ base: 0, md: 4, xl: 8 }}>
-            Login
-          </LoginButton>
-          {!activeAccountUser && <Button
-            backgroundColor={'#fdb81e'}
-            textColor={'#002c39'}
-            fontFamily={'Comfortaa'}
-            fontSize={'1rem'}
-            fontWeight={'700'}
-            lineHeight={'133%'}
-            borderRadius={'32'}
-            height={"48px"}
-            variant="primary"
-            ml={{ base: 0, md: 4, xl: 8 }}
-            onClick={() => {
-              if (mobileDisplay && onCloseMenu) {
-                onCloseMenu()
-              }
-              setSignupModalOpen(true)
-              
-            }}
-          >
-            Sign up
-          </Button>}
+        <LoginButton signupModalOpen={signupModalOpen} mr={{ base: 0, md: 4, xl: 8 }}>
+          Login
+        </LoginButton>
         </>
-      )}
+        )}
+        {!activeAccountUser && <Button
+          backgroundColor={'#fdb81e'}
+          textColor={'#002c39'}
+          fontFamily={'Comfortaa'}
+          fontSize={'1rem'}
+          fontWeight={'700'}
+          lineHeight={'133%'}
+          borderRadius={'32'}
+          height={"48px"}
+          variant="primary"
+          ml={{ base: 0, md: 4, xl: 8 }}
+          onClick={() => {
+            if (mobileDisplay && onCloseMenu) {
+              onCloseMenu()
+            }
+            setSignupModalOpen(true)
+            
+          }}
+        >
+          Sign up
+        </Button>}
+        
+      
 
-      {(user && activeAccountUser) && (
+      {user && activeAccountUser && (
         <Flex
           alignItems="center"
           columnGap={{ base: 8, md: 4, xl: 8 }}
