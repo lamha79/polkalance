@@ -67,14 +67,17 @@ export const useLogin = (signupModalOpen: boolean) => {
       const result = await contractQuery(api, activeAccount?.address, contract, 'check_exist_wallet');
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'check_exist_wallet');
       if (isError) throw new Error(decodedOutput);
+      let _type = output;
       if(output === "undifined") {
         setActiveAccountUser(false);
         setType(UserTypeEnum.Guest);
       } else {
         if (output === "freelancer") {
           setType(UserTypeEnum.Freelancer);
+          _type = "Freelance";
         } else {
           setType(UserTypeEnum.Company);
+          _type = "Teamlead";
         }
         const res = getUser({
           email: "",
@@ -89,7 +92,7 @@ export const useLogin = (signupModalOpen: boolean) => {
           createdAt: "",
           updatedAt: "",
           hasFreelanceProfile: "",
-          currentUserType: UserTypeEnum.Freelancer,
+          currentUserType: _type,
           tosAcceptedOn: "",
           wallet: ""
         });
