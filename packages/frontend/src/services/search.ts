@@ -44,7 +44,9 @@ export type SearchJob = (
   props: SearchJobProps
 ) => Promise<{ jobs: CreateJob[]; maxPage: number; totalResult: number }>;
 
-export type GetRecentJobs = (props: GetRecentJobsProps) => Promise<CreateJob1[]>;
+export type GetRecentJobs1 = (props: GetRecentJobsProps) => Promise<CreateJob1[]>;
+
+export type GetRecentJobs = (props: GetRecentJobsProps) => Promise<CreateJob[]>;
 
 export const getRecentFreelancers: GetRecentFreelancers = async ({ limit }) => {
   const res = await publicApi.get(`/user/recentFreelancer/${limit}`);
@@ -54,6 +56,11 @@ export const getRecentFreelancers: GetRecentFreelancers = async ({ limit }) => {
 export const getRecentJobs: GetRecentJobs = async ({ limit }) => {
   const res = await publicApi.get(`/jobs/recent/1/${limit}`);
   return res.data.jobs;
+};
+
+export const getRecentJobs1: GetRecentJobs1 = async ({ limit }) => {
+  const res = await publicApi.get(`/jobs/recent/1/${limit}`);
+  return res.data.jobs1;
 };
 
 export const convertJsonToArray: SearchJob = async ({ json }) => {

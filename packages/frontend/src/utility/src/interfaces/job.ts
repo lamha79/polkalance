@@ -45,6 +45,21 @@ export interface JobKey {
 }
 
 export interface CreateJob1 extends JobKey {
+  title: string;
+  location: string;
+  availability: WorkAvailability;
+  duration: WorkDuration;
+  jobMission: string;
+  responsibilities: string;
+  requirements: string;
+  tags: string[];
+  visibility: Visibility;
+  createdAt: string;
+  companyUuid: string;
+  company?: CreateCompany;
+}
+
+export interface CreateJob extends JobKey {
   jobId: string;
   name: string; 
   description: string; 
@@ -52,19 +67,8 @@ export interface CreateJob1 extends JobKey {
   pay: string;
   endTime: string; 
   status: string;
-  personCreate: string
+  personCreate: string,
   result: string
-}
-
-export interface CreateJob extends JobKey {
-  id: string;
-  name: string; 
-  description: string; 
-  category: string;
-  pay: string;
-  endTime: string; 
-  status: string;
-  personCreate: string
 }
 
 export interface Job {

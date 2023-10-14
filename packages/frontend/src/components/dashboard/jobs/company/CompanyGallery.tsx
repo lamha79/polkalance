@@ -11,11 +11,11 @@ import {
   useRegisteredContract,
 } from '@scio-labs/use-inkathon'
 import { ContractIds } from '@/deployments/deployments'
-import { CreateJob1 } from '../../../../utility/src';
+import { CreateJob, CreateJob1 } from '../../../../utility/src';
 
 
 const CompanyGallery: FC = () => {
-  const { jobs1, jobsFetching, setJobsFetching, setJobs1} = useJobs()
+  const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push } = useRouter()
   const toast = useToast()
   //////
@@ -46,7 +46,6 @@ const CompanyGallery: FC = () => {
         isClosable: true,
         position: 'top-right',
       })
-    } finally {
     }
   };
   //////
@@ -64,8 +63,8 @@ const CompanyGallery: FC = () => {
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
       // console.log(data[0].name);
-      const jobs = data as CreateJob1[];
-      setJobs1(jobs)
+      const jobs = data as CreateJob[];
+      setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
@@ -90,16 +89,16 @@ const CompanyGallery: FC = () => {
     <Flex flexDir="column">
       {!jobsFetching && (
         <>
-          {jobs1 && jobs1?.length > 0 && (
+          {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
-              {jobs1?.map((j, k) => (
+              {jobs?.map((j, k) => (
                 <JobCard2 job={j} key={k} onClick={() => aprovalJob(parseInt(j.jobId))} />
               ))}
               
             </SimpleGrid>
           )}
-          {!jobs1 ||
-            (jobs1.length === 0 && (
+          {!jobs ||
+            (jobs.length === 0 && (
               <Box
                 textStyle="body2"
                 as="span"

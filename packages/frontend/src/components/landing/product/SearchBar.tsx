@@ -46,7 +46,9 @@ const SearchBar: FC<FlexProps> = ({ ...props }: FlexProps) => {
       searchFreelancer.setSearchFilters(newFilters)
     }
     if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
+      alert('HEREEEEEEE')
       searchJobs.setSearchFilters(newFilters) 
+      searchJobs.searchJobs2(1, 8, newFilters);
     }
   }
 

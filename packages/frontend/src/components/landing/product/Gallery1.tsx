@@ -6,11 +6,11 @@ import { UserTypeEnum } from '../../../utility/src'
 import { useRecentFreelancer } from '../../hooks/useRecentFreelancer'
 import { useSearchFreelancer } from '../../hooks/useSearchFreelancer'
 import { useRecentJob } from '../../hooks/useRecentJob'
-import JobCard2 from '../../card/JobCard2'
+import JobCard from '../../card/JobCard'
 import { useSearchJob } from '../../hooks/useSearchJob'
 import { useResponsive } from '../../hooks/useResponsive'
 
-const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
+const Gallery1: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
   const { type, setSignupModalOpen } = useLanding()
   const [caption, setCaption] = useState<string>('')
   const recentFreelancer = useRecentFreelancer({ limit: 8 })
@@ -112,7 +112,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
           </Box>
         </Flex>
       )}
-      {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && (
+      {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && !recentJob.loading && (
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
           spacing={8}
@@ -123,18 +123,18 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
           {...props}
         >
           {searchJobs.searchFilters.length === 0 &&
-            searchJobs.jobs.map((v, k) => <JobCard2 key={k} job={v} blurred={k >= blurredAt} />)}
+            recentJob.jobs1.map((v, k) => <JobCard key={k} job1={v} blurred={k >= blurredAt} />)}
           {searchJobs.searchFilters.length > 0 &&
-            searchJobs.jobs.map((v, k) => (
-              <JobCard2
+            searchJobs.jobs1.map((v, k) => (
+              <JobCard
                 key={k}
-                job={v}
+                job1={v}
                 blurred={
                   mobileDisplay || tabletDisplay
-                    ? k >= searchJobs.jobs.length - 1
-                    : searchJobs.jobs.length % 2 === 0
-                    ? k >= searchJobs.jobs.length - 2
-                    : k >= searchJobs.jobs.length - 1
+                    ? k >= searchJobs.jobs1.length - 1
+                    : searchJobs.jobs1.length % 2 === 0
+                    ? k >= searchJobs.jobs1.length - 2
+                    : k >= searchJobs.jobs1.length - 1
                 }
               />
             ))}
@@ -168,4 +168,4 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
   )
 }
 
-export default Gallery
+export default Gallery1

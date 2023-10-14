@@ -14,7 +14,7 @@ import StarIcon from '../icons/StarIcon';
 import { useResponsive } from '../hooks/useResponsive';
 
 interface JobCardProps {
-  job: CreateJob1;
+  job: CreateJob;
   blurred?: boolean;
   onClick?: () => void;
 }

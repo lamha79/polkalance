@@ -74,6 +74,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   } = useContext(SearchJobContext);
 
   const { mobileDisplay, tabletDisplay } = useResponsive();
+  const searchJobs = useSearchJob();
 
   const blurredAt = mobileDisplay || tabletDisplay ? 7 : 6
 
@@ -101,17 +102,17 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       setCurFilters(newFilters);
     }
     console.log(`FILTER :::: ${filter}`);
-      searchJobs("it", "it");
-    // if (type === UserTypeEnum.Company) {
-    //   searchFreelancer.setSearchFilters(newFilters);
-    // }
-    // if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
-    //   // searchJobs.setSearchFilters(newFilters);
-    // }
-
+      // searchJobs2("it", "it");
+    if (type === UserTypeEnum.Company) {
+      searchFreelancer.setSearchFilters(newFilters);
+    }
+    if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
+      searchJobs.setSearchFilters(newFilters);
+      searchJobs.searchJobs2(1,8,newFilters);
+    }
   };
 
-  const searchJobs = async (searchQuery: string, categoryQuery: string) => {
+  const searchJobs2 = async (searchQuery: string, categoryQuery: string) => {
     if (!contract || !api) return;
     setFetchIsLoading(true);
     setElementByPage(1);
@@ -237,55 +238,52 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       </Box>
       {(filters && filters.length > 0) && (
         <Flex width="100%" mt={3} alignItems="center">
-        <Flex maxW="85%" flexWrap="wrap" gap={2}>
-          {filters.map((v, k) => {
-            const colors = getCategoryColorForSkill(v)
-            return (
-              <Badge
-                key={k}
-                color={!curFilters.includes(v) ? 'neutral.black' : colors.color}
-                bgColor={!curFilters.includes(v) ? 'none' : colors.bgColor}
-                borderWidth="1px"
-                borderColor={!curFilters.includes(v) ? colors.bgColor : 'none'}
-                _hover={{
-                  bgColor: !curFilters.includes(v) ? colors.bgColor : 'rgba(0,0,0,0)',
-                  color: !curFilters.includes(v) ? colors.color : 'neutral.black',
-                  borderColor: !curFilters.includes(v) ? 'none' : colors.bgColor,
-                }}
-                variant="filter"
-                onClick={() => selectFilter(v)}
-              >
-                {v}
-              </Badge>
-            )
-          })}
-        </Flex>
-        {filters.length > 0 && (
-          <Button
-            variant="link"
-            size="xs"
-            ml={4}
-            mt={0.5}
-            onClick={() => {
-              setCurFilters([])
-              setFilters([])
-              setJobs([])
-              setSearchResults(['No result']);
-              if (type === UserTypeEnum.Company) {
-                // searchFreelancer.setSearchFilters([])
-              }
-              if (type === UserTypeEnum.Freelancer) {
-                // searchJobs.setSearchFilters([])
-              }
-            }}
-          >
-            Clear filters
-          </Button>
-        )}
-      </Flex>
-      )}
-      
-      {jobs && (
+          <Flex maxW="85%" flexWrap="wrap" gap={2}>
+            {filters.map((v, k) => {
+              const colors = getCategoryColorForSkill(v)
+              return (
+                <Badge
+                  key={k}
+                  color={!curFilters.includes(v) ? 'neutral.black' : colors.color}
+                  bgColor={!curFilters.includes(v) ? 'none' : colors.bgColor}
+                  borderWidth="1px"
+                  borderColor={!curFilters.includes(v) ? colors.bgColor : 'none'}
+                  _hover={{
+                    bgColor: !curFilters.includes(v) ? colors.bgColor : 'rgba(0,0,0,0)',
+                    color: !curFilters.includes(v) ? colors.color : 'neutral.black',
+                    borderColor: !curFilters.includes(v) ? 'none' : colors.bgColor,
+                  }}
+                  variant="filter"
+                  onClick={() => selectFilter(v)}
+                >
+                  {v}
+                </Badge>
+              )
+            })}
+          </Flex>
+          {(filters.length > 0) && (
+            <Button
+              variant="link"
+              size="xs"
+              ml={4}
+              mt={0.5}
+              onClick={() => {
+                setCurFilters([])
+                setFilters([])
+                setJobs([])
+                setSearchResults(['No result']);
+                if (type === UserTypeEnum.Company) {
+                  // searchFreelancer.setSearchFilters([])
+                }
+                if (type === UserTypeEnum.Freelancer) {
+                  // searchJobs.setSearchFilters([])
+                }
+              }}
+            >
+              Clear filters
+            </Button>
+          )}
+          {/* {jobs && (
         <SimpleGrid
         columns={{ base: 1, lg: 2 }}
         spacing={8}
@@ -310,9 +308,12 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
             />
           ))}
       </SimpleGrid>
-      )
-      }
+      )} */}
+      </Flex>
+      )}
     </Flex>
+  )
+    
     // <section className="py-10">
     //     <div className="bg-white rounded-lg shadow p-6 mx-auto max-w-3xl">
     //       <h1 className="text-3xl text-gray-800 font-bold mb-6">
@@ -383,7 +384,6 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
 
     //     </div>
     //   </section>
-  );
-}
+};
 
 export default SearchJobPage;

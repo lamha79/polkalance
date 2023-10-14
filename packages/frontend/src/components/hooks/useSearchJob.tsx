@@ -89,6 +89,7 @@ export const SearchJobProvider = ({ children }: { children: ReactNode }) => {
 export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => {
   const {
     jobs1,
+    jobs,
     totalResult,
     searchFilters,
     elementByPage,
@@ -96,6 +97,7 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
     curPage,
     loading,
     setJobs1,
+    setJobs,
     setTotalResult,
     setSearchFilters,
     setElementByPage,
@@ -108,6 +110,7 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
   const { api, activeAccount, activeSigner } = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
+  const [searchJobsResult, setSearchJobsResult] = useState<any[]>([]);
 
   useEffect(() => {
     if (elementToDisplay) {
@@ -120,17 +123,56 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
     async (page: number, limit: number, searchTerm?: string) => {
       setLoading(true);
       let res = null;
-      res = await searchJobs({ page, limit, searchTerm });
-      if (res) {
-        setCurPage(page);
-        setJobs1([...res.jobs]);
-        setMaxPage(res.maxPage);
-        setTotalResult(res.totalResult);
-      }
+      // res = await searchJobs({ page, limit, searchTerm });
+      // if (res) {
+      //   setCurPage(page);
+      //   setJobs([...res.jobs]);
+      //   setMaxPage(res.maxPage);
+      //   setTotalResult(res.totalResult);
+      // }
       setLoading(false);
     },
     [setCurPage, setJobs1, setLoading, setMaxPage, setTotalResult, user]
   );
+
+  const searchJobs2 = async (page: number, elementByPage: number, filters: string[]) => {
+    if (!contract || !api) return;
+    setFetchIsLoading(true);
+    setElementByPage(page);
+    try {
+      console.log(`searchQuery :::: ${filters}`);
+      console.log(`categoryQuery :::: ${filters}`);
+      const result = await contractQuery(api, '', contract, 'get_all_open_jobs', {}, [filters[0], filters[0]]);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs');
+      if (isError) throw new Error(decodedOutput);
+      setSearchJobsResult(output);
+      const json = JSON.stringify(searchJobsResult, null, 2);
+      console.log(`RESULT JSON String :::: ${json}`);
+      const list_jobs = JSON.parse(json);
+      const data = list_jobs.Ok;
+      console.log(`DATA :::: ${data}`);
+      if(data) {
+        const _jobs= data as CreateJob[];
+      console.log(`JOBS :::: ${_jobs}`);
+      setLoading(true);
+      let res = null;
+      res =  {jobs: _jobs, maxPage: 1, totalResult: 1 };
+      if (res) {
+        setCurPage(1);
+        setJobs([...res.jobs]);
+        setMaxPage(res.maxPage);
+        setTotalResult(res.totalResult);
+      }
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error('Error while fetching get all open jobs. Try again...');
+      setSearchJobsResult([]);
+      setLoading(false);
+    } finally {
+      setFetchIsLoading(false);
+    }
+  };
 
   const handleSearch = useCallback(
     (page: number, elementByPage: number, filters: string[]) => {
@@ -149,6 +191,7 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
 
   return {
     jobs1,
+    jobs,
     loading,
     maxPage,
     curPage,
@@ -157,6 +200,7 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
     setElementByPage,
     elementByPage,
     setSearchFilters,
-    handleSearch
+    handleSearch,
+    searchJobs2
   };
 };
