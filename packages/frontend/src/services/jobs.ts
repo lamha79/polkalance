@@ -1,9 +1,9 @@
 import { privateApi } from '../front-provider/src/api';
-import { CreateJob } from '../utility/src';
+import { CreateJob, CreateJob1 } from '../utility/src';
 
-export type CreateNewJob = (job: Partial<CreateJob>) => Promise<CreateJob>;
+export type CreateNewJob = (job: Partial<CreateJob1>) => Promise<CreateJob1>;
 
-export type GetMyJobs = () => Promise<CreateJob[]>;
+export type GetMyJobs = () => Promise<CreateJob1[]>;
 
 export interface DeleteJobProps {
   id: string;
@@ -12,7 +12,7 @@ export interface DeleteJobProps {
 
 export type DeleteJob = (args: DeleteJobProps) => Promise<boolean>;
 
-export type GetJobByUUID = (id: string) => Promise<CreateJob>;
+export type GetJobByUUID = (id: string) => Promise<CreateJob1>;
 
 export const createJob: CreateNewJob = async (job) => {
   const res = await privateApi.post('/jobs/create', { ...job });

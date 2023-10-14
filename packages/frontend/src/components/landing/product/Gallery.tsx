@@ -123,18 +123,18 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
           {...props}
         >
           {searchJobs.searchFilters.length === 0 &&
-            recentJob.jobs.map((v, k) => <JobCard key={k} job={v} blurred={k >= blurredAt} />)}
+            recentJob.jobs1.map((v, k) => <JobCard key={k} job1={v} blurred={k >= blurredAt} />)}
           {searchJobs.searchFilters.length > 0 &&
-            searchJobs.jobs.map((v, k) => (
+            searchJobs.jobs1.map((v, k) => (
               <JobCard
                 key={k}
-                job={v}
+                job1={v}
                 blurred={
                   mobileDisplay || tabletDisplay
-                    ? k >= searchJobs.jobs.length - 1
-                    : searchJobs.jobs.length % 2 === 0
-                    ? k >= searchJobs.jobs.length - 2
-                    : k >= searchJobs.jobs.length - 1
+                    ? k >= searchJobs.jobs1.length - 1
+                    : searchJobs.jobs1.length % 2 === 0
+                    ? k >= searchJobs.jobs1.length - 2
+                    : k >= searchJobs.jobs1.length - 1
                 }
               />
             ))}

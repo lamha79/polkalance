@@ -5,22 +5,22 @@ import { useRouter } from 'next/router'
 import { FC } from 'react'
 
 const CompanyGallery: FC = () => {
-  const { jobs, jobsFetching } = useJobs()
+  const { jobs1, jobsFetching } = useJobs()
   const { push } = useRouter()
 
   return (
     <Flex flexDir="column">
       {!jobsFetching && (
         <>
-          {jobs && jobs?.length > 0 && (
+          {jobs1 && jobs1?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
-              {jobs?.map((j, k) => (
-                <JobCard job={j} key={k} onClick={(id) => push(`/dashboard/offers/${id}`)} />
+              {jobs1?.map((j, k) => (
+                <JobCard job1={j} key={k} onClick={(id) => push(`/dashboard/offers/${id}`)} />
               ))}
             </SimpleGrid>
           )}
-          {!jobs ||
-            (jobs.length === 0 && (
+          {!jobs1 ||
+            (jobs1.length === 0 && (
               <Box
                 textStyle="body2"
                 as="span"

@@ -40,7 +40,7 @@ const ContractRelatedJob: FC<SelectorProps> = ({
     }) => {
     const [selectedOption, setSelectedOption] = useState<string>();
     const {isOpen, onOpen, onClose} = useDisclosure();
-    const { jobs } = useJobs();
+    const { jobs1 } = useJobs();
     const { values }: {values: FormData} = useFormikContext();
 
     useEffect(() => {
@@ -74,7 +74,7 @@ const ContractRelatedJob: FC<SelectorProps> = ({
             }
             w="100%"
         >
-            {jobs && <>{jobs.find((j) => j.uuid === selectedOption)?.title}</>}
+            {jobs1 && <>{jobs1.find((j) => j.uuid === selectedOption)?.title}</>}
         </MenuButton>
         <MenuList
             mt={-2}
@@ -97,7 +97,7 @@ const ContractRelatedJob: FC<SelectorProps> = ({
             }
             }}
         >
-            {jobs && jobs.map((v, k) => (
+            {jobs1 && jobs1.map((v, k) => (
             <MenuItem
                 key={k}
                 onClick={() => handleSelection(v.uuid, id, 'selectedOption', setSelectedOption)}

@@ -10,7 +10,7 @@ interface CompanyGalleryProps {
 
 const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
   const {
-    jobs,
+    jobs1,
     loading,
     maxPage,
     curPage,
@@ -68,9 +68,9 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
           </Flex>
           <Flex flexDir="column" mt={4}>
             <SimpleGrid columns={{base: 1, lg: 2}} spacing={8} w="100%" position="relative">
-              {jobs.length > 0 &&
-                jobs.map((v, k) => (
-                  <JobCard key={k} job={v} onClick={(id) => push(`/dashboard/offers/${id}`)} />
+              {jobs1.length > 0 &&
+                jobs1.map((v, k) => (
+                  <JobCard key={k} job1={v} onClick={(id) => push(`/dashboard/offers/${id}`)} />
                 ))}
             </SimpleGrid>
           </Flex>

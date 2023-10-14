@@ -1,5 +1,5 @@
 import { useLanding } from '../../front-provider/src';
-import { CreateJob, UserTypeEnum } from '../../utility/src';
+import { CreateJob, CreateJob1, UserTypeEnum } from '../../utility/src';
 import { useCallback, useEffect, useState } from 'react';
 import { getRecentJobs } from '../../services/search';
 
@@ -8,7 +8,7 @@ interface UseRecentJobProps {
 }
 
 export const useRecentJob = ({ limit }: UseRecentJobProps) => {
-  const [jobs, setJobs] = useState<CreateJob[]>([]);
+  const [jobs1, setJobs1] = useState<CreateJob1[]>([]);
   const [loading, setLoading] = useState(true);
   const { type } = useLanding();
 
@@ -16,7 +16,7 @@ export const useRecentJob = ({ limit }: UseRecentJobProps) => {
     setLoading(true);
     const res = await getRecentJobs({ limit });
     console.log(res);
-    setJobs(res);
+    setJobs1(res);
     setLoading(false);
   }, [limit]);
 
@@ -26,5 +26,5 @@ export const useRecentJob = ({ limit }: UseRecentJobProps) => {
     }
   }, [callGet, type]);
 
-  return { jobs, loading };
+  return { jobs1, loading };
 };

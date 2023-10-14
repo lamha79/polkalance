@@ -13,7 +13,7 @@ import { User, UserTypeEnum } from '../utility/src';
 export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const { user, setUser, setFetchingUser } = useCurrentUser();
   const { setCompany, setFetching, fetching } = useCurrentCompany();
-  const { setJobs, setJobsFetching, jobsFetching } = useJobs();
+  const { setJobs1, setJobsFetching, jobsFetching } = useJobs();
   const { type, setActiveAccountUser } = useLanding();
   const [isFetching, setIsFetching] = useState(false);
   const authenticatedCookie = Cookies.get('authenticated');
@@ -84,7 +84,7 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
     // const res = await getMyJobs();
     // setJobs(res);
     // setJobsFetching(false);
-  }, [setJobs, setJobsFetching]);
+  }, [setJobs1, setJobsFetching]);
 
   useEffect(() => {
     if (user) {

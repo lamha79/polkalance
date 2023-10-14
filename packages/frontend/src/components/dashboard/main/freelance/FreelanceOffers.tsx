@@ -10,7 +10,7 @@ import { useResponsive } from '../../../hooks/useResponsive';
 const FreelanceOffers: FC = () => {
   const { push } = useRouter();
   const { user } = useCurrentUser();
-  const { jobs, loading, handleSearch } = useSearchJob();
+  const { jobs1, loading, handleSearch } = useSearchJob();
   const {mobileDisplay, tabletDisplay, desktopDisplay} = useResponsive();
   const [fetching, setFetching] = useState(false);
   const recentJob = useRecentJob({ limit: 2 });
@@ -55,12 +55,12 @@ const FreelanceOffers: FC = () => {
       {(!loading || !fetching) && (
         <Flex flexDir="column">
           <SimpleGrid columns={{base: 1, lg: 2}} spacing={8} w="100%">
-            {jobs &&
-              jobs?.length > 0 &&
-              jobs.map((j, k) => <JobCard job={j} key={k} onClick={handleJobCardClick} />)}
-            {((jobs && jobs.length === 0) || !jobs) &&
-                recentJob.jobs.map((j, k) => (
-                  <JobCard job={j} key={k} onClick={handleJobCardClick} />
+            {jobs1 &&
+              jobs1?.length > 0 &&
+              jobs1.map((j, k) => <JobCard job1={j} key={k} onClick={handleJobCardClick} />)}
+            {((jobs1 && jobs1.length === 0) || !jobs1) &&
+                recentJob.jobs1.map((j, k) => (
+                  <JobCard job1={j} key={k} onClick={handleJobCardClick} />
                 ))}
           </SimpleGrid>
         </Flex>

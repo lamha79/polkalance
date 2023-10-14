@@ -14,6 +14,7 @@ import CheckIcon from '../../icons/CheckIcon';
 import {
   availabilityOptions,
   CreateJob,
+  CreateJob1,
   UserTypeEnum,
   Visibility,
   WorkAvailability,
@@ -107,7 +108,7 @@ const DashboardJobCreate: FC = () => {
       skills,
       visibility
     } = values;
-    const updatedValues: Partial<CreateJob> = {
+    const updatedValues: Partial<CreateJob1> = {
       title,
       location: selectedWorkLocation,
       availability: selectedAvailability as WorkAvailability,

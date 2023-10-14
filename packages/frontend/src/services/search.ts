@@ -1,6 +1,6 @@
 import CreateJobForm from '@components/form/CreateJobForm';
 import { privateApi, publicApi } from '../front-provider/src';
-import { CreateJob, User, Job } from '../utility/src';
+import { CreateJob, User, Job, CreateJob1 } from '../utility/src';
 import { assertEquals } from 'typia';
 
 export interface GetRecentFreelancersProps {
@@ -38,13 +38,13 @@ export type SearchFreelancers = (
 
 export type SearchJobs = (
   props: SearchJobsProps
-) => Promise<{ jobs: CreateJob[]; maxPage: number; totalResult: number }>;
+) => Promise<{ jobs: CreateJob1[]; maxPage: number; totalResult: number }>;
 
 export type SearchJob = (
   props: SearchJobProps
 ) => Promise<{ jobs: CreateJob[]; maxPage: number; totalResult: number }>;
 
-export type GetRecentJobs = (props: GetRecentJobsProps) => Promise<CreateJob[]>;
+export type GetRecentJobs = (props: GetRecentJobsProps) => Promise<CreateJob1[]>;
 
 export const getRecentFreelancers: GetRecentFreelancers = async ({ limit }) => {
   const res = await publicApi.get(`/user/recentFreelancer/${limit}`);

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { useCurrentUser, useLanding } from '../../front-provider/src';
-import { CreateJob, UserTypeEnum } from '../../utility/src';
+import { CreateJob, CreateJob1, UserTypeEnum } from '../../utility/src';
 import { searchFreelancers, searchFreelancersLogged, convertJsonToArray, searchJobs } from '../../services/search';
 import { createContext, ReactNode, useContext, useState, useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -13,7 +13,9 @@ import {
 } from '@scio-labs/use-inkathon'
 
 type SearchJobContextInterface = {
+  jobs1: CreateJob1[];
   jobs: CreateJob[];
+  setJobs1: (users: CreateJob1[]) => void;
   setJobs: (users: CreateJob[]) => void;
   totalResult: number;
   setTotalResult: (result: number) => void;
@@ -31,7 +33,9 @@ type SearchJobContextInterface = {
 
 export const SearchJobContext = createContext<SearchJobContextInterface>({
   jobs: [],
+  jobs1: [],
   setJobs: () => {},
+  setJobs1: () => {},
   totalResult: 0,
   setTotalResult: () => {},
   searchFilters: [],
@@ -48,6 +52,7 @@ export const SearchJobContext = createContext<SearchJobContextInterface>({
 
 export const SearchJobProvider = ({ children }: { children: ReactNode }) => {
   const [jobs, setJobs] = useState<CreateJob[]>([]);
+  const [jobs1, setJobs1] = useState<CreateJob1[]>([]);
   const [totalResult, setTotalResult] = useState(0);
   const [searchFilters, setSearchFilters] = useState<string[]>([]);
   const [elementByPage, setElementByPage] = useState(6);
@@ -59,6 +64,7 @@ export const SearchJobProvider = ({ children }: { children: ReactNode }) => {
     <SearchJobContext.Provider
       value={{
         jobs,
+        jobs1,
         totalResult,
         searchFilters,
         elementByPage,
@@ -66,6 +72,7 @@ export const SearchJobProvider = ({ children }: { children: ReactNode }) => {
         curPage,
         loading,
         setJobs,
+        setJobs1,
         setTotalResult,
         setSearchFilters,
         setElementByPage,
@@ -81,14 +88,14 @@ export const SearchJobProvider = ({ children }: { children: ReactNode }) => {
 
 export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => {
   const {
-    jobs,
+    jobs1,
     totalResult,
     searchFilters,
     elementByPage,
     maxPage,
     curPage,
     loading,
-    setJobs,
+    setJobs1,
     setTotalResult,
     setSearchFilters,
     setElementByPage,
@@ -116,13 +123,13 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
       res = await searchJobs({ page, limit, searchTerm });
       if (res) {
         setCurPage(page);
-        setJobs([...res.jobs]);
+        setJobs1([...res.jobs]);
         setMaxPage(res.maxPage);
         setTotalResult(res.totalResult);
       }
       setLoading(false);
     },
-    [setCurPage, setJobs, setLoading, setMaxPage, setTotalResult, user]
+    [setCurPage, setJobs1, setLoading, setMaxPage, setTotalResult, user]
   );
 
   const handleSearch = useCallback(
@@ -141,7 +148,7 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
   );
 
   return {
-    jobs,
+    jobs1,
     loading,
     maxPage,
     curPage,
