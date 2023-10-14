@@ -4,6 +4,7 @@ import { useGetCompanyById } from '../hooks/useGetCompanyById';
 import {
   availabilityOptions,
   CreateJob,
+  CreateJob1,
   getDateDiffWithDaysAndHours,
   workLocationOptions
 } from '../../utility/src';
@@ -13,9 +14,9 @@ import StarIcon from '../icons/StarIcon';
 import { useResponsive } from '../hooks/useResponsive';
 
 interface JobCardProps {
-  job: CreateJob;
+  job: CreateJob1;
   blurred?: boolean;
-  onClick?: (id: string) => void;
+  onClick?: () => void;
 }
 const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardProps) => {
   const { getCategoryColorForSkill } = useColoredBadges();
@@ -43,9 +44,9 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
             lineHeight="120%"
             color="neutral.black"
           >
-            {job?.name}
+            {job?.name} 
           </Text>
-          <Text
+          {/* <Text
             fontFamily="Comfortaa"
             fontWeight="700"
             fontSize="16px"
@@ -53,7 +54,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
             color="neutral.dsGray"
           >
             {job?.description}
-          </Text>
+          </Text> */}
         </Flex>
         <Flex flexDir="column" ml="auto">
           <Box textStyle="h5" as="span" color="neutral.dsGray">
@@ -71,7 +72,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           lineHeight="120%"
           color="neutral.black"
         >
-          {job.name}
+          NAME: {job.name}
         </Text>
         <Text
           fontFamily="Comfortaa"
@@ -80,7 +81,16 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           lineHeight="120%"
           color="neutral.dsGray"
         >
-          {job.status}
+          STATUS: {job.status}
+        </Text>
+        <Text
+          fontFamily="Comfortaa"
+          fontWeight="700"
+          fontSize="14px"
+          lineHeight="120%"
+          color="neutral.dsGray"
+        >
+          RESULT: {job.result}
         </Text>
       </Flex>
       <Flex mt={2} flexWrap='wrap' rowGap={2}>
@@ -149,11 +159,11 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           lineHeight="150%"
           color="neutral.dsGray"
         >
-          {job.name.slice(0, 380)} {job.name.length > 380 && '...'}
+          {/* {job.name.slice(0, 380)} {job.name.length > 380 && '...'} */}
         </Text>
       </Flex>
       <Flex mt={4} flexWrap="wrap" rowGap={2}>
-        {!mobileDisplay && <Button
+        {!mobileDisplay && job.status == ("OPEN" || job.status == "REOPEN") && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -164,9 +174,24 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           fontWeight="400"
           lineHeight="100%"
           maxH="26px"
-          onClick={() => onClick?.(job.uuid)}
+          onClick={() => onClick?.()}
         >
-          See more
+          Obtain
+        </Button>}
+        {!mobileDisplay && job.status == "REVIEW" && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          Obtain
         </Button>}
       </Flex>
       {mobileDisplay && <Button
@@ -180,7 +205,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           fontWeight="400"
           lineHeight="100%"
           maxH="26px"
-          onClick={() => onClick?.(job.uuid)}
+          onClick={() => onClick?.()}
         >
           See more
         </Button>}

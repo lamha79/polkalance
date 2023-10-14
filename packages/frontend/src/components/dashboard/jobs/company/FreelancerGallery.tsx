@@ -1,6 +1,6 @@
 import { Box, Flex, SimpleGrid, Spinner, useToast, Text } from '@chakra-ui/react'
 import { useJobs } from '../../../../front-provider/src'
-import JobCard2 from '../../../../components/card/JobCard2'
+import JobCard2 from '../../../card/JobCard2'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import {
@@ -13,8 +13,7 @@ import {
 import { ContractIds } from '@/deployments/deployments'
 import { CreateJob1 } from '../../../../utility/src';
 
-
-const CompanyGallery: FC = () => {
+const FreelancerGallery: FC = () => {
   const { jobs1, jobsFetching, setJobsFetching, setJobs1} = useJobs()
   const { push } = useRouter()
   const toast = useToast()
@@ -22,14 +21,16 @@ const CompanyGallery: FC = () => {
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  //////
-  const aprovalJob = async (job_id: number) => {
-
+  /////////
+  const obtainJob = async (job_id: number) => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return
     }
+
+    // Send transaction
+    // setUpdateIsLoading(true)
     try {
-      await contractTx(api, activeAccount.address, contract, 'aproval', {}, [
+      await contractTx(api, activeAccount.address, contract, 'obtain', {}, [
         job_id
       ])
       toast({
@@ -49,7 +50,7 @@ const CompanyGallery: FC = () => {
     } finally {
     }
   };
-  //////
+  /////////
   const searchJobs = async () => {
     // console.log(api);
     // console.log(contract);
@@ -58,12 +59,12 @@ const CompanyGallery: FC = () => {
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_review_jobs_of_owner', {}, []);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_review_jobs_of_owner');
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_open_jobs_no_params', {}, []);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs_no_params');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
-      // console.log(data[0].name);
+      console.log(data[0].name);
       const jobs = data as CreateJob1[];
       setJobs1(jobs)
       if (isError) throw new Error(decodedOutput);
@@ -80,12 +81,12 @@ const CompanyGallery: FC = () => {
   useEffect(() => {
     // setJobs([job]);
     // alert(isConnected);
-    if (isConnected && activeChain && activeAccount) {
+    // if (isConnected && activeChain && activeAccount) {
       searchJobs();
-    }
+    // }
     // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner]);
-  ////A//
+  }, [contract, api]);
+  //////
   return (
     <Flex flexDir="column">
       {!jobsFetching && (
@@ -93,9 +94,8 @@ const CompanyGallery: FC = () => {
           {jobs1 && jobs1?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs1?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => aprovalJob(parseInt(j.jobId))} />
+                <JobCard2 job={j} key={k} onClick={() => obtainJob(parseInt(j.jobId))} />
               ))}
-              
             </SimpleGrid>
           )}
           {!jobs1 ||
@@ -144,4 +144,4 @@ const CompanyGallery: FC = () => {
   )
 }
 
-export default CompanyGallery
+export default FreelancerGallery
