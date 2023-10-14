@@ -59,13 +59,7 @@ import { useRouter } from 'next/router';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import {
-  SubstrateChain,
-  SubstrateWalletPlatform,
-  allSubstrateWallets,
-  getSubstrateChain,
-  isWalletInstalled,
-  useBalance,
-  useInkathon,
+  useInkathon
 } from '@scio-labs/use-inkathon'
 
 const Home: NextPage = () => {
@@ -73,14 +67,7 @@ const Home: NextPage = () => {
   const { push, pathname } = useRouter();
   const { handleScroll } = useLanding();
   const {
-    activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
-    activeAccount,
-    accounts,
-    setActiveAccount,
+    activeAccount
   } = useInkathon()
 
   if ((user && activeAccount) && !pathname.includes('dashboard')) {

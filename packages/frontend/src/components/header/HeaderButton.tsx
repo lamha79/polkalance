@@ -17,6 +17,7 @@ import {
   useBalance,
   useInkathon,
 } from '@scio-labs/use-inkathon'
+import { ConnectButton } from '@components/web3/ConnectButton';
 
 interface HeaderButtonProps {
   onCloseMenu?: () => void
@@ -29,14 +30,8 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
   const { mobileDisplay } = useResponsive()
   const { setUser } = useCurrentUser();
   const {
-    activeChain,
-    switchActiveChain,
-    connect,
     disconnect,
-    isConnecting,
-    activeAccount,
-    accounts,
-    setActiveAccount,
+    activeAccount
   } = useInkathon()
 
   const handleLogout = () => {
@@ -59,13 +54,15 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
 
   return (
     <Flex justifyContent={{ base: 'center', lg: 'normal' }}>
-        {((!user && !activeAccountUser) || type === UserTypeEnum.Guest) && (
+        {((!user)) && (
         <>
-        <LoginButton signupModalOpen={signupModalOpen} mr={{ base: 0, md: 4, xl: 8 }}>
+        {/* <LoginButton signupModalOpen={signupModalOpen} mr={{ base: 0, md: 4, xl: 8 }}>
           Login
-        </LoginButton>
+        </LoginButton> */}
+        <ConnectButton />
         </>
         )}
+
         {!activeAccountUser && <Button
           backgroundColor={'#fdb81e'}
           textColor={'#002c39'}
@@ -81,15 +78,12 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
             if (mobileDisplay && onCloseMenu) {
               onCloseMenu()
             }
-            setSignupModalOpen(true)
-            
+            setSignupModalOpen(true)            
           }}
         >
           Sign up
         </Button>}
         
-      
-
       {user && activeAccountUser && (
         <Flex
           alignItems="center"
@@ -112,9 +106,7 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
             />
             <IconButton variant="icon" aria-label="Message Icon" icon={<NotificationIcon />} />
           </Flex>
-          <Text fontFamily="Comfortaa" fontWeight="600" cursor="initial">
-            {shortHash(activeAccount?.address, { padLeft: 6, padRight: 4, separator: '...' })}
-          </Text>
+          <ConnectButton />
           <Button variant="outline" size="md" onClick={handleLogout}>
             Disconnect
           </Button>

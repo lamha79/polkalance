@@ -29,15 +29,9 @@ export const useLogin = (signupModalOpen: boolean) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
     isConnected,
     activeAccount,
-    accounts,
-    api,
-    setActiveAccount
+    api
   } = useInkathon()
 
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -120,9 +114,6 @@ export const useLogin = (signupModalOpen: boolean) => {
   useEffect(() => {
     if (!signupModalOpen && !user) {
       if (isConnected && activeChain && activeAccount) {
-        // alert("ADDRESS :::: "+`0x${activeAccount.address}`);
-        // alert("NETWORK :::: "+`${activeChain.network}`);
-        //login({ address: `0x${activeAccount.address}`, chain: `${activeChain.network}` });
         checkExistWallet();
       }
     }

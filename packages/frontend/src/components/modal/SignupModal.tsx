@@ -23,14 +23,7 @@ const SignupModal: FC = () => {
   const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
 
   const {
-    activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
-    activeAccount,
-    accounts,
-    setActiveAccount,
+    disconnect
   } = useInkathon();
 
   const close = () => {

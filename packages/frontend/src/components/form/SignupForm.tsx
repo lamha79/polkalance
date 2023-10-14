@@ -76,16 +76,8 @@ interface SignupFormProps {
 
 const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
   const {
-    activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
-    activeAccount,
-    accounts,
-    setActiveAccount,
+    activeAccount
   } = useInkathon()
-  const { signUp } = useSignUp()
   const toast = useToast()
 
   // thêm vào

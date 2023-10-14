@@ -38,7 +38,7 @@ const DashboardOffers: FC<DashboardOffersProps> = ({ scrollbarRef }) => {
         borderRadius={{base: '32px', lg: "64px"}}
       >
         <AnimatePresence mode="wait">
-          {type === UserTypeEnum.Freelancer && (
+          {(type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) && (
             <MotionBox
               key="freelance"
               initial="hidden"

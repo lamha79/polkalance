@@ -1,12 +1,3 @@
-import {
-  SubstrateChain,
-  SubstrateWalletPlatform,
-  allSubstrateWallets,
-  getSubstrateChain,
-  isWalletInstalled,
-  useBalance,
-  useInkathon,
-} from '@scio-labs/use-inkathon'
 import { useCallback } from 'react';
 
 interface SigupProps {
@@ -20,17 +11,6 @@ interface SigupProps {
 }
 
 export function useSignUp() {
-  const {
-    activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
-    activeAccount,
-    accounts,
-    setActiveAccount,
-  } = useInkathon()
-
   const signUp = useCallback(
     async ({
       address,
@@ -43,14 +23,14 @@ export function useSignUp() {
     }: SigupProps): Promise<boolean | string> => {
       if (address) {
         try {
-          address
+          return address;
         } catch (error: any) {
           return error.response.data.message;
         }
       }
       return 'Please link your wallet';
     },
-    [disconnect]
+    []
   );
 
   return { signUp };

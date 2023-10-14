@@ -32,9 +32,8 @@ import { FC, useMemo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { AiOutlineCheckCircle, AiOutlineDisconnect } from 'react-icons/ai'
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi'
-import { useConnect } from '../hooks/useConnect';
-import { useSignUp } from '../hooks/useSignUp'
 import { useLanding } from '@front-provider/src'
+import { useLogin } from '@components/hooks/useLogin'
 
 export interface ConnectButtonProps {}
 export const ConnectButton: FC<ConnectButtonProps> = () => {
@@ -60,7 +59,8 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     allSubstrateWallets.filter((w) => w.platforms.includes(SubstrateWalletPlatform.Browser)),
   )
   const isSSR = useIsSSR()
-  const { activeAccountUser} = useLanding();
+  const { activeAccountUser, signupModalOpen } = useLanding();
+  const { isLoading } = useLogin(signupModalOpen);
 
   // Connect Button
   if (!activeAccount)
@@ -126,7 +126,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     <Menu>
       <HStack>
         {/* Account Balance */}
-        {(balanceFormatted !== undefined && !activeAccountUser) && (
+        {(balanceFormatted !== undefined) && (
           <Button
             py={6}
             pl={5}
@@ -141,8 +141,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
           </Button>
         )}
 
-        {/* Account Name, Address, and AZNS-Domain (if assigned) */
-        !activeAccountUser && 
+        {/* Account Name, Address, and AZNS-Domain (if assigned) */ 
         <MenuButton
           as={Button}
           rightIcon={<FiChevronDown size={22} />}

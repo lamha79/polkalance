@@ -12,8 +12,21 @@ import '@fontsource/comfortaa';
 import '@fontsource/montserrat';
 import CustomHead from '../components/CustomHead';
 import Providers from '../components/Providers';
+import { useLanding } from '@front-provider/src';
+import Product from '../components/landing/product/Product';
+import { useEffect } from 'react';
+import { UserTypeEnum } from '@utility/src';
 
 function App({ Component, pageProps }: AppProps) {
+  // const { setType, type } = useLanding();
+
+  // useEffect(() => {
+  //   if (!type) {
+  //     setType(UserTypeEnum.Guest);
+  //   }
+    
+  // }, [type]);
+
   return (
     <>
       <CustomHead />

@@ -10,6 +10,7 @@ import Partners from './Partners';
 import { UserTypeEnum } from '../../../utility/src';
 import { SearchFreelancerProvider } from '../../hooks/useSearchFreelancer';
 import { SearchJobProvider } from '../../hooks/useSearchJob';
+import SearchJobPage from '../../../pages/searchjobs';
 
 const Product: FC = () => {
   const { type, handleViewChange } = useLanding();
@@ -36,6 +37,7 @@ const Product: FC = () => {
           {topContent}
           <SearchFreelancerProvider>
             <SearchJobProvider>
+            {/* <SearchJobPage /> */}
               <SearchBar />
               <Gallery mt={8} />
             </SearchJobProvider>

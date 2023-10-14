@@ -4,16 +4,6 @@ import { useResponsive } from "../../hooks/useResponsive";
 import { UserTypeEnum } from "../../../utility/src";
 import { useRouter } from "next/router";
 import { FC } from "react";
-import {
-  SubstrateChain,
-  SubstrateWalletPlatform,
-  allSubstrateWallets,
-  getSubstrateChain,
-  isWalletInstalled,
-  useBalance,
-  useInkathon,
-} from '@scio-labs/use-inkathon'
-
 interface MenuElement {
     view: string;
     label: string;
@@ -29,16 +19,6 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
     const { user } = useCurrentUser();
     const { company } = useCurrentCompany();
     const {mobileDisplay, tabletDisplay, desktopDisplay} = useResponsive();
-    const {
-      activeChain,
-      switchActiveChain,
-      connect,
-      disconnect,
-      isConnecting,
-      activeAccount,
-      accounts,
-      setActiveAccount,
-    } = useInkathon()
 
     const companyMenu: MenuElement[] = [
         { view: '/dashboard', label: 'Dashboard' },

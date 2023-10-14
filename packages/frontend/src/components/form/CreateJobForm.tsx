@@ -76,16 +76,9 @@ interface CreateJobFormProps {
 
 const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
   const {
-    activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
     activeAccount,
-    accounts,
-    setActiveAccount,
+    accounts
   } = useInkathon()
-  // const { createJob } = useCreateJob()
   const toast = useToast()
 
   // thêm vào

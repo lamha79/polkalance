@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { useCurrentUser, useLanding } from '../../front-provider/src';
 import { CreateJob, UserTypeEnum } from '../../utility/src';
-import { searchFreelancers, searchFreelancersLogged, searchJobs, convertJsonToArray } from '../../services/search';
+import { searchFreelancers, searchFreelancersLogged, convertJsonToArray, searchJobs } from '../../services/search';
 import { createContext, ReactNode, useContext, useState, useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { ContractIds } from '@/deployments/deployments';
@@ -105,31 +105,15 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
   useEffect(() => {
     if (elementToDisplay) {
       setElementByPage(elementToDisplay);
-      handleSearch(1, elementToDisplay, searchFilters);
+      // handleSearch(1, elementToDisplay, searchFilters);
     }
   }, [elementToDisplay, setElementByPage, searchTerm]);
-
-  const searchJob = async (page: number, limit: number, searchTerm?: string) => {
-    if (!contract || !api) return;
-    setFetchIsLoading(true);
-    try {
-      const result = await contractQuery(api, '', contract, 'get_all_open_jobs', {}, [searchTerm, searchTerm]);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs');
-      if (isError) throw new Error(decodedOutput);
-      return convertJsonToArray(output);
-    } catch (e) {
-      console.error(e);
-      toast.error('Error while fetching get all open jobs. Try again...');
-    } finally {
-      setFetchIsLoading(false);
-    }
-  };
 
   const callGet = useCallback(
     async (page: number, limit: number, searchTerm?: string) => {
       setLoading(true);
       let res = null;
-      res = await searchJob(page, limit, searchTerm);
+      res = await searchJobs({ page, limit, searchTerm });
       if (res) {
         setCurPage(page);
         setJobs([...res.jobs]);
@@ -147,10 +131,10 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
         callGet(page, elementByPage);
       }
       if (filters.length === 1) {
-        // callGet(page, elementByPage, filters[0]);
+        callGet(page, elementByPage, filters[0]);
       }
       if (filters.length > 1) {
-        // callGet(page, elementByPage, filters.join(';'));
+        callGet(page, elementByPage, filters.join(';'));
       }
     },
     [callGet]

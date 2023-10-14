@@ -15,8 +15,15 @@ export interface SearchJobsProps {
   limit: number;
   page: number;
   searchTerm?: string;
+}
+
+export interface SearchJobProps {
+  limit: number;
+  page: number;
+  searchTerm?: string;
   json: string;
 }
+
 export interface SearchFreelancersProps {
   limit: number;
   page: number;
@@ -33,6 +40,10 @@ export type SearchJobs = (
   props: SearchJobsProps
 ) => Promise<{ jobs: CreateJob[]; maxPage: number; totalResult: number }>;
 
+export type SearchJob = (
+  props: SearchJobProps
+) => Promise<{ jobs: CreateJob[]; maxPage: number; totalResult: number }>;
+
 export type GetRecentJobs = (props: GetRecentJobsProps) => Promise<CreateJob[]>;
 
 export const getRecentFreelancers: GetRecentFreelancers = async ({ limit }) => {
@@ -45,9 +56,8 @@ export const getRecentJobs: GetRecentJobs = async ({ limit }) => {
   return res.data.jobs;
 };
 
-export const convertJsonToArray: SearchJobs = async ({ json }) => {
-  const _json = JSON.stringify(json, null, 2);
-  const list_jobs = JSON.parse(_json);
+export const convertJsonToArray: SearchJob = async ({ json }) => {
+  const list_jobs = JSON.parse(json);
   const data = list_jobs.Ok;
   const jobs = assertEquals<CreateJob[]>(data);
   console.log(data)

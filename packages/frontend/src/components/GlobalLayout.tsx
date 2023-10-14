@@ -2,15 +2,6 @@ import { Container } from '@chakra-ui/react';
 import { useCurrentCompany, useCurrentUser, useJobs, useLanding } from '../front-provider/src';
 import Cookies from 'js-cookie';
 import { FC, PropsWithChildren, useCallback, useEffect, useState } from 'react';
-import {
-  SubstrateChain,
-  SubstrateWalletPlatform,
-  allSubstrateWallets,
-  getSubstrateChain,
-  isWalletInstalled,
-  useBalance,
-  useInkathon,
-} from '@scio-labs/use-inkathon'
 import Header from './header/Header';
 import SignupModal from './modal/SignupModal';
 import { useRouter } from 'next/router';
@@ -27,17 +18,6 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
   const [isFetching, setIsFetching] = useState(false);
   const authenticatedCookie = Cookies.get('authenticated');
   const { pathname, push } = useRouter();
-  const {
-    activeChain,
-    switchActiveChain,
-    connect,
-    disconnect,
-    isConnecting,
-    isConnected,
-    activeAccount,
-    accounts,
-    setActiveAccount,
-  } = useInkathon()
 
   function getUser(user: User) {
     return user;

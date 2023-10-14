@@ -17,20 +17,20 @@ interface ProvidersProps {
 
 const Providers: FC<ProvidersProps> = ({ children, theme }) => {
   return (
-    <ChakraProvider resetCSS theme={theme}>
-      <UseInkathonProvider appName="Polkalance" // TODO
-      connectOnInit={false}
+    <UseInkathonProvider appName="Polkalance" // TODO
+      connectOnInit={true}
       defaultChain={env.defaultChain}
       deployments={getDeployments()}>
-        <CurrentUserProvider>
+        <ChakraProvider resetCSS theme={theme}>
+      <CurrentUserProvider>
           <CurrentCompanyProvider>
             <JobsProvider>
               <LandingProvider>{children}</LandingProvider>
             </JobsProvider>
           </CurrentCompanyProvider>
         </CurrentUserProvider>
-      </UseInkathonProvider>
     </ChakraProvider>
+      </UseInkathonProvider>
   );
 };
 
