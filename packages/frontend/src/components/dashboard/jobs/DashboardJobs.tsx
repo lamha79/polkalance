@@ -6,10 +6,12 @@ import { useRouter } from 'next/router';
 import { FC } from 'react';
 import CompanyGallery from './company/CompanyGallery';
 import FreelancerGallery from './company/FreelancerGallery';
+import CompanyTop from './company/CompanyTop';
 const MotionBox = motion(Box);
 
 const DashboardJobs: FC = () => {
-  const { type, setType } = useLanding();
+  const { type } = useLanding();
+  const { push } = useRouter();
 
   const contentVariants = {
     hidden: { opacity: 0 },
@@ -43,7 +45,7 @@ const DashboardJobs: FC = () => {
                 All open jobs
               </Box>
               <Flex flexDir="column" gap={6}>
-                {/* <CompanyTop onCreate={() => push('/dashboard/jobs/create')} /> */}
+                <CompanyTop onCreate={() => push('/dashboard/jobs/create')} />
                 <FreelancerGallery />
               </Flex>
             </Flex>
@@ -63,7 +65,7 @@ const DashboardJobs: FC = () => {
                   All my review jobs
                 </Box>
                 <Flex flexDir="column" gap={6}>
-                  {/* <CompanyTop onCreate={() => push('/dashboard/jobs/create')} /> */}
+                <CompanyTop onCreate={() => push('/dashboard/jobs/create')} />
                   <CompanyGallery />
                 </Flex>
               </Flex>

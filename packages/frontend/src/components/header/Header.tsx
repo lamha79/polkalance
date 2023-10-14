@@ -31,7 +31,7 @@ const Header: FC = () => {
       {desktopDisplay && <>
         <Flex direction="row" alignItems="center">
           <BrandLogo />
-          <UserTypeSwitch ml={12} />
+          {!activeAccountUser && (<UserTypeSwitch ml={12} />)}
         </Flex>
 
         {(!user && !fetchingUser && !activeAccountUser)  && (

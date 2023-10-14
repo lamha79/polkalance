@@ -35,7 +35,7 @@ const HeaderMobile: FC = () => {
                   <Box my={8}><HeaderButton onCloseMenu={onClose}/></Box>
                   {!user && !fetchingUser && <Box my="auto"><HeaderMenu onCloseMenu={onClose}/></Box>}
                   {user && !fetchingUser && <DashboardMenuContent onCloseMenu={onClose}/>}
-                  <UserTypeSwitch mt="auto" mx="auto" mb={2} onCloseMenu={onClose}/>
+                  {!activeAccountUser && (<UserTypeSwitch mt="auto" mx="auto" mb={2} onCloseMenu={onClose}/>)}
               </Flex>
             </DrawerBody>
           </DrawerContent>

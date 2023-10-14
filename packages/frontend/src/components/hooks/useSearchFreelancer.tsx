@@ -120,13 +120,13 @@ export const useSearchFreelancer = (elementToDisplay?: number) => {
   const handleSearch = useCallback(
     (page: number, elementByPage: number, filters: string[]) => {
       if (filters.length === 0) {
-        callGet(page, elementByPage);
+        // callGet(page, elementByPage);
       }
       if (filters.length === 1) {
-        callGet(page, elementByPage, filters[0]);
+        // callGet(page, elementByPage, filters[0]);
       }
       if (filters.length > 1) {
-        callGet(page, elementByPage, filters.join(';'));
+        // callGet(page, elementByPage, filters.join(';'));
       }
     },
     [callGet]

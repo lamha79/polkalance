@@ -5,6 +5,7 @@ import DashboardMenu from '../dashboard/menu/DashboardMenu';
 import { ReactNode, useEffect } from 'react';
 import { UserTypeEnum } from '../../utility/src';
 import { useResponsive } from '../hooks/useResponsive';
+import CreateJobModal from '@components/modal/CreateJobModal';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -12,7 +13,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: NextPage<DashboardLayoutProps> = ({ children }) => {
   const { user } = useCurrentUser();
-  const { setType, type } = useLanding();
+  const { setType, type, activeAccountUser } = useLanding();
   const {mobileDisplay, tabletDisplay, desktopDisplay} = useResponsive();
   
   useEffect(() => {
@@ -27,6 +28,7 @@ const DashboardLayout: NextPage<DashboardLayoutProps> = ({ children }) => {
     <Flex flexDir="column" w="100%" mt="80px" h={`calc(100vh - 80px)`}>
       <Flex w="100%" h="100%" position="relative">
         {desktopDisplay && <DashboardMenu />}
+        {(user && activeAccountUser && type === UserTypeEnum.Company) && <CreateJobModal />}
         {children}
         {!user && (
           <Flex w={{base: "100vw", lg: "calc(100vw - 245px)"}} ml="auto">
