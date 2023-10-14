@@ -311,7 +311,7 @@ mod polkalance {
             match self.personal_account_info.get(caller) {
                 None => self.personal_account_info.insert(caller, &caller_info),
                 // _ => return Err(JobError::Registered),
-                _ => self.personal_account_info.insert(caller, &caller_info)
+                _ => self.personal_account_info.insert(caller, &caller_info),
             };
             Self::env().emit_event(Registered {
                 account_id: caller,
@@ -355,17 +355,15 @@ mod polkalance {
 
         //check exist wallet
         #[ink(message)]
-        pub fn check_exist_wallet(&self) -> String {
+        pub fn check_exist_wallet(&self) -> (String, String) {
             let caller = self.env().caller();
-            match self.personal_account_info.get(caller) {
-                None => return String::from("undifined"),
-                Some(x) => {
-                    match x.role {
-                        AccountRole::FREELANCER => return String::from("freelancer"),
-                        _ => return String::from("company"),
-                    };
-                }
-            }
+            self.personal_account_info.get(caller).map_or(
+                (String::from("undefined"), String::from("undefined")),
+                |x| match x.role {
+                    AccountRole::FREELANCER => (x.name, String::from("freelancer")),
+                    _ => (x.name, String::from("company")),
+                },
+            )
         }
 
         // get tất cả open job no parametter
@@ -411,9 +409,7 @@ mod polkalance {
 
         // get tất cả doing job của freelancer để submit, người gọi là freelancer
         #[ink(message)]
-        pub fn get_all_doing_jobs_of_freelancer(
-            &self
-        ) -> Result<Vec<Job>, JobError> {
+        pub fn get_all_doing_jobs_of_freelancer(&self) -> Result<Vec<Job>, JobError> {
             let freelancer = self.env().caller();
             let mut jobs = Vec::<Job>::new();
             for i in 0..self.current_job_id {
@@ -421,18 +417,16 @@ mod polkalance {
             }
             let doing_jobs = jobs
                 .into_iter()
-                .filter(|job| job.status == Status::DOING )
+                .filter(|job| job.status == Status::DOING)
                 .filter(|job| job.person_obtain.unwrap() == freelancer)
                 .collect();
 
             Ok(doing_jobs)
         }
 
-        // get tất cả các review job của onwer, người gọi là owner 
+        // get tất cả các review job của onwer, người gọi là owner
         #[ink(message)]
-        pub fn get_all_review_jobs_of_owner(
-            &self
-        ) -> Result<Vec<Job>, JobError> {
+        pub fn get_all_review_jobs_of_owner(&self) -> Result<Vec<Job>, JobError> {
             let owner = self.env().caller();
             let mut jobs = Vec::<Job>::new();
             for i in 0..self.current_job_id {
@@ -440,7 +434,7 @@ mod polkalance {
             }
             let doing_jobs = jobs
                 .into_iter()
-                .filter(|job| job.status == Status::REVIEW )
+                .filter(|job| job.status == Status::REVIEW)
                 .filter(|job| job.person_create.unwrap() == owner)
                 .collect();
             Ok(doing_jobs)
@@ -496,15 +490,11 @@ mod polkalance {
             let budget = deposite * (100 - FEE_PERCENTAGE as u128) / 100;
             let pay = budget;
             let start_time = self.env().block_timestamp();
-            let mut category = Category::default();
-            if string_category.to_lowercase() == "it" {
-                category = Category::IT;
-            } else if string_category.to_lowercase() == "marketing" {
-                category = Category::MARKETING;
-            } else if string_category.to_lowercase() == "photoshop" {
-                category = Category::PHOTOSHOP;
-            } else {
-                category = Category::NONE;
+            let category = match string_category.to_lowercase().as_str() {
+                "it" => Category::IT,
+                "marketing" => Category::MARKETING,
+                "photoshop" => Category::PHOTOSHOP,
+                _ => Category::NONE,
             };
             let current_id = self.current_job_id;
             let job = Job {
