@@ -11,9 +11,13 @@ import { UserTypeEnum } from '../../../utility/src';
 import { SearchFreelancerProvider } from '../../hooks/useSearchFreelancer';
 import { SearchJobProvider } from '../../hooks/useSearchJob';
 import SearchJobPage from '../../../pages/searchjobs';
+import {
+  useInkathon,
+} from '@scio-labs/use-inkathon'
 
 const Product: FC = () => {
   const { type, handleViewChange } = useLanding();
+  const { isConnected, activeAccount } = useInkathon();
 
   let topContent = <></>;
 
@@ -38,8 +42,8 @@ const Product: FC = () => {
           <SearchFreelancerProvider>
             <SearchJobProvider>
             {/* <SearchJobPage /> */}
-              <SearchBar />
-              <Gallery mt={8} />
+              {(isConnected && activeAccount) && <SearchBar />}
+              {(isConnected && activeAccount) && <Gallery mt={8} />}
             </SearchJobProvider>
           </SearchFreelancerProvider>
         </Flex>

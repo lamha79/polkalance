@@ -1,11 +1,5 @@
 import { useToast, Text } from '@chakra-ui/react';
 import {
-  SubstrateChain,
-  SubstrateWalletPlatform,
-  allSubstrateWallets,
-  getSubstrateChain,
-  isWalletInstalled,
-  useBalance,
   useInkathon,
   useRegisteredContract,
   contractQuery,

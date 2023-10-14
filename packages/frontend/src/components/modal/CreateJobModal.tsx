@@ -27,7 +27,6 @@ const CreateJobModal: FC = () => {
   } = useInkathon();
 
   const close = () => {
-    disconnect?.();
     setTimeout(() => {
       setCreateJobModalOpen(false);
     }, 200);
@@ -60,7 +59,6 @@ const CreateJobModal: FC = () => {
               <DrawerBody mt={".5rem"} height="100%" display="flex" flexDir="column">
                   <CreateJobForm
                   onSubmitSuccess={() => {
-                    disconnect?.();
                     setTimeout(() => {
                       setCreateJobModalOpen(false);
                     }, 200);

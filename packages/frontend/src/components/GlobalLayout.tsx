@@ -118,7 +118,6 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
       color="neutral.black"
     >
       {!user && !isFetching && <SignupModal />}
-      {!user && !isFetching && <CreateJobModal />}
       <Header />
       {children}
     </Container>
