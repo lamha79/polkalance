@@ -22,139 +22,131 @@ To post a job, you need to provide the following information:
 
 To find a job, you can use filters to find jobs that match your needs.
 
-# Polkalance: Freelancer smart contract in *Substrate node*
-
-Polkalance is a freelancing platform in Polkadot developed [ink!](https://github.com/paritytech/ink) programing language with [Substrate](https://substrate.io).  
-
-- Platform for freelancers, employers and businesses
-- Intergrate power of blockchain
-- Built on Polkadot
-
 ## Architecture of smart contract
 
 ```mermaid
 
 classDiagram
-  class Account{
-  +Mapping~JobId~ jobs
-  +JobId current_job_id
-  +Mapping~AccountId~ personal_account_info
-  +Mapping~AccountId~ owner_jobs
-  +Mapping~AccountId~ freelancer_jobs
-  +Mapping~(AccountId,AccountId,JobId)~ successful_jobs
-  +Mapping~(AccountId,AccountId,JobId)~ unsuccesful_jobs
-}
-
-class Job{
-  +String name
-  +String description
-  +Option~String~ result
-  +Status status
-  +Balance budget
-  +u8 fee_percentage
-  +Timestamp start_time
-  +Timestamp end_time
-  +Option~AccountId~ person_create
-  +Option~AccountId~ person_obtain
-  +String feedback
-  +bool request_negotiation
-  +bool require_rating
-}
-
-  class Status {
-    + DOING
-    + REVIEW
-    + UNQUALIFIED
-    + REOPEN
-    + FINISH
-    + CANCELED   
-  }
-
-  class JobError {    
-    + Registered, //đã đăng kí tài khoản (đăng kí), không đăng kí nữa
-    + NotRegistered, // chưa đăng kí tài khoản.
-    + NotJobAssigner, // bạn không phải là người giao việc
-    + NotFreelancer, // bạn không phải là freelancer
-    + CreatedJob, //Job đã tạo
-    + NotExisted, // Job không tồn tại
-    + NotTaked, // chưa có người nhận job
-    + Taked, //đã có người nhận
-    + NotTakeThisJob, // bạn ko có nhận job này
-    + NotAssignThisJob, //bạn ko phải là người giao việc này
-    + Submited, //đã submit 
-    + Proccesing, //đang có người làm
-    + CurrentJobIncomplete, //hoàn thành job hiện tại đã
-    + JobInvalid,
-    + Finish, //job đã hoàn thành    
-    + InvalidPayAmount // số tiền thanh toán không hợp lệ
-    + AlreadyRequestNegotiation // đã yêu cầu thương lượng
-  }
-
-  class JobId {
-    + id : String
-    + new(id: String) : JobId
-    + to_string() : String
-  }
-
-  class AccountId {
-    + id : String
-    + new(id: String) : AccountId
-    + to_string() : String
-  }
-
-  class AccountRole {
-    + ENTERPRISE
-    + INVIDUAL
-    + FREELANCER
-    + is_owner_job() : bool
-    + is_freelancer() : bool
-    + is_team_leader() : bool
-  }
-
-  class RatingPoint {
-    + value : u32
-    + new(value: u32) : RatingPoint
-    + to_string() : String
-  }
-
-  class CompletedJob {
-    + job_id : JobId
-    + feedback : String
-    + new(job_id: JobId, feedback: String) : CompletedJob
-  }
-
-  class Balance {
-    + amount : u64
-    + new(amount: u64) : Balance
-    + to_string() : String
-  }
-
-  class Dapp {
-    + user : User
-    + createJob(jobID: JobId): Result // Updated method signature
-    + cancleJob(jobID: JobId): Result // Updated method signature
-    + createTeam(Map<String, String>): Result
-    + addMember(userId: AccountID): Result
-    + removeMember(userID: AccountID): Result
-    + displayOpenJobs() : void
-    + obtainJob(jobId: JobId) : void
-    + submitJobResult(jobId: JobId, result: String) : void
-    + rejectJob(jobId: JobId) : void
-    + approveJob(jobId: JobId) : void
-    + getFreelancerAccountType() : AccountType
-  }
-
-  Dapp -- AccountRole
-  AccountRole -- Account
-  Account -- Balance
-  Account --* Job
-  Account -- JobId
-  Account -- AccountId
-  Account -- RatingPoint
-  Account -- CompletedJob
-  JobError -- Job
-  Job -- Status
-
+    class Account {
+        - jobs: Mapping<JobId, Job>
+        - current_job_id: JobId
+        - personal_account_info: Mapping<AccountId, UserInfo>
+        - owner_jobs: Mapping<AccountId, Vec<(JobId, bool)>>
+        - freelancer_jobs: Mapping<AccountId, Vec<(JobId, bool)>>
+        - ratings: Mapping<AccountId, Vec<(JobId, Option<RatingPoint>)>>
+        - reports: Mapping<AccountId, Vec<(JobId, Option<ReportInfo>)>>
+    }
+    
+    class Job {
+        - name: String
+        - job_id: JobId
+        - description: String
+        - category: Category
+        - result: Option<String>
+        - status: Status
+        - budget: Balance
+        - fee_percentage: u8
+        - start_time: Timestamp
+        - end_time: Timestamp
+        - person_create: Option<AccountId>
+        - person_obtain: Option<AccountId>
+        - pay: Balance
+        - feedback: String
+        - request_negotiation: bool
+        - requester: Option<AccountId>
+        - reporter: Option<AccountId>
+        - require_rating: (bool, bool)
+        - unqualifier: bool
+    }
+    
+    class Category {
+        + NONE
+        + IT
+        + MARKETING
+        + PHOTOSHOP
+    }
+    
+    class RatingPoint {
+        + OneStar
+        + TwoStars
+        + ThreeStars
+        + FourStars
+        + FiveStars
+    }
+    
+    class Status {
+        + OPEN
+        + DOING
+        + REVIEW
+        + UNQUALIFIED
+        + REOPEN
+        + FINISH
+        + CANCELED
+    }
+    
+    class AccountRole {
+        + INDIVIDUAL
+        + ENTERPRISE
+        + FREELANCER
+    }
+    
+    class OnwerRoleInEnterprise {
+        + TEAMLEAD
+        + ACCOUNTANT
+    }
+    
+    class UserInfo {
+        - name: String
+        - detail: String
+        - role: AccountRole
+        - successful_jobs_and_all_jobs: (u32, u32)
+        - rating_points: i32
+    }
+    
+    class JobError {
+        + Registered
+        + NotRegistered
+        + NotJobAssigner
+        + NotFreelancer
+        + NotExisted
+        + NotTaked
+        + Taked
+        + NotTakeThisJob
+        + NotAssignThisJob
+        + OutOfDate
+        + Submited
+        + Proccessing
+        + CurrentJobIncomplete
+        + Finish
+        + InvalidPayAmount
+        + InvalidNegotiation
+        + InvalidTermination
+        + InvalidReport
+        + InvalidRating
+    }
+    
+    Account --> JobId
+    Account --> Job
+    Account --> AccountId
+    Account --> UserInfo
+    Account --> Category
+    Account --> RatingPoint
+    Account --> ReportInfo
+    Job --> JobId
+    Job --> Category
+    Job --> Status
+    Job --> Balance
+    Job --> Timestamp
+    Job --> AccountId
+    Job --> RatingPoint
+    Job --> ReportInfo
+    Category --> String
+    RatingPoint --> String
+    Status --> String
+    AccountRole --> OnwerRoleInEnterprise
+    UserInfo --> String
+    UserInfo --> AccountRole
+    JobError --> String
 
 ```
 
