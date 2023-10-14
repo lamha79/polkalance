@@ -6,13 +6,10 @@ import { useRouter } from 'next/router';
 import { FC } from 'react';
 import CompanyGallery from './company/CompanyGallery';
 import FreelancerGallery from './company/FreelancerGallery';
-import CompanyTop from './company/CompanyTop';
 const MotionBox = motion(Box);
 
 const DashboardJobs: FC = () => {
   const { type, setType } = useLanding();
-  setType(UserTypeEnum.Company); //thêm vào
-  const { push } = useRouter();
 
   const contentVariants = {
     hidden: { opacity: 0 },

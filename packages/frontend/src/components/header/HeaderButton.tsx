@@ -1,21 +1,13 @@
-import { Button, Flex, IconButton, Text } from '@chakra-ui/react'
+import { Button, Flex, IconButton } from '@chakra-ui/react'
 import Cookies from 'js-cookie';
 import { useCurrentUser, useLanding } from '../../front-provider/src'
 import { FC } from 'react'
-import LoginButton from '../button/LoginButton'
 import NotificationIcon from '../icons/NotificationIcon'
 import MessageIcon from '../icons/MessageIcon'
-import { UserTypeEnum, shortHash } from '../../utility/src'
 import { useRouter } from 'next/router'
 import { useResponsive } from '../hooks/useResponsive'
 import {
-  SubstrateChain,
-  SubstrateWalletPlatform,
-  allSubstrateWallets,
-  getSubstrateChain,
-  isWalletInstalled,
-  useBalance,
-  useInkathon,
+  useInkathon
 } from '@scio-labs/use-inkathon'
 import { ConnectButton } from '@components/web3/ConnectButton';
 
@@ -24,14 +16,13 @@ interface HeaderButtonProps {
 }
 
 const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
-  const { user, logout } = useCurrentUser()
-  const { signupModalOpen, setSignupModalOpen , activeAccountUser, type, setActiveAccountUser} = useLanding()
+  const { user } = useCurrentUser()
+  const { setSignupModalOpen , activeAccountUser, setActiveAccountUser} = useLanding()
   const { push, pathname } = useRouter()
   const { mobileDisplay } = useResponsive()
   const { setUser } = useCurrentUser();
   const {
-    disconnect,
-    activeAccount
+    disconnect
   } = useInkathon()
 
   const handleLogout = () => {

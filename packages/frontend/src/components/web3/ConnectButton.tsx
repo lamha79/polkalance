@@ -34,6 +34,7 @@ import { AiOutlineCheckCircle, AiOutlineDisconnect } from 'react-icons/ai'
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi'
 import { useLanding } from '@front-provider/src'
 import { useLogin } from '@components/hooks/useLogin'
+import { useConnect } from '@components/hooks/useConnect'
 
 export interface ConnectButtonProps {}
 export const ConnectButton: FC<ConnectButtonProps> = () => {
@@ -60,7 +61,8 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
   )
   const isSSR = useIsSSR()
   const { activeAccountUser, signupModalOpen } = useLanding();
-  const { isLoading } = useLogin(signupModalOpen);
+  const { checkExistWallet } = useLogin(signupModalOpen);
+  const { signOut } = useConnect();
 
   // Connect Button
   if (!activeAccount)
@@ -199,6 +201,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
               isDisabled={acc.address === activeAccount.address}
               onClick={() => {
                 setActiveAccount?.(acc)
+                checkExistWallet?.()
               }}
               tw="bg-transparent hocus:bg-gray-800"
             >
@@ -216,7 +219,10 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
         {/* Disconnect Button */}
         <MenuDivider />
         <MenuItem
-          onClick={() => disconnect?.()}
+          onClick={() => {
+            disconnect?.()
+            signOut?.();
+          }}
           icon={<AiOutlineDisconnect size={18} />}
           tw="bg-transparent hocus:bg-gray-800"
         >

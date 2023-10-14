@@ -60,8 +60,8 @@ export const useLogin = (signupModalOpen: boolean) => {
   );
 
    const checkExistWallet = async () => {
-    let exist = true;
-    if (!contract || !api || !activeAccount) return false;
+    let exist = false;
+    if (!contract || !api || !activeAccount) return exist;
     setFetchIsLoading(true);
     try {
       const result = await contractQuery(api, activeAccount?.address, contract, 'check_exist_wallet');
@@ -89,12 +89,13 @@ export const useLogin = (signupModalOpen: boolean) => {
           createdAt: "",
           updatedAt: "",
           hasFreelanceProfile: "",
-          currentUserType: type,
+          currentUserType: UserTypeEnum.Freelancer,
           tosAcceptedOn: "",
           wallet: ""
         });
         setUser(res);
         setActiveAccountUser(true);
+        exist = true;
       }
     } catch (e) {
       console.error(e);
@@ -119,5 +120,5 @@ export const useLogin = (signupModalOpen: boolean) => {
     }
   }, [activeAccount, activeChain, isConnected, login, signupModalOpen, user]);
 
-  return { isLoading };
+  return { isLoading, checkExistWallet };
 };
