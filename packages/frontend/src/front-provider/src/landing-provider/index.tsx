@@ -9,6 +9,7 @@ type LandingContextInterface = {
   currentView: string;
   signupModalOpen: boolean;
   createJobModalOpen: boolean;
+  submitModalOpen: boolean;
   activeAccountUser: boolean;
   hasScroll: boolean;
   isCheckWallet: boolean;
@@ -16,6 +17,7 @@ type LandingContextInterface = {
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
   setCreateJobModalOpen: (open: boolean) => void;
+  setSubmitModalOpen: (open: boolean) => void;
   setActiveAccountUser: (open: boolean) => void;
   setHasScroll: (hasScroll: boolean) => void;
   setIsCheckWallet: (check: boolean) => void;
@@ -26,6 +28,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   currentView: '',
   signupModalOpen: false,
   createJobModalOpen: false,
+  submitModalOpen: false,
   activeAccountUser: false, 
   hasScroll: false,
   isCheckWallet: false,
@@ -33,6 +36,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   setCurrentView: () => {},
   setSignupModalOpen: () => {},
   setCreateJobModalOpen: () => {},
+  setSubmitModalOpen: () => {},
   setActiveAccountUser: () => {},
   setHasScroll: () => {},
   setIsCheckWallet: () => {},
@@ -43,6 +47,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [currentView, setCurrentView] = useState<string>('');
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [createJobModalOpen, setCreateJobModalOpen] = useState(false);
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [activeAccountUser, setActiveAccountUser] = useState(false);
   const [hasScroll, setHasScroll] = useState(false);
   const [isCheckWallet, setIsCheckWallet] = useState(false);
@@ -53,6 +58,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         currentView,
         signupModalOpen,
         createJobModalOpen,
+        submitModalOpen, 
         hasScroll,
         activeAccountUser,
         isCheckWallet, 
@@ -60,6 +66,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setCurrentView,
         setSignupModalOpen,
         setCreateJobModalOpen,
+        setSubmitModalOpen,
         setActiveAccountUser,
         setHasScroll,
         setIsCheckWallet, 
@@ -76,6 +83,7 @@ export function useLanding() {
     currentView,
     signupModalOpen,
     createJobModalOpen,
+    submitModalOpen,
     hasScroll,
     activeAccountUser,
     isCheckWallet, 
@@ -83,6 +91,7 @@ export function useLanding() {
     setCurrentView,
     setSignupModalOpen,
     setCreateJobModalOpen,
+    setSubmitModalOpen,
     setActiveAccountUser,
     setHasScroll,
     setIsCheckWallet, 
@@ -107,6 +116,7 @@ export function useLanding() {
     currentView,
     signupModalOpen,
     createJobModalOpen,
+    submitModalOpen,
     hasScroll,
     activeAccountUser,
     isCheckWallet, 
@@ -115,6 +125,7 @@ export function useLanding() {
     setCurrentView,
     setSignupModalOpen,
     setCreateJobModalOpen,
+    setSubmitModalOpen,
     setActiveAccountUser, 
     handleScroll,
     setHasScroll,

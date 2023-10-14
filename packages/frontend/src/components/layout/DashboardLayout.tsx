@@ -6,6 +6,7 @@ import { ReactNode, useEffect } from 'react';
 import { UserTypeEnum } from '../../utility/src';
 import { useResponsive } from '../hooks/useResponsive';
 import CreateJobModal from '@components/modal/CreateJobModal';
+import SubmitModal from '@components/modal/SubmitModal';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -29,6 +30,7 @@ const DashboardLayout: NextPage<DashboardLayoutProps> = ({ children }) => {
       <Flex w="100%" h="100%" position="relative">
         {desktopDisplay && <DashboardMenu />}
         {(user && activeAccountUser && type === UserTypeEnum.Company) && <CreateJobModal />}
+        {(user && activeAccountUser) && <SubmitModal />}
         {children}
         {!user && (
           <Flex w={{base: "100vw", lg: "calc(100vw - 245px)"}} ml="auto">

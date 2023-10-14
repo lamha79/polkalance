@@ -1,5 +1,5 @@
 import { Box, Flex, SimpleGrid, Spinner, useToast, Text } from '@chakra-ui/react'
-import { useJobs } from '../../../../front-provider/src'
+import { useJobs, useLanding } from '../../../../front-provider/src'
 import JobCard2 from '../../../card/JobCard2'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
@@ -17,23 +17,24 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push } = useRouter()
   const toast = useToast()
+  const { setSubmitModalOpen } = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   /////////
-  const obtainJob = async (job_id: number) => {
+  const submitResult = async (job_id: number, result: string) => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return
     }
     // Send transaction
     // setUpdateIsLoading(true)
     try {
-      await contractTx(api, activeAccount.address, contract, 'obtain', {}, [
-        job_id
+      await contractTx(api, activeAccount.address, contract, 'submit', {}, [
+        job_id, result
       ])
       toast({
-        title: <Text mt={-0.5}>Aproval success</Text>,
+        title: <Text mt={-0.5}>Sunmit success</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',
@@ -49,7 +50,7 @@ const FreelancerGallery: FC = () => {
     }
   };
   /////////
-  const searchJobs = async () => {
+  const searchDoingJobs = async () => {
     // console.log(api);
     // console.log(contract);
     // console.log(activeAccount +"=((");
@@ -57,8 +58,8 @@ const FreelancerGallery: FC = () => {
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_open_jobs_no_params', {}, []);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs_no_params');
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_doing_jobs_of_freelancer', {}, []);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_doing_jobs_of_freelancer');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
@@ -80,10 +81,11 @@ const FreelancerGallery: FC = () => {
     // setJobs([job]);
     // alert(isConnected);
     // if (isConnected && activeChain && activeAccount) {
-      searchJobs();
+      searchDoingJobs();
     // }
     // checkJobProccessing();
   }, [contract, api]);
+
   //////
   return (
     <Flex flexDir="column">
@@ -92,7 +94,8 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => obtainJob(parseInt(j.jobId))} />
+                // <JobCard2 job={j} key={k} onClick={() => submitResult(parseInt(j.jobId), "ta chia hao chu nhat")} />
+                <JobCard2 job={j} key={k} onClick={() => setSubmitModalOpen(true)} />               
               ))}
             </SimpleGrid>
           )}

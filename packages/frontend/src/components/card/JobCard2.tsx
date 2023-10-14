@@ -178,6 +178,21 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
         >
           Obtain
         </Button>}
+        {!mobileDisplay && job.status == ("DOING") && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          Submit
+        </Button>}
         {!mobileDisplay && job.status == "REVIEW" && <Button
           ml="auto"
           variant="outline"
