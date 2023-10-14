@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { useRef } from 'react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import DashboardJobs from '../../../components/dashboard/jobs/DashboardJobs';
+import DashboardJobs from '../../../components/dashboard/doingjob/DashboardJobs';
 import { Flex } from '@chakra-ui/react';
 import Footer from '../../../components/landing/footer/Footer';
 

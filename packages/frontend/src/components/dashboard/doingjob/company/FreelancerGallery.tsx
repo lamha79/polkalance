@@ -26,7 +26,6 @@ const FreelancerGallery: FC = () => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return
     }
-
     // Send transaction
     // setUpdateIsLoading(true)
     try {
