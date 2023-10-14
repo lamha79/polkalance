@@ -24,7 +24,7 @@ function getUser(user: User) {
 export const useLogin = (signupModalOpen: boolean) => {
   const { user, setUser } = useContext(CurrentUserContext);
   const { signIn } = useConnect();
-  const { setType, type } = useLanding();
+  const { setType, type,  setActiveAccountUser, isCheckWallet, setIsCheckWallet } = useLanding();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -36,7 +36,6 @@ export const useLogin = (signupModalOpen: boolean) => {
 
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  const { setActiveAccountUser } = useLanding()
 
   const login = useCallback(
     async ({ address, chain }: { address: `0x${string}`; chain: `${string}` }) => {
@@ -60,6 +59,7 @@ export const useLogin = (signupModalOpen: boolean) => {
   );
 
    const checkExistWallet = async () => {
+    // alert("here")
     let exist = false;
     if (!contract || !api || !activeAccount) return exist;
     setFetchIsLoading(true);
@@ -74,6 +74,7 @@ export const useLogin = (signupModalOpen: boolean) => {
       } else {
         if (output === "freelancer") {
           setType(UserTypeEnum.Freelancer);
+          // alert("freelancer")
           _type = "Freelance";
         } else {
           setType(UserTypeEnum.Company);
@@ -116,12 +117,13 @@ export const useLogin = (signupModalOpen: boolean) => {
   };
 
   useEffect(() => {
-    if (!signupModalOpen && !user) {
+    if (!isCheckWallet) {
       if (isConnected && activeChain && activeAccount) {
         checkExistWallet();
       }
+      setIsCheckWallet(true);
     }
-  }, [activeAccount, activeChain, isConnected, login, signupModalOpen, user]);
+  }, [activeAccount, activeChain, isConnected, signupModalOpen, user]);
 
   return { isLoading, checkExistWallet };
 };

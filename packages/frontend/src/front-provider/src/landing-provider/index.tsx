@@ -11,12 +11,14 @@ type LandingContextInterface = {
   createJobModalOpen: boolean;
   activeAccountUser: boolean;
   hasScroll: boolean;
+  isCheckWallet: boolean;
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
   setCreateJobModalOpen: (open: boolean) => void;
   setActiveAccountUser: (open: boolean) => void;
   setHasScroll: (hasScroll: boolean) => void;
+  setIsCheckWallet: (check: boolean) => void;
 };
 
 export const LandingContext = createContext<LandingContextInterface>({
@@ -26,12 +28,14 @@ export const LandingContext = createContext<LandingContextInterface>({
   createJobModalOpen: false,
   activeAccountUser: false, 
   hasScroll: false,
+  isCheckWallet: false,
   setType: () => {},
   setCurrentView: () => {},
   setSignupModalOpen: () => {},
   setCreateJobModalOpen: () => {},
   setActiveAccountUser: () => {},
-  setHasScroll: () => {}
+  setHasScroll: () => {},
+  setIsCheckWallet: () => {},
 });
 
 export const LandingProvider = ({ children }: { children: ReactNode }) => {
@@ -41,7 +45,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [createJobModalOpen, setCreateJobModalOpen] = useState(false);
   const [activeAccountUser, setActiveAccountUser] = useState(false);
   const [hasScroll, setHasScroll] = useState(false);
-
+  const [isCheckWallet, setIsCheckWallet] = useState(false);
   return (
     <LandingContext.Provider
       value={{
@@ -50,13 +54,15 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         signupModalOpen,
         createJobModalOpen,
         hasScroll,
-        activeAccountUser, 
+        activeAccountUser,
+        isCheckWallet, 
         setType,
         setCurrentView,
         setSignupModalOpen,
         setCreateJobModalOpen,
         setActiveAccountUser,
-        setHasScroll
+        setHasScroll,
+        setIsCheckWallet, 
       }}
     >
       {children}
@@ -71,13 +77,15 @@ export function useLanding() {
     signupModalOpen,
     createJobModalOpen,
     hasScroll,
-    activeAccountUser, 
+    activeAccountUser,
+    isCheckWallet, 
     setType,
     setCurrentView,
     setSignupModalOpen,
     setCreateJobModalOpen,
     setActiveAccountUser,
-    setHasScroll
+    setHasScroll,
+    setIsCheckWallet, 
   } = useContext(LandingContext);
 
   const handleViewChange = (inView: boolean, entry: IntersectionObserverEntry) => {
@@ -100,7 +108,8 @@ export function useLanding() {
     signupModalOpen,
     createJobModalOpen,
     hasScroll,
-    activeAccountUser, 
+    activeAccountUser,
+    isCheckWallet, 
     setType,
     handleViewChange,
     setCurrentView,
@@ -108,6 +117,7 @@ export function useLanding() {
     setCreateJobModalOpen,
     setActiveAccountUser, 
     handleScroll,
-    setHasScroll
+    setHasScroll,
+    setIsCheckWallet, 
   };
 }

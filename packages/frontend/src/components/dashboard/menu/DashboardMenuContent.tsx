@@ -29,9 +29,10 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
       
       const freelanceMenu: MenuElement[] = [
         { view: '/dashboard', label: 'Dashboard' },
-        { view: '/dashboard/offers', label: 'Find work' },
-        { view: '/dashboard/jobs', label: 'My Jobs' },
-        { view: '/dashboard/contracts', label: 'My Contracts' }
+        // { view: '/dashboard/offers', label: 'Find work' },
+        { view: '/dashboard/jobs', label: 'All open Jobs' }, //nhớ bật lên
+        // { view: '/dashboard/contracts', label: 'My Contracts' },
+        { view: '/dashboard/doingjob', label: 'All my doing jobs' }
       ];
 
     if (mobileDisplay || tabletDisplay) {
@@ -50,6 +51,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
     const handleViewChange = (view: string) => {
       if (pathname !== view) {
         push(view);
+        // alert(view);
         if (onCloseMenu !== undefined) onCloseMenu();
       }
     };

@@ -28,7 +28,7 @@ import { truncateHash } from '@/utils/truncateHash'
 import { useIsSSR } from '@/utils/useIsSSR'
 import Image from 'next/image'
 import aznsIconSvg from 'public/icons/azns-icon.svg'
-import { FC, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { AiOutlineCheckCircle, AiOutlineDisconnect } from 'react-icons/ai'
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi'
@@ -60,10 +60,12 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     allSubstrateWallets.filter((w) => w.platforms.includes(SubstrateWalletPlatform.Browser)),
   )
   const isSSR = useIsSSR()
-  const { activeAccountUser, signupModalOpen } = useLanding();
+  const { activeAccountUser, signupModalOpen, setIsCheckWallet, isCheckWallet } = useLanding();
   const { checkExistWallet } = useLogin(signupModalOpen);
   const { signOut } = useConnect();
-
+  useEffect(() => {
+      setIsCheckWallet(false);
+  }, []);
   // Connect Button
   if (!activeAccount)
     return (
@@ -122,7 +124,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
         </MenuList>
       </Menu>
     )
-
+    
   // Account Menu & Disconnect Button
   return (
     <Menu>
@@ -201,6 +203,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
               isDisabled={acc.address === activeAccount.address}
               onClick={() => {
                 setActiveAccount?.(acc)
+                setIsCheckWallet(false);
                 checkExistWallet?.()
               }}
               tw="bg-transparent hocus:bg-gray-800"
