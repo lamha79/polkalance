@@ -25,8 +25,9 @@ interface JobCardProps {
   job: CreateJob;
   blurred?: boolean;
   onClick?: () => void;
+  onClick1?: () => void;
 }
-const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardProps) => {
+const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: JobCardProps) => {
   const { getCategoryColorForSkill } = useColoredBadges();
   const {desktopDisplay, mobileDisplay} = useResponsive();
 
@@ -200,6 +201,21 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           onClick={() => onClick?.()}
         >
           Submit
+        </Button>}
+        {!mobileDisplay && job.status == "REVIEW" && <Button
+          ml="left"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick1?.()}
+        >
+          Reject
         </Button>}
         {!mobileDisplay && job.status == "REVIEW" && <Button
           ml="auto"

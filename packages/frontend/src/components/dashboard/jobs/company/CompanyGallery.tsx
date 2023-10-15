@@ -51,6 +51,35 @@ const CompanyGallery: FC = () => {
     //   push('/dashboard/jobs')
     // }
   };
+
+  const rejectJob = async (job_id: number) => {
+
+    if (!activeAccount || !contract || !activeSigner || !api) {
+      return
+    }
+    try {
+      await contractTx(api, activeAccount.address, contract, 'reject', {}, [
+        job_id
+      ])
+      toast({
+        title: <Text mt={-0.5}>Reject success</Text>,
+        status: 'success',
+        isClosable: true,
+        position: 'top-right',
+      })
+    } catch (e: any) {
+      let error = e.errorMessage;
+      toast({
+        title: <Text mt={-0.5}>{error}</Text>,
+        status: 'error',
+        isClosable: true,
+        position: 'top-right',
+      })
+    }
+    // finally {
+    //   push('/dashboard/jobs')
+    // }
+  };
   //////
   const searchJobs = async () => {
     // console.log(api);
@@ -94,7 +123,12 @@ const CompanyGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => aprovalJob(parseInt(j.jobId))} />
+                <JobCard2 
+                  job={j} 
+                  key={k} 
+                  onClick={() => aprovalJob(parseInt(j.jobId))}
+                  onClick1={() => rejectJob(parseInt(j.jobId))}    
+                />
               ))}
               
             </SimpleGrid>

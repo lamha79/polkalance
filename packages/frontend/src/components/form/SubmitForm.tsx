@@ -87,7 +87,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
         jobSubmitId,values.result
       ])
       toast({
-        title: <Text mt={-0.5}>Account registered Successfully</Text>,
+        title: <Text mt={-0.5}>Submit successfully</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',

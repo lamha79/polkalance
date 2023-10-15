@@ -34,7 +34,7 @@ const FreelancerGallery: FC = () => {
         job_id
       ])
       toast({
-        title: <Text mt={-0.5}>Aproval success</Text>,
+        title: <Text mt={-0.5}>Obtain job successfully</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',
