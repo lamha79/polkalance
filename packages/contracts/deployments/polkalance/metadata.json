@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xcfe24d99ab82741caed7da230c2a7ea6d33ee7e9a27be3f39d27a368806cc9a8",
+    "hash": "0xcc843e3602520f779001721b97e9e1ee6935f80d8eb8871a099d7e0686f945e1",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.71.1",
     "build_info": {
@@ -640,15 +640,6 @@
       },
       {
         "args": [
-          {
-            "label": "keyword",
-            "type": {
-              "displayName": [
-                "String"
-              ],
-              "type": 0
-            }
-          },
           {
             "label": "string_category",
             "type": {

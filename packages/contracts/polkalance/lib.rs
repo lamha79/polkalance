@@ -388,26 +388,26 @@ mod polkalance {
         // get tất cả open job
         pub fn get_all_open_jobs(
             &mut self,
-            keyword: String,
             string_category: String,
         ) -> Result<Vec<Job>, JobError> {
             let mut jobs = Vec::<Job>::new();
             for i in 0..self.current_job_id {
                 jobs.push(self.jobs.get(i).unwrap());
             }
-            let category = match string_category.to_lowercase().as_str() {
-                "it" => Category::IT,
-                "marketing" => Category::MARKETING,
-                "photoshop" => Category::PHOTOSHOP,
-                _ => Category::default(),
+            let category = if string_category.to_lowercase().contains("it") {
+                Category::IT
+            } else if string_category.to_lowercase().contains("marketing"){
+                Category::MARKETING
+            } else if string_category.to_lowercase().contains("photoshop"){
+                Category::PHOTOSHOP
+            } else {
+                Category::default()
             };
             let open_jobs = jobs
                 .into_iter()
                 .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN)
-                .filter(|job| job.name.contains(&keyword))
                 .filter(|job| job.category == category || job.category == Category::NONE)
                 .collect();
-
             Ok(open_jobs)
         }
 
