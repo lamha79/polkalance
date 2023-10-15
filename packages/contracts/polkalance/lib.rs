@@ -133,6 +133,7 @@ mod polkalance {
         personal_account_info: Mapping<AccountId, UserInfo>,
         owner_jobs: Mapping<AccountId, Vec<(JobId, bool)>>, //khi tạo job phải add thông tin vào, thay đổi khi create, approval, respond_negotiate thành công
         freelancer_jobs: Mapping<AccountId, Vec<(JobId, bool)>>, //khi nhận job phải add thông tin vào, thay đổi khi obtain, approval, respond_negotiate thành công
+        all_freelancer: Vec<AccountId>,
         // list_jobs_assign: Mapping<AccountId, Vec<(JobId, bool)>>, // danh sách công việc đã giao <id,(job_id,hoàn thành hay chưa?))>
         // list_jobs_take: Mapping<AccountId, Vec<(JobId, bool)>>, // danh sách công việc đã nhận <id,(job_id,hoàn thành hay chưa?))>
         ratings: Mapping<AccountId, Vec<(JobId, Option<RatingPoint>)>>, // <JobId: id công việc, Điểm đánh giá>
@@ -301,6 +302,9 @@ mod polkalance {
                 "accountant" => AccountRole::ENTERPRISE(OnwerRoleInEnterprise::ACCOUNTANT),
                 _ => AccountRole::FREELANCER,
             };
+            if role.clone() == AccountRole::FREELANCER {
+                self.all_freelancer.push(caller);
+            };
             let caller_info = UserInfo {
                 name: name,
                 detail: detail,
@@ -438,6 +442,39 @@ mod polkalance {
                 .filter(|job| job.person_create.unwrap() == owner)
                 .collect();
             Ok(doing_jobs)
+        }
+
+
+        // get 20 freelancer => name, Vec<category>
+        #[ink(message)]
+        pub fn get_freelancer(&self, filter: String) -> Result<Vec<(String, Vec<Job>)>, JobError> {
+            let category_filter = if filter.to_lowercase().contains("it"){
+                Category::IT
+            } else if filter.contains("photoshop") {
+                Category::PHOTOSHOP
+            } else if filter.contains("marketing") {
+                Category::MARKETING
+            } else {
+                Category::NONE
+            };
+            let mut result: Vec<(String, Vec<Job>)> =  Vec::new();
+            let n = self.all_freelancer.clone().len();
+            let _all_freelancer = self.all_freelancer.clone();
+            for i in 0..n {
+                let jobs_id_option = self.freelancer_jobs.get(_all_freelancer[i]);
+                if let Some(job_id) = jobs_id_option {
+                    let m = job_id.len();
+                    let freelancer_name = self.personal_account_info.get(_all_freelancer[i]).unwrap().name;
+                    let mut freelancer_and_job = (freelancer_name, Vec::new());
+                    for j in 0..m {
+                        if self.show_detail_job_of_id(job_id[j].0).unwrap().category == category_filter {
+                            freelancer_and_job.1.push(self.jobs.get(job_id[j].0).unwrap())
+                        }
+                    }
+                    result.push(freelancer_and_job);
+                }
+            }
+            Ok(result)
         }
 
         //show thông tin account
