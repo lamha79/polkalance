@@ -97,7 +97,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs');
       if (isError) throw new Error(decodedOutput);
       setSearchJobsResult(output);
-      const json = JSON.stringify(searchJobsResult, null, 2);
+      const json = JSON.stringify(output, null, 2);
       console.log(`RESULT JSON String :::: ${json}`);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;

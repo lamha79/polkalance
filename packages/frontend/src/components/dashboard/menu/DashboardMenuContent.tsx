@@ -83,17 +83,12 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
             color="neutral.black"
             fontFamily="Comfortaa"
           >
-            {user?.firstname} {user?.lastname}
+            {user?.firstname}
           </Text>
         </>
       )}
       {user && (
         <>
-          {!company && (
-            <Box fontWeight={700} fontFamily="Comfortaa" textAlign="center" w="100%" >
-              Create company
-            </Box>
-          )}
           {company && (
             <>
               <Box w="48px" h="48px" ml={{base: "auto", lg: 0}}>

@@ -46,8 +46,11 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
       if(res) {
         if (!user) {
           setUser(res);
-          if(type !== UserTypeEnum.Guest) {
-            setActiveAccountUser(true);
+          if(type === UserTypeEnum.Guest) {
+            push('/');
+            Cookies.remove('authenticated');
+            setActiveAccountUser(false);
+            setUser(null);
           }
         }
       }

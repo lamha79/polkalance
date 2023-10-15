@@ -10,6 +10,7 @@ import { ContractIds } from '@/deployments/deployments';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useConnect } from './useConnect';
 import { User, UserTypeEnum } from '@utility/src';
+import { useRouter } from 'next/navigation';
 
 function getUser(user: User) {
   return user;
@@ -21,6 +22,7 @@ export const useLogin = (signupModalOpen: boolean) => {
   const { setType, type,  setActiveAccountUser, isCheckWallet, setIsCheckWallet } = useLanding();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { push } = useRouter();
   const {
     activeChain,
     isConnected,
@@ -64,11 +66,12 @@ export const useLogin = (signupModalOpen: boolean) => {
       let _type = output;
       if(output[1] === "undefined") {
         setActiveAccountUser(false);
+        push('/');
         setType(UserTypeEnum.Guest);
+        setUser(null);
       } else {
         if (output[1] === "freelancer") {
           setType(UserTypeEnum.Freelancer);
-          // alert("freelancer")
           _type = "Freelance";
         } else {
           setType(UserTypeEnum.Company);
