@@ -32,6 +32,8 @@ import { shortHash, UserTypeEnum } from '../../utility/src'
 import { useSignUp } from '../hooks/useSignUp'
 //thêm vào 
 import { ContractIds } from '../../deployments/deployments'
+import { useLanding } from '@front-provider/src'
+import { useRouter } from 'next/router'
 
 
 interface RadioUserType {
@@ -67,11 +69,13 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     activeAccount
   } = useInkathon()
   const toast = useToast()
+  const {jobSubmitId} = useLanding();
 
   // thêm vào
   const [loading, setLoading] = useState(false)
   const { api, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
+  const { push } = useRouter()
   const updateRegister = async (values: FormData) => {
         
     if (!activeAccount || !contract || !activeSigner || !api) {
@@ -80,7 +84,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     
     try {
       await contractTx(api, activeAccount.address, contract, 'submit', {}, [
-        15,values.result
+        jobSubmitId,values.result
       ])
       toast({
         title: <Text mt={-0.5}>Account registered Successfully</Text>,
@@ -97,7 +101,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
         isClosable: true,
         position: 'top-right',
       })
-    } 
+    }
   }
 
 
@@ -123,7 +127,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
       {({ isValid, errors, touched }) => (
         <Form>
           <FormControl id="reusult" isRequired mb={6}>
-            <FormLabel>Your mail</FormLabel>
+            <FormLabel>Your result</FormLabel>
             <Field
               name="result"
               placeholder="Enter your result"

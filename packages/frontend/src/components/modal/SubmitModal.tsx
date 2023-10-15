@@ -27,7 +27,7 @@ const SubmitModal: FC = () => {
   } = useInkathon();
 
   const close = () => {
-    disconnect?.();
+    // disconnect?.();
     setTimeout(() => {
       setSubmitModalOpen(false);
     }, 200);
@@ -43,7 +43,7 @@ const SubmitModal: FC = () => {
           <ModalBody >
             <SubmitForm
               onSubmitSuccess={() => {
-                disconnect?.();
+                // disconnect?.();
                 setTimeout(() => {
                   setSubmitModalOpen(false);
                 }, 200);
@@ -52,7 +52,7 @@ const SubmitModal: FC = () => {
           </ModalBody>
         </ModalContent>
       </Modal>}
-      {mobileDisplay && <Drawer placement="left" onClose={close} isOpen={submitModalOpen}>
+      {/* {mobileDisplay && <Drawer placement="left" onClose={close} isOpen={submitModalOpen}>
           <DrawerOverlay>
             <DrawerContent>
               <DrawerHeader>Sign up</DrawerHeader>
@@ -69,7 +69,7 @@ const SubmitModal: FC = () => {
               </DrawerBody>
             </DrawerContent>
           </DrawerOverlay>
-        </Drawer>}
+        </Drawer>} */}
     </>
   );
 };

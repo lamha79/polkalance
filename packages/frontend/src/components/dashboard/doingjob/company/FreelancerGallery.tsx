@@ -17,38 +17,38 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push } = useRouter()
   const toast = useToast()
-  const { setSubmitModalOpen } = useLanding();
+  const { setSubmitModalOpen, setJobSubmitId } = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   /////////
-  const submitResult = async (job_id: number, result: string) => {
-    if (!activeAccount || !contract || !activeSigner || !api) {
-      return
-    }
-    // Send transaction
-    // setUpdateIsLoading(true)
-    try {
-      await contractTx(api, activeAccount.address, contract, 'submit', {}, [
-        job_id, result
-      ])
-      toast({
-        title: <Text mt={-0.5}>Sunmit success</Text>,
-        status: 'success',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } catch (e: any) {
-      const error = e.errorMessage;
-      toast({
-        title: <Text mt={-0.5}>{error}</Text>,
-        status: 'error',
-        isClosable: true,
-        position: 'top-right',
-      })
-    }
-  };
+  // const submitResult = async (job_id: number, result: string) => {
+  //   if (!activeAccount || !contract || !activeSigner || !api) {
+  //     return
+  //   }
+  //   // Send transaction
+  //   // setUpdateIsLoading(true)
+  //   try {
+  //     await contractTx(api, activeAccount.address, contract, 'submit', {}, [
+  //       job_id, result
+  //     ])
+  //     toast({
+  //       title: <Text mt={-0.5}>Sunmit success</Text>,
+  //       status: 'success',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   } catch (e: any) {
+  //     const error = e.errorMessage;
+  //     toast({
+  //       title: <Text mt={-0.5}>{error}</Text>,
+  //       status: 'error',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   }
+  // };
   /////////
   const searchDoingJobs = async () => {
     // console.log(api);
@@ -63,7 +63,6 @@ const FreelancerGallery: FC = () => {
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
-      console.log(data[0].name);
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
@@ -95,7 +94,10 @@ const FreelancerGallery: FC = () => {
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
                 // <JobCard2 job={j} key={k} onClick={() => submitResult(parseInt(j.jobId), "ta chia hao chu nhat")} />
-                <JobCard2 job={j} key={k} onClick={() => setSubmitModalOpen(true)} />               
+                <JobCard2 job={j} key={k} onClick={() => {
+                  setSubmitModalOpen(true);
+                  setJobSubmitId(parseInt(j.jobId));
+                }} />              
               ))}
             </SimpleGrid>
           )}

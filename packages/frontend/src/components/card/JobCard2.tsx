@@ -13,6 +13,14 @@ import DollarIcon from '../icons/DollarIcon';
 import StarIcon from '../icons/StarIcon';
 import { useResponsive } from '../hooks/useResponsive';
 
+///////
+const getDay = (date: string) => {
+  const a = parseInt(date.replace(/,/g, ''));
+  const newdate = new Date(a);
+  return  newdate.toLocaleString()
+}
+///////
+
 interface JobCardProps {
   job: CreateJob;
   blurred?: boolean;
@@ -59,7 +67,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
         <Flex flexDir="column" ml="auto">
           <Box textStyle="h5" as="span" color="neutral.dsGray">
             {job?.endTime && (
-              <>{getDateDiffWithDaysAndHours(job?.endTime, new Date().toISOString()) + ' ago'}</>
+              <>End Time: {getDay(job.endTime)}</>
             )}
           </Box>
         </Flex>
@@ -83,7 +91,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
         >
           STATUS: {job.status}
         </Text>
-        <Text
+        {job.status === "REVIEW" &&<Text
           fontFamily="Comfortaa"
           fontWeight="700"
           fontSize="14px"
@@ -91,7 +99,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           color="neutral.dsGray"
         >
           RESULT: {job.result}
-        </Text>
+        </Text>}
       </Flex>
       <Flex mt={2} flexWrap='wrap' rowGap={2}>
         {job.description && (
@@ -206,7 +214,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick }: JobCardPro
           maxH="26px"
           onClick={() => onClick?.()}
         >
-          Obtain
+          Aproval
         </Button>}
       </Flex>
       {mobileDisplay && <Button

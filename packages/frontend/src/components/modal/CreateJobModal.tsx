@@ -12,7 +12,6 @@ import {
   ModalHeader,
   ModalOverlay
 } from '@chakra-ui/react';
-import { useInkathon } from '@scio-labs/use-inkathon'
 import { useLanding } from '../../front-provider/src'
 import { FC } from 'react';
 import CreateJobForm from '../form/CreateJobForm';
@@ -21,10 +20,6 @@ import { useResponsive } from '../hooks/useResponsive';
 const CreateJobModal: FC = () => {
   const { createJobModalOpen, setCreateJobModalOpen } = useLanding();
   const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
-
-  const {
-    disconnect
-  } = useInkathon();
 
   const close = () => {
     setTimeout(() => {
@@ -42,7 +37,6 @@ const CreateJobModal: FC = () => {
           <ModalBody >
             <CreateJobForm
               onSubmitSuccess={() => {
-                disconnect?.();
                 setTimeout(() => {
                   setCreateJobModalOpen(false);
                 }, 200);

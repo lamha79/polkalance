@@ -47,6 +47,9 @@ const CompanyGallery: FC = () => {
         position: 'top-right',
       })
     }
+    // finally {
+    //   push('/dashboard/jobs')
+    // }
   };
   //////
   const searchJobs = async () => {
@@ -62,7 +65,6 @@ const CompanyGallery: FC = () => {
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
-      // console.log(data[0].name);
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
