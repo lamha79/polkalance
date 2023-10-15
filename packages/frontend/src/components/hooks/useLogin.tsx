@@ -62,11 +62,11 @@ export const useLogin = (signupModalOpen: boolean) => {
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'check_exist_wallet');
       if (isError) throw new Error(decodedOutput);
       let _type = output;
-      if(output === "undifined") {
+      if(output[1] === "undefined") {
         setActiveAccountUser(false);
         setType(UserTypeEnum.Guest);
       } else {
-        if (output === "freelancer") {
+        if (output[1] === "freelancer") {
           setType(UserTypeEnum.Freelancer);
           // alert("freelancer")
           _type = "Freelance";
@@ -76,8 +76,8 @@ export const useLogin = (signupModalOpen: boolean) => {
         }
         const res = getUser({
           email: "",
-          firstname: "LAM",
-          lastname: "HA",
+          firstname: output[0],
+          lastname: output[0],
           description: "",
           phone: "",
           language: [],
