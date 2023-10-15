@@ -199,7 +199,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
             loadingText="Waiting for wallet signature"
             spinnerPlacement="end"
           >
-            Register
+            Submit job
           </Button>
         </Form>
       )}
