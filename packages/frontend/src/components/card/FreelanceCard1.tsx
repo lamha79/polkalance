@@ -43,7 +43,7 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             lineHeight="120%"
             color="neutral.black"
           >
-            {user.firstname}
+            {user.firstname} {user.lastname}
           </Text>
           <Flex alignItems="center">
             <Flex alignItems="center">

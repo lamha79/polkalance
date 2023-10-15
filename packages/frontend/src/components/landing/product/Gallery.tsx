@@ -43,7 +43,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
       position="relative"
       pb={6}
     >
-      {type == UserTypeEnum.Company && recentFreelancer.loading && (
+      {type == UserTypeEnum.Company && searchFreelance.loading && (
         <Flex
           flexDir="column"
           justifyContent="center"
@@ -58,7 +58,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
           </Box>
         </Flex>
       )}
-      {type == UserTypeEnum.Company && !recentFreelancer.loading && (
+      {type == UserTypeEnum.Company && (
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
           spacing={8}
@@ -69,7 +69,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
           {...props}
         >
           {searchFreelance.searchFilters.length === 0 &&
-            recentFreelancer.freelancers.map((v, k) => (
+            searchFreelance.freelancers.map((v, k) => (
               <FreelanceCard key={k} user={v} blurred={k >= blurredAt} />
             ))}
           {searchFreelance.searchFilters.length > 0 &&
@@ -88,7 +88,7 @@ const Gallery: FC<SimpleGridProps> = ({ ...props }: SimpleGridProps) => {
             ))}
         </SimpleGrid>
       )}
-      {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && recentJob.loading && (
+      {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && searchJobs.loading && (
         <Flex
           flexDir="column"
           justifyContent="center"

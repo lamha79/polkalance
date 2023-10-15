@@ -22,6 +22,7 @@ export const useRecentFreelancer = ({ limit }: UseRecentFreelancerProps) => {
   useEffect(() => {
     if (type === UserTypeEnum.Company) {
       // callGet();
+      setLoading(false);
     }
   }, [callGet, type]);
 

@@ -21,16 +21,21 @@ import {
 } from '@scio-labs/use-inkathon'
 import { ContractIds } from '@/deployments/deployments'
 import { useLanding } from '../front-provider/src'
-import { mostCommonSkill, UserTypeEnum } from '../utility/src'
+import { FreelancerDoJobs, FreelancerProfile, mostCommonSkill, User, UserTypeEnum } from '../utility/src'
 import { useColoredBadges } from '../components/hooks/useColoredBadges';
 import { SearchJobContext } from '../components/hooks/useSearchJob';
 import { CreateJob } from '../utility/src';
+import { SearchFreelancerContext } from '@components/hooks/useSearchFreelancer';
 
-const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
-  const { api } = useInkathon()
+function getUser(user: User) {
+  return user;
+}
+
+const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
+  const { api, activeAccount } = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract } = useRegisteredContract(ContractIds.Polkalance)
-  const [searchJobsResult, setSearchJobsResult] = useState<any[]>([]);
+  const [searchFreelancersResult, setSearchFreelancersResult] = useState<any[]>([]);
   const [title, setTitle] = useState<string>('');
   const menuRef = useRef(null);
   const inputRef = useRef(null);
@@ -42,13 +47,13 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   const { type } = useLanding();
   const [curFilters, setCurFilters] = useState<string[]>([]);
   const {
-    setJobs,
+    setFreelancers,
     setTotalResult,
     setElementByPage,
     setMaxPage,
     setCurPage,
     setLoading
-  } = useContext(SearchJobContext);
+  } = useContext(SearchFreelancerContext);
 
   const handleItemClick = (filter: string) => {
     if (filter != 'No result') {
@@ -72,9 +77,9 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       newFilters = [...curFilters.filter((v) => v !== filter)];
       setCurFilters(newFilters);
     }
-    console.log(`FILTER :::: ${filter}`);
-    if(filters.length > 0) {
-      searchJobs(filters[0]);
+    console.log(`FILTER :::: ${newFilters}`);
+    if(newFilters.length > 0) {
+      searchFreelancers(newFilters[0]);
     }
     // if (type === UserTypeEnum.Company) {
     //   searchFreelancer.setSearchFilters(newFilters);
@@ -87,37 +92,74 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     // }
   };
 
-  const searchJobs = async (categoryQuery: string) => {
-    if (!contract || !api) return;
+  const searchFreelancers = async (categoryQuery: string) => {
+    if (!contract || !api || !activeAccount) {
+      let res = null;
+      res =  {jobs: [], maxPage: 1, totalResult: 1 };
+      if (res) {
+        setCurPage(1);
+        setFreelancers([...res.jobs]);
+        setMaxPage(res.maxPage);
+        setTotalResult(res.totalResult);
+      }
+      return;
+    }
     setFetchIsLoading(true);
     setLoading(true);
     setElementByPage(1);
     try {
-      const result = await contractQuery(api, '', contract, 'get_all_open_jobs', {}, [categoryQuery]);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs');
+      console.log(`categoryQuery :::: ${categoryQuery}`);
+      const result = await contractQuery(api, '', contract, 'get_freelancer', {}, [categoryQuery]);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_freelancer');
       if (isError) throw new Error(decodedOutput);
-      setSearchJobsResult(output);
-      const json = JSON.stringify(searchJobsResult, null, 2);
+      console.log(`OUTPUT :::: ${output}`);
+      setSearchFreelancersResult(output);
+      const json = JSON.stringify(output, null, 2);
       console.log(`RESULT JSON String :::: ${json}`);
-      const list_jobs = JSON.parse(json);
-      const data = list_jobs.Ok;
+      const list_users = JSON.parse(json);
+      const data = list_users.Ok;
       console.log(`DATA :::: ${data}`);
-      if(data) {
-        const _jobs= data as CreateJob[];
-      console.log(`JOBS :::: ${_jobs}`);
-      let res = null;
-      res =  {jobs: _jobs, maxPage: 1, totalResult: 1 };
+      let _nameJob = "";
+      let _firstName = "";
+      let _wallet = "";
+      const _users: User[] = [];
+      for (let index = 0; index < data.length; index++) {
+        _firstName = data[index][0];
+        const _doJobs = data[index][1] as FreelancerDoJobs[];
+        for (let index = 0; index < _doJobs.length; index++) {
+          _nameJob += _doJobs[index].name + (index < _doJobs.length-1 ? ", ": "");
+          _wallet = _doJobs[index].personCreate;
+        }
+        const retUser = getUser({
+          email: "",
+          firstname: _firstName,
+          lastname: _firstName,
+          description: _nameJob,
+          phone: "",
+          language: [],
+          location: "",
+          profilePicture: "",
+          links: [],
+          createdAt: "",
+          updatedAt: "",
+          hasFreelanceProfile: "",
+          currentUserType: "",
+          tosAcceptedOn: "",
+          wallet: _wallet
+        });
+        _users.push(retUser);
+      }
+      const res =  {users: _users, maxPage: 1, totalResult: 1 };
       if (res) {
         setCurPage(1);
-        setJobs([...res.jobs]);
+        setFreelancers([...res.users]);
         setMaxPage(res.maxPage);
         setTotalResult(res.totalResult);
       }
-      }
     } catch (e) {
       console.error(e);
-      toast.error('Error while fetching get all open jobs. Try again...');
-      setSearchJobsResult([]);
+      toast.error('Error while fetching get all freelancers did jobs. Try again...');
+      setSearchFreelancersResult([]);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -247,7 +289,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               onClick={() => {
                 setCurFilters([])
                 setFilters([])
-                setJobs([])
+                setFreelancers([])
                 setSearchResults(['No result']);
                 setLoading(false);
                 if (type === UserTypeEnum.Company) {
@@ -364,4 +406,4 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     //   </section>
 };
 
-export default SearchJobPage;
+export default SearchFreelancerPage;

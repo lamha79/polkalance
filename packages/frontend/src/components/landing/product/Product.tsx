@@ -14,19 +14,23 @@ import SearchJobPage from '../../../pages/searchjobs';
 import {
   useInkathon,
 } from '@scio-labs/use-inkathon'
+import SearchFreelancerPage from '@pages/searchfreelancers';
 
 const Product: FC = () => {
   const { type, handleViewChange } = useLanding();
   const { isConnected, activeAccount } = useInkathon();
 
   let topContent = <></>;
+  let searchContent = <></>;
 
   if (type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) {
     topContent = <ProductFreelance />;
+    searchContent = <SearchJobPage />;
   }
 
   if (type == UserTypeEnum.Company) {
     topContent = <ProductCompany />;
+    searchContent = <SearchFreelancerPage />;
   }
 
   return (
@@ -41,8 +45,7 @@ const Product: FC = () => {
           {topContent}
           <SearchFreelancerProvider>
             <SearchJobProvider>
-            {/* <SearchJobPage /> */}
-              {(isConnected && activeAccount) && <SearchBar />}
+              {(isConnected && activeAccount) && searchContent}
               {(isConnected && activeAccount) && <Gallery mt={8} />}
             </SearchJobProvider>
           </SearchFreelancerProvider>

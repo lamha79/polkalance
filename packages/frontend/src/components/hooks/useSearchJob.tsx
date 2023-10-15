@@ -115,7 +115,7 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
   useEffect(() => {
     if (elementToDisplay) {
       setElementByPage(elementToDisplay);
-      // handleSearch(1, elementToDisplay, searchFilters);
+      handleSearch(1, elementToDisplay, searchFilters);
     }
   }, [elementToDisplay, setElementByPage, searchTerm]);
 
@@ -174,19 +174,12 @@ export const useSearchJob = (elementToDisplay?: number, searchTerm?: string) => 
     }
   };
 
-  const handleSearch = useCallback(
-    (page: number, elementByPage: number, filters: string[]) => {
-      if (filters.length === 0) {
-        // callGet(page, elementByPage);
-      }
-      if (filters.length === 1) {
-        // callGet(page, elementByPage, filters[0]);
-      }
-      if (filters.length > 1) {
-        // callGet(page, elementByPage, filters.join(';'));
-      }
-    },
-    [callGet]
+  const handleSearch = useCallback( async (page: number, elementByPage: number, filters: string[]) => {
+      setLoading(true);
+      const res = await searchJobs2(page,elementByPage,filters);
+      setLoading(false);
+  },
+  [loading]
   );
 
   return {
