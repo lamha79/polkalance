@@ -22,7 +22,7 @@ const Profile: FC<ProfileProps> = ({ wallet }) => {
 
   useEffect(() => {
     if (wallet) {
-      getProfile(wallet);
+      // getProfile(wallet);
     }
   }, [getProfile, wallet]);
 

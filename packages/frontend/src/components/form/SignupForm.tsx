@@ -45,7 +45,7 @@ const RadioGroupUserType: RadioUserType[] = [
     value: UserTypeEnum.Freelancer,
   },
   {
-    label: 'Employer',
+    label: 'Company',
     value: UserTypeEnum.Company,
   },
 ]

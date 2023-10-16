@@ -128,6 +128,7 @@ export const useSearchFreelancer = (elementToDisplay?: number) => {
       if (filters.length > 1) {
         // callGet(page, elementByPage, filters.join(';'));
       }
+      setLoading(false);
     },
     [callGet]
   );
@@ -136,6 +137,7 @@ export const useSearchFreelancer = (elementToDisplay?: number) => {
     if (searchFilters && type === UserTypeEnum.Company) {
       handleSearch(1, elementByPage, searchFilters);
     }
+    setLoading(false);
   }, [handleSearch, searchFilters]);
 
   return {

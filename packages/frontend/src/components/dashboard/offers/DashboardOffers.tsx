@@ -10,6 +10,8 @@ import CompanyGallery from './company/CompanyGallery';
 import SearchBar from '../../landing/product/SearchBar';
 import { SearchFreelancerProvider } from '../../hooks/useSearchFreelancer';
 import { SearchJobProvider } from '../../hooks/useSearchJob';
+import SearchFreelancerPage from '@pages/searchfreelancers';
+import SearchJobPage from '@pages/searchjobs';
 
 const MotionBox = motion(Box);
 
@@ -54,7 +56,7 @@ const DashboardOffers: FC<DashboardOffersProps> = ({ scrollbarRef }) => {
                 <Flex flexDir="column" gap={6}>
                   <SearchJobProvider>
                     <FreelanceTop />
-                    <SearchBar />
+                    <SearchJobPage />
                     <FreelanceGallery scrollbarRef={scrollbarRef} />
                   </SearchJobProvider>
                 </Flex>
@@ -77,7 +79,7 @@ const DashboardOffers: FC<DashboardOffersProps> = ({ scrollbarRef }) => {
                 <Flex flexDir="column" gap={6}>
                   <SearchFreelancerProvider>
                     <CompanyTop />
-                    <SearchBar />
+                    <SearchFreelancerPage />
                     <CompanyGallery scrollbarRef={scrollbarRef} />
                   </SearchFreelancerProvider>
                 </Flex>
