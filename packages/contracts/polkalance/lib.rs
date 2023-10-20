@@ -472,9 +472,9 @@ mod polkalance {
         pub fn get_freelancer(&self, filter: String) -> Result<Vec<(String, Vec<Job>)>, JobError> {
             let category_filter = if filter.to_lowercase().contains("it"){
                 Category::IT
-            } else if filter.contains("photoshop") {
+            } else if filter.to_lowercase().contains("photoshop") {
                 Category::PHOTOSHOP
-            } else if filter.contains("marketing") {
+            } else if filter.to_lowercase().contains("marketing") {
                 Category::MARKETING
             } else {
                 Category::NONE
