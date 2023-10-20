@@ -15,9 +15,9 @@ import { CreateJob, CreateJob1 } from '../../../../utility/src';
 
 const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
-  const { push } = useRouter()
+  const { push, replace } = useRouter()
   const toast = useToast()
-  const { setSubmitModalOpen, setJobSubmitId } = useLanding();
+  const { setSubmitModalOpen, setJobSubmitId, submitModalOpen, submitDone, setSubmitDone} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -81,9 +81,14 @@ const FreelancerGallery: FC = () => {
     // alert(isConnected);
     // if (isConnected && activeChain && activeAccount) {
       searchDoingJobs();
+      if (submitDone) {
+        console.log("test is "+submitDone)
+        // replace('/dashboard/doingjob')
+        setSubmitDone(false)
+      }
     // }
     // checkJobProccessing();
-  }, [contract, api]);
+  }, [contract, api, submitDone]);
 
   //////
   return (
@@ -95,6 +100,7 @@ const FreelancerGallery: FC = () => {
               {jobs?.map((j, k) => (
                 // <JobCard2 job={j} key={k} onClick={() => submitResult(parseInt(j.jobId), "ta chia hao chu nhat")} />
                 <JobCard2 job={j} key={k} onClick={() => {
+                  // setSubmitDone(true)
                   setSubmitModalOpen(true);
                   setJobSubmitId(parseInt(j.jobId));
                 }} />              

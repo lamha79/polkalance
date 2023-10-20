@@ -32,6 +32,22 @@ mod polkalance {
     }
 
     #[ink(event)]
+    pub struct JobAuction {
+        #[ink(topic)]
+        job_id: JobId,
+        #[ink(topic)]
+        desired_salary: u128,
+    }
+
+    #[ink(event)]
+    pub struct JobChooseTheBestBid {
+        #[ink(topic)]
+        job_id: JobId,
+        #[ink(topic)]
+        freelancer: AccountId,
+    }
+
+    #[ink(event)]
     pub struct JobObtained {
         #[ink(topic)]
         job_id: JobId,
@@ -138,9 +154,10 @@ mod polkalance {
         // list_jobs_take: Mapping<AccountId, Vec<(JobId, bool)>>, // danh sách công việc đã nhận <id,(job_id,hoàn thành hay chưa?))>
         ratings: Mapping<AccountId, Vec<(JobId, Option<RatingPoint>)>>, // <JobId: id công việc, Điểm đánh giá>
         reports: Mapping<AccountId, Vec<(JobId, Option<ReportInfo>)>>, // <JobId: id công việc, Thông tin tố cáo>
+        auction: Mapping<JobId, Vec<(AccountId, u128)>>, //đấu giá công việc
     }
 
-    #[derive(scale::Decode, scale::Encode, Default, Debug)]
+    #[derive(scale::Decode, scale::Encode, Default, Debug, Clone)]
     #[cfg_attr(
         feature = "std",
         derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout)
@@ -194,7 +211,7 @@ mod polkalance {
         FiveStars,
     }
 
-    #[derive(scale::Decode, scale::Encode, Default, Debug, PartialEq)]
+    #[derive(scale::Decode, scale::Encode, Default, Debug, PartialEq, Clone)]
     #[cfg_attr(
         feature = "std",
         derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout)
@@ -256,6 +273,11 @@ mod polkalance {
         // Lỗi role
         NotJobAssigner, // bạn không phải là người giao việc
         NotFreelancer,  // bạn không phải là freelancer
+
+        //lỗi liên quan đến đấu giá job
+        InvalidBid, //đấu giá không hợp lệ (lương yêu cầu lớn hơn pay)
+        InvalidBidder, //người đấu giá không hợp lệ
+        NoBidder, //không có người đấu giá job
 
         // Lỗi check job
         NotExisted,       // Job không tồn tại
@@ -585,6 +607,136 @@ mod polkalance {
             });
             Ok(())
         }
+
+        #[ink(message)]
+        pub fn job_auction (&mut self, job_id: JobId, desired_salary: u128) -> Result<(), JobError> {
+            //check caller đã đăng kí hay chưa và có phải là freelancer hay không
+            let caller = self.env().caller();
+            let caller_info = self.personal_account_info.get(caller);
+            match caller_info.clone() {
+                None => return Err(JobError::NotRegistered), //check đăng kí chưa
+                Some(user_info) => {
+                    //check role freelancer hay chưa
+                    if user_info.role != AccountRole::FREELANCER {
+                        return Err(JobError::NotFreelancer);
+                    }
+                }
+            }
+            //check công việc đó có tồn tại hay không và nó có hợp lệ để đấu giá hay không?
+            let option_job = self.jobs.get(job_id);
+            match option_job.clone() {
+                None => return Err(JobError::NotExisted),
+                Some(job) => {
+                    if job.status != Status::OPEN || job.status != Status::REOPEN {
+                        return Err(JobError::Proccessing)
+                    };
+                    if self.env().block_timestamp() > job.end_time {
+                        return Err(JobError::OutOfDate)
+                    };
+                },
+            }
+            let job = option_job.unwrap();
+            if desired_salary > job.pay {
+                return Err(JobError::InvalidBid)
+            };
+            //lấy thông tin đấu giá và tiến hành update
+            let job_auctions_option = self.auction.get(job_id);
+            match job_auctions_option {
+                None => {
+                    let mut new_job_auctions = Vec::new();
+                    new_job_auctions.push((caller, desired_salary));
+                    self.auction.insert(job_id, &new_job_auctions);
+                },
+                Some(mut job_auctions) => {
+                    job_auctions.push((caller, desired_salary));
+                    self.auction.insert(job_id, &job_auctions);
+                }
+            }
+            Self::env().emit_event(JobAuction {
+                job_id: job_id,
+                desired_salary: desired_salary,
+            });
+            Ok(())
+        }
+
+        //chọn đấu giá công việc tốt nhất
+        #[ink(message)]
+        pub fn choose_the_best_bid (&mut self, job_id: JobId, _freelancer: AccountId, _desired_salary: u128) -> Result<(), JobError> {
+            let caller = self.env().caller();
+            let caller_info = self.personal_account_info.get(caller);
+            // kiểm tra đăng kí và role
+            match caller_info.clone() {
+                None => return Err(JobError::NotRegistered), //check đăng kí chưa
+                Some(user_info) => {
+                    //check role đúng chưa
+                    if user_info.role == AccountRole::FREELANCER {
+                        return Err(JobError::NotJobAssigner);
+                    }
+                }
+            }
+            //check xem có phải người đó là người giao công việc hay không
+            let job_option = self.jobs.get(job_id);
+            match job_option.clone() {
+                None => return Err(JobError::NotExisted),
+                Some(job) => {
+                    if job.person_create.unwrap() != caller {
+                        return Err(JobError::NotAssignThisJob);
+                    };
+                    if job.end_time < self.env().block_timestamp() {
+                        return Err(JobError::OutOfDate);
+                    };
+                    if job.status != Status::OPEN || job.status != Status::REOPEN {
+                        return Err(JobError::Proccessing);
+                    };
+                },
+            };
+            //kiểm tra thông tin đấu giá và thêm vào thông tin job
+            let auction_detail_option = self.auction.get(job_id);
+            match auction_detail_option {
+                None => {
+                    return Err(JobError::NoBidder);
+                },
+                Some(auction_detail) => {
+                    if !auction_detail.contains(&(_freelancer, _desired_salary)){
+                        return Err(JobError::InvalidBidder)
+                    }
+                },
+            }
+            //update lại thông tin liên quan đến nhận job
+            let mut job = job_option.unwrap();
+            job.status = Status::DOING;
+            job.person_obtain = Some(_freelancer);
+            self.jobs.insert(job_id, &job);
+            //update công việc của freelancer
+            match self.freelancer_jobs.contains(_freelancer) {
+                true => {
+                    let mut jobs_of_freelancer = self.freelancer_jobs.get(_freelancer).unwrap();
+                    jobs_of_freelancer.push((job_id, false));
+                    self.freelancer_jobs.insert(_freelancer, &jobs_of_freelancer);
+                }
+                false => {
+                    let mut jobs_of_freelancer = Vec::new();
+                    jobs_of_freelancer.push((job_id, false));
+                    self.freelancer_jobs.insert(caller, &jobs_of_freelancer);
+                }
+            }
+            //update user_info chỗ successful_jobs_and_all_jobs: all_jobs tăng thêm 1
+            let mut freelancer_detail = self.personal_account_info.get(_freelancer).unwrap();
+            freelancer_detail.successful_jobs_and_all_jobs.1 =
+                freelancer_detail.successful_jobs_and_all_jobs.1 + 1;
+            self.personal_account_info
+                .insert(caller, &freelancer_detail);
+            // Emit the event.
+            Self::env().emit_event(JobChooseTheBestBid {
+                job_id,
+                freelancer: _freelancer,
+            });
+
+            
+            Ok(())
+        }
+
+
 
         // có thể tùy chỉnh thêm lọc công việc theo status hoặc theo owner hoặc theo freelancer
         // lọc theo owner khi 1 owner có thể tạo nhiều công việc (chưa làm)
