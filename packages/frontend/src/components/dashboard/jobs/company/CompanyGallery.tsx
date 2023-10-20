@@ -21,6 +21,8 @@ const CompanyGallery: FC = () => {
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
+  const [isApprovalDone, setIsApprovalDone] = useState<boolean>(false);
+  const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   //////
   const aprovalJob = async (job_id: number) => {
@@ -33,7 +35,7 @@ const CompanyGallery: FC = () => {
         job_id
       ])
       toast({
-        title: <Text mt={-0.5}>Aproval success</Text>,
+        title: <Text mt={-0.5}>Approval success</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',
@@ -46,10 +48,9 @@ const CompanyGallery: FC = () => {
         isClosable: true,
         position: 'top-right',
       })
+    } finally {
+      setIsApprovalDone(true)
     }
-    // finally {
-    //   push('/dashboard/jobs')
-    // }
   };
 
   const rejectJob = async (job_id: number) => {
@@ -76,9 +77,9 @@ const CompanyGallery: FC = () => {
         position: 'top-right',
       })
     }
-    // finally {
-    //   push('/dashboard/jobs')
-    // }
+    finally {
+      setIsRejectDone(true)
+    }
   };
   //////
   const searchJobs = async () => {
@@ -113,8 +114,14 @@ const CompanyGallery: FC = () => {
     if (isConnected && activeChain && activeAccount) {
       searchJobs();
     }
+    if (isApprovalDone) {
+      setIsApprovalDone(false)
+    }
+    if (isRejectDone) {
+      setIsRejectDone(false)
+    }
     // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner]);
+  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, isApprovalDone, isRejectDone]);
   ////A//
   return (
     <Flex flexDir="column">

@@ -76,7 +76,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         </Flex>
       </Flex>
       <Flex flexDir="column" mt={4}>
-        <Text
+        {/* <Text
           fontFamily="Comfortaa"
           fontWeight="700"
           fontSize="16px"
@@ -84,7 +84,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           color="neutral.black"
         >
           NAME: {job.name}
-        </Text>
+        </Text> */}
         <Text
           fontFamily="Comfortaa"
           fontWeight="700"
@@ -93,6 +93,24 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           color="neutral.dsGray"
         >
           STATUS: {job.status}
+        </Text>
+        <Text
+          fontFamily="Comfortaa"
+          fontWeight="700"
+          fontSize="14px"
+          lineHeight="120%"
+          color="neutral.dsGray"
+        >
+          DESCRIPTION: {job.description}
+        </Text>
+        <Text
+          fontFamily="Comfortaa"
+          fontWeight="700"
+          fontSize="14px"
+          lineHeight="120%"
+          color="neutral.dsGray"
+        >
+          PAY: {job.pay} ZERO
         </Text>
         {job.status === "REVIEW" &&<Text
           fontFamily="Comfortaa"
@@ -232,7 +250,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           maxH="26px"
           onClick={() => onClick?.()}
         >
-          Aproval
+          Approval
         </Button>}
       </Flex>
       {mobileDisplay && <Button

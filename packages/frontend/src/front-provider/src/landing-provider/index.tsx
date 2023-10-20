@@ -14,6 +14,7 @@ type LandingContextInterface = {
   hasScroll: boolean;
   isCheckWallet: boolean;
   jobSubmitId: number;
+  useFormDone: boolean;
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
@@ -23,6 +24,7 @@ type LandingContextInterface = {
   setHasScroll: (hasScroll: boolean) => void;
   setIsCheckWallet: (check: boolean) => void;
   setJobSubmitId: (jobId: number) => void;
+  setUseFormDone: (x: boolean) => void;
 };
 
 export const LandingContext = createContext<LandingContextInterface>({
@@ -35,6 +37,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   hasScroll: false,
   isCheckWallet: false,
   jobSubmitId: 0,
+  useFormDone: false,
   setType: () => {},
   setCurrentView: () => {},
   setSignupModalOpen: () => {},
@@ -44,6 +47,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   setHasScroll: () => {},
   setIsCheckWallet: () => {},
   setJobSubmitId: () => {},
+  setUseFormDone: () => {},
 });
 
 export const LandingProvider = ({ children }: { children: ReactNode }) => {
@@ -56,6 +60,8 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [hasScroll, setHasScroll] = useState(false);
   const [isCheckWallet, setIsCheckWallet] = useState(false);
   const [jobSubmitId, setJobSubmitId] = useState(0);
+  const [useFormDone, setUseFormDone] = useState(false);
+  
   return (
     <LandingContext.Provider
       value={{
@@ -68,6 +74,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         activeAccountUser,
         isCheckWallet,
         jobSubmitId,
+        useFormDone,
         setType,
         setCurrentView,
         setSignupModalOpen,
@@ -77,6 +84,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setHasScroll,
         setIsCheckWallet,
         setJobSubmitId,
+        setUseFormDone,
       }}
     >
       {children}
@@ -95,6 +103,7 @@ export function useLanding() {
     activeAccountUser,
     isCheckWallet,
     jobSubmitId,
+    useFormDone, 
     setType,
     setCurrentView,
     setSignupModalOpen,
@@ -104,6 +113,7 @@ export function useLanding() {
     setHasScroll,
     setIsCheckWallet,
     setJobSubmitId,
+    setUseFormDone,
   } = useContext(LandingContext);
 
   const handleViewChange = (inView: boolean, entry: IntersectionObserverEntry) => {
@@ -130,6 +140,7 @@ export function useLanding() {
     activeAccountUser,
     isCheckWallet,
     jobSubmitId,
+    useFormDone,
     setType,
     handleViewChange,
     setCurrentView,
@@ -141,5 +152,6 @@ export function useLanding() {
     setHasScroll,
     setIsCheckWallet,
     setJobSubmitId,
+    setUseFormDone,
   };
 }

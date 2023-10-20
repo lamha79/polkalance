@@ -69,7 +69,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     activeAccount
   } = useInkathon()
   const toast = useToast()
-  const {jobSubmitId} = useLanding();
+  const {jobSubmitId, setUseFormDone} = useLanding();
 
   // thêm vào
   const [loading, setLoading] = useState(false)
@@ -101,6 +101,8 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
         isClosable: true,
         position: 'top-right',
       })
+    }finally{
+      setUseFormDone(true)
     }
   }
 
