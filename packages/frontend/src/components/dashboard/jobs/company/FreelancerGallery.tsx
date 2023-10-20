@@ -76,7 +76,6 @@ const FreelancerGallery: FC = () => {
   useEffect(() => {
       searchJobs();
       if (fetchObtain){
-        replace('/dashboard/jobs')
         setFetchObtain(false) 
       }
   }, [contract, api, fetchObtain]);

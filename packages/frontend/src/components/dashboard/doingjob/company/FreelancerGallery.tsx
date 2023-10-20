@@ -17,11 +17,12 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace } = useRouter()
   const toast = useToast()
-  const { setSubmitModalOpen, setJobSubmitId, submitModalOpen, submitDone, setSubmitDone} = useLanding();
+  const { setSubmitModalOpen, setJobSubmitId, submitModalOpen} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
+  const [submitDone, setSubmitDone] = useState<boolean>(false);
   /////////
   // const submitResult = async (job_id: number, result: string) => {
   //   if (!activeAccount || !contract || !activeSigner || !api) {
@@ -77,17 +78,10 @@ const FreelancerGallery: FC = () => {
     }
   };
   useEffect(() => {
-    // setJobs([job]);
-    // alert(isConnected);
-    // if (isConnected && activeChain && activeAccount) {
       searchDoingJobs();
       if (submitDone) {
-        console.log("test is "+submitDone)
-        // replace('/dashboard/doingjob')
         setSubmitDone(false)
       }
-    // }
-    // checkJobProccessing();
   }, [contract, api, submitDone]);
 
   //////
@@ -103,6 +97,7 @@ const FreelancerGallery: FC = () => {
                   // setSubmitDone(true)
                   setSubmitModalOpen(true);
                   setJobSubmitId(parseInt(j.jobId));
+                  setSubmitDone(true);
                 }} />              
               ))}
             </SimpleGrid>
