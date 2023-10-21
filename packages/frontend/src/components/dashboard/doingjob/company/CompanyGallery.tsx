@@ -21,6 +21,8 @@ const CompanyGallery: FC = () => {
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
+  const [isApprovalDone, setIsApprovalDone] = useState<boolean>(false);
+  const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   //////
   const aprovalJob = async (job_id: number) => {
@@ -33,7 +35,7 @@ const CompanyGallery: FC = () => {
         job_id
       ])
       toast({
-        title: <Text mt={-0.5}>Aproval success</Text>,
+        title: <Text mt={-0.5}>Approval success</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',
@@ -46,6 +48,37 @@ const CompanyGallery: FC = () => {
         isClosable: true,
         position: 'top-right',
       })
+    } finally {
+      setIsApprovalDone(true)
+    }
+  };
+
+  const rejectJob = async (job_id: number) => {
+
+    if (!activeAccount || !contract || !activeSigner || !api) {
+      return
+    }
+    try {
+      await contractTx(api, activeAccount.address, contract, 'reject', {}, [
+        job_id
+      ])
+      toast({
+        title: <Text mt={-0.5}>Reject success</Text>,
+        status: 'success',
+        isClosable: true,
+        position: 'top-right',
+      })
+    } catch (e: any) {
+      let error = e.errorMessage;
+      toast({
+        title: <Text mt={-0.5}>{error}</Text>,
+        status: 'error',
+        isClosable: true,
+        position: 'top-right',
+      })
+    }
+    finally {
+      setIsRejectDone(true)
     }
   };
   //////
@@ -81,8 +114,14 @@ const CompanyGallery: FC = () => {
     if (isConnected && activeChain && activeAccount) {
       searchJobs();
     }
+    if (isApprovalDone) {
+      setIsApprovalDone(false)
+    }
+    if (isRejectDone) {
+      setIsRejectDone(false)
+    }
     // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner]);
+  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, isApprovalDone, isRejectDone]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -91,7 +130,12 @@ const CompanyGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => aprovalJob(parseInt(j.jobId))} />
+                <JobCard2 
+                  job={j} 
+                  key={k} 
+                  onClick={() => aprovalJob(parseInt(j.jobId))}
+                  onClick1={() => rejectJob(parseInt(j.jobId))}    
+                />
               ))}
               
             </SimpleGrid>

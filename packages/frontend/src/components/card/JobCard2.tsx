@@ -13,6 +13,7 @@ import DollarIcon from '../icons/DollarIcon';
 import StarIcon from '../icons/StarIcon';
 import { useResponsive } from '../hooks/useResponsive';
 import { useLanding } from '@front-provider/src';
+import { UserTypeEnum } from '../../utility/src';
 
 ///////
 const getDay = (date: string) => {
@@ -31,7 +32,7 @@ interface JobCardProps {
 const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: JobCardProps) => {
   const { getCategoryColorForSkill } = useColoredBadges();
   const {desktopDisplay, mobileDisplay} = useResponsive();
-  const {activeAccountUser} = useLanding();
+  const {activeAccountUser, type} = useLanding();
 
   let skillsLength = 0;
   const skillLimit = desktopDisplay ? 45 : mobileDisplay ? 25 : 35
@@ -192,7 +193,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         </Text>
       </Flex>
       <Flex mt={4} flexWrap="wrap" rowGap={2}>
-        {!mobileDisplay && activeAccountUser && job.status == ("OPEN" || job.status == "REOPEN") && <Button
+        {!mobileDisplay && activeAccountUser && job.status == ("OPEN" || job.status == "REOPEN") && type === UserTypeEnum.Freelancer &&<Button
           ml="auto"
           variant="outline"
           px="12px !important"

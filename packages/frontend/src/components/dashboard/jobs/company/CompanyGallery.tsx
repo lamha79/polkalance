@@ -20,78 +20,78 @@ const CompanyGallery: FC = () => {
   const toast = useToast()
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
-  const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
-  const [isApprovalDone, setIsApprovalDone] = useState<boolean>(false);
-  const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
+  const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
+  const [fetchSearchJob, setFetchSearchJob] = useState<boolean>(false);
+  // const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   //////
-  const aprovalJob = async (job_id: number) => {
+  // const aprovalJob = async (job_id: number) => {
 
-    if (!activeAccount || !contract || !activeSigner || !api) {
-      return
-    }
-    try {
-      await contractTx(api, activeAccount.address, contract, 'aproval', {}, [
-        job_id
-      ])
-      toast({
-        title: <Text mt={-0.5}>Approval success</Text>,
-        status: 'success',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } catch (e: any) {
-      let error = e.errorMessage;
-      toast({
-        title: <Text mt={-0.5}>{error}</Text>,
-        status: 'error',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } finally {
-      setIsApprovalDone(true)
-    }
-  };
+  //   if (!activeAccount || !contract || !activeSigner || !api) {
+  //     return
+  //   }
+  //   try {
+  //     await contractTx(api, activeAccount.address, contract, 'aproval', {}, [
+  //       job_id
+  //     ])
+  //     toast({
+  //       title: <Text mt={-0.5}>Approval success</Text>,
+  //       status: 'success',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   } catch (e: any) {
+  //     let error = e.errorMessage;
+  //     toast({
+  //       title: <Text mt={-0.5}>{error}</Text>,
+  //       status: 'error',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   } finally {
+  //     setIsApprovalDone(true)
+  //   }
+  // };
 
-  const rejectJob = async (job_id: number) => {
+  // const rejectJob = async (job_id: number) => {
 
-    if (!activeAccount || !contract || !activeSigner || !api) {
-      return
-    }
-    try {
-      await contractTx(api, activeAccount.address, contract, 'reject', {}, [
-        job_id
-      ])
-      toast({
-        title: <Text mt={-0.5}>Reject success</Text>,
-        status: 'success',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } catch (e: any) {
-      let error = e.errorMessage;
-      toast({
-        title: <Text mt={-0.5}>{error}</Text>,
-        status: 'error',
-        isClosable: true,
-        position: 'top-right',
-      })
-    }
-    finally {
-      setIsRejectDone(true)
-    }
-  };
+  //   if (!activeAccount || !contract || !activeSigner || !api) {
+  //     return
+  //   }
+  //   try {
+  //     await contractTx(api, activeAccount.address, contract, 'reject', {}, [
+  //       job_id
+  //     ])
+  //     toast({
+  //       title: <Text mt={-0.5}>Reject success</Text>,
+  //       status: 'success',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   } catch (e: any) {
+  //     let error = e.errorMessage;
+  //     toast({
+  //       title: <Text mt={-0.5}>{error}</Text>,
+  //       status: 'error',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   }
+  //   finally {
+  //     setIsRejectDone(true)
+  //   }
+  // };
   //////
   const searchJobs = async () => {
     // console.log(api);
     // console.log(contract);
     // console.log(activeAccount +"=((");
-    setJobsFetching(false) //thêm vào
+    // setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_review_jobs_of_owner', {}, []);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_review_jobs_of_owner');
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_open_jobs_no_params', {}, []);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs_no_params');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
@@ -106,6 +106,7 @@ const CompanyGallery: FC = () => {
       // setSearchJobsResult([]);
     } finally {
       setFetchIsLoading(false);
+      setFetchSearchJob(true);
     }
   };
   useEffect(() => {
@@ -114,14 +115,11 @@ const CompanyGallery: FC = () => {
     if (isConnected && activeChain && activeAccount) {
       searchJobs();
     }
-    if (isApprovalDone) {
-      setIsApprovalDone(false)
-    }
-    if (isRejectDone) {
-      setIsRejectDone(false)
-    }
+    if (fetchSearchJob){
+      setFetchSearchJob(false)
+    } 
     // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, isApprovalDone, isRejectDone]);
+  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, fetchSearchJob]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -133,8 +131,8 @@ const CompanyGallery: FC = () => {
                 <JobCard2 
                   job={j} 
                   key={k} 
-                  onClick={() => aprovalJob(parseInt(j.jobId))}
-                  onClick1={() => rejectJob(parseInt(j.jobId))}    
+                  onClick={() => {}}
+                  onClick1={() => {}}    
                 />
               ))}
               

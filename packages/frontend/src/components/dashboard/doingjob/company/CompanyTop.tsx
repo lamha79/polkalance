@@ -11,12 +11,12 @@ const CompanyTop: FC<CompanyTopProps> = ({ onCreate }) => {
   return (
     <Flex>
       <Box ml="auto">
-        <Button variant="primary" leftIcon={<FileIcon />} onClick={() => {
+        {/* <Button variant="primary" leftIcon={<FileIcon />} onClick={() => {
           onCreate();
           setCreateJobModalOpen(true);            
           }}>
           Create new job
-        </Button>
+        </Button> */}
       </Box>
     </Flex>
   );
