@@ -36,10 +36,10 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
         { view: '/dashboard/doingjob', label: 'All my doing jobs' }
       ];
 
-    if (mobileDisplay || tabletDisplay) {
-        companyMenu.push({view: '/dashboard/chat', label: 'Chat'});
-        freelanceMenu.push({view: '/dashboard/chat', label: 'Chat'});
-    }
+    // if (mobileDisplay || tabletDisplay) {
+    //     companyMenu.push({view: '/dashboard/chat', label: 'Chat'});
+    //     freelanceMenu.push({view: '/dashboard/chat', label: 'Chat'});
+    // }
     
     let menuElement: MenuElement[] = [];
     if (type === UserTypeEnum.Freelancer) {
