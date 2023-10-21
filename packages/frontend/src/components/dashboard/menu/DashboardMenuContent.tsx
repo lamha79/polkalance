@@ -23,8 +23,8 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
     const companyMenu: MenuElement[] = [
         { view: '/dashboard', label: 'Dashboard' },
         { view: '/dashboard/offers', label: 'Find profiles' },
-        { view: '/dashboard/jobs', label: 'All new job' },
-        { view: '/dashboard/doingjob', label: 'All rewiew jobs one' },
+        { view: '/dashboard/jobs', label: 'All open (reopen) job' },
+        { view: '/dashboard/doingjob', label: 'All rewiew jobs' },
         // { view: '/dashboard/contracts', label: 'My Contracts' }
       ];
       

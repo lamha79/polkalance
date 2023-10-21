@@ -406,6 +406,22 @@ mod polkalance {
             Ok(open_jobs)
         }
 
+        //get tất cả các job của owner dùng cho dashboard all new jobs của company
+        #[ink(message)]
+        pub fn get_all_open_jobs_of_onwer(&self) -> Result<Vec<Job>, JobError> {
+            let owner = self.env().caller();
+            let mut jobs = Vec::<Job>::new();
+            for i in 0..self.current_job_id {
+                jobs.push(self.jobs.get(i).unwrap());
+            }
+            let open_jobs = jobs
+                .into_iter()
+                .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN)
+                .filter(|job| job.person_create.unwrap() == owner)
+                .collect();
+            Ok(open_jobs)
+        }
+
         #[ink(message)]
         // get tất cả open job
         pub fn get_all_open_jobs(

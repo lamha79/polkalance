@@ -62,7 +62,7 @@ const DashboardJobs: FC = () => {
             >
               <Flex flexDir="column" gap={4}>
                 <Box textStyle="h2" as="h1" w="100%" textAlign="left">
-                  All my review jobs
+                  All open (reopen) jobs
                 </Box>
                 <Flex flexDir="column" gap={6}>
                 <CompanyTop onCreate={() => push('')} />
