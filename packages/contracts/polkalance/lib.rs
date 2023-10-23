@@ -2,7 +2,6 @@
 
 #[ink::contract]
 mod polkalance {
-
     use ink::prelude::string::String;
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
@@ -48,7 +47,17 @@ mod polkalance {
     }
 
     #[ink(event)]
-    pub struct JobObtained {
+    pub struct CreateContract {
+        #[ink(topic)]
+        job_id: JobId,
+        #[ink(topic)]
+        onwer: AccountId,
+        #[ink(topic)]
+        freelancer: AccountId,
+    }
+
+    #[ink(event)]
+    pub struct SignAndJobObtained {
         #[ink(topic)]
         job_id: JobId,
         #[ink(topic)]
@@ -155,6 +164,7 @@ mod polkalance {
         ratings: Mapping<AccountId, Vec<(JobId, Option<RatingPoint>)>>, // <JobId: id công việc, Điểm đánh giá>
         reports: Mapping<AccountId, Vec<(JobId, Option<ReportInfo>)>>, // <JobId: id công việc, Thông tin tố cáo>
         auction: Mapping<JobId, Vec<(AccountId, u128)>>, //đấu giá công việc
+        contracts: Mapping<JobId, Contract>
     }
 
     #[derive(scale::Decode, scale::Encode, Default, Debug, Clone)]
@@ -263,6 +273,22 @@ mod polkalance {
         rating_points: i32,                       // điểm dánh giá có thể âm nên để i32
     }
 
+
+    #[derive(scale::Decode, scale::Encode, Default, Debug, Clone)]
+    #[cfg_attr(
+        feature = "std",
+        derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout)
+    )]
+    pub struct Contract {
+        job_id: JobId,
+        party_a: Option<AccountId>,
+        party_a_consent: Option<bool>,
+        party_b: Option<AccountId>,
+        party_b_consent: Option<bool>,
+        rules: String,
+        percent_paid_when_contract_fail: u8,
+    }
+
     #[derive(scale::Decode, scale::Encode, Debug, PartialEq)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum JobError {
@@ -278,6 +304,11 @@ mod polkalance {
         InvalidBid, //đấu giá không hợp lệ (lương yêu cầu lớn hơn pay)
         InvalidBidder, //người đấu giá không hợp lệ
         NoBidder, //không có người đấu giá job
+        NotBidder, //không phải người đấu giá
+
+        //lỗi liên quan đến contract
+        NotExistedThisContract, //hơp đồng không tồn tại
+        NotPartyB, //không phải là bên B trong hợp đồng
 
         // Lỗi check job
         NotExisted,       // Job không tồn tại
@@ -675,9 +706,9 @@ mod polkalance {
             Ok(())
         }
 
-        //chọn đấu giá công việc tốt nhất
+        // onwer và freelancer sẽ tương tác với nhau qua web2 để phỏng vấn, trao đổi các thông tin: chi tiết công việc, điều khoản, tiền freelancer nhận được nếu job không hoàn thành
         #[ink(message)]
-        pub fn choose_the_best_bid (&mut self, job_id: JobId, _freelancer: AccountId, _desired_salary: u128) -> Result<(), JobError> {
+        pub fn create_contract(&mut self, job_id: JobId, party_b: AccountId, rules: String, percent_paid_when_contract_fail: u8) -> Result<(), JobError> {
             let caller = self.env().caller();
             let caller_info = self.personal_account_info.get(caller);
             // kiểm tra đăng kí và role
@@ -690,9 +721,8 @@ mod polkalance {
                     }
                 }
             }
-            //check xem có phải người đó là người giao công việc hay không
             let job_option = self.jobs.get(job_id);
-            match job_option.clone() {
+            match job_option {
                 None => return Err(JobError::NotExisted),
                 Some(job) => {
                     if job.person_create.unwrap() != caller {
@@ -706,51 +736,164 @@ mod polkalance {
                     };
                 },
             };
-            //kiểm tra thông tin đấu giá và thêm vào thông tin job
-            let auction_detail_option = self.auction.get(job_id);
-            match auction_detail_option {
-                None => {
-                    return Err(JobError::NoBidder);
-                },
-                Some(auction_detail) => {
-                    if !auction_detail.contains(&(_freelancer, _desired_salary)){
-                        return Err(JobError::InvalidBidder)
-                    }
-                },
+            if !self.auction.get(job_id).unwrap().iter().position(|&x| x.0==party_b).is_some(){
+                return Err(JobError::NotBidder);
             }
-            //update lại thông tin liên quan đến nhận job
-            let mut job = job_option.unwrap();
+            let contract = Contract{
+                job_id: job_id,
+                party_a: Some(caller),
+                party_a_consent: Some(true),
+                party_b: Some(party_b),
+                party_b_consent: None,
+                rules: rules,
+                percent_paid_when_contract_fail: percent_paid_when_contract_fail,
+            };
+            self.contracts.insert(job_id, &contract);
+            Self::env().emit_event(CreateContract{
+                job_id: job_id,
+                onwer: caller,
+                freelancer: party_b,
+            });
+            Ok(())
+        }
+
+        #[ink(message)]
+        pub fn sign_contract_and_obtain(&mut self, job_id: JobId) -> Result<(), JobError>{
+            let caller = self.env().caller();
+            let caller_info = self.personal_account_info.get(caller);
+            // kiểm tra đăng kí và role
+            match caller_info.clone() {
+                None => return Err(JobError::NotRegistered), //check đăng kí chưa
+                Some(user_info) => {
+                    //check role đúng chưa
+                    if user_info.role != AccountRole::FREELANCER {
+                        return Err(JobError::NotFreelancer);
+                    }
+                }
+            }
+            let contract_option = self.contracts.get(job_id);
+            match contract_option {
+                None => return Err(JobError::NotExistedThisContract),
+                Some(mut contract) => {
+                    if contract.party_b.unwrap() != caller {
+                        return Err(JobError::NotPartyB)
+                    } else {
+                        contract.party_b_consent = Some(true);
+                        self.contracts.insert(job_id, &contract);
+                    }
+                }
+            }
+            //obtain công việc, xem lại đấu giá job
+            let desired_salary_vec = self.auction.get(job_id).unwrap();
+            let position = desired_salary_vec.iter().position(|&x| x.0 == caller).unwrap();
+            let desired_salary = desired_salary_vec[position].1;
+
+            let mut job = self.jobs.get(job_id).unwrap();
             job.status = Status::DOING;
-            job.person_obtain = Some(_freelancer);
-            self.jobs.insert(job_id, &job);
+            job.person_obtain = Some(caller);
+            job.pay = desired_salary;
             //update công việc của freelancer
-            match self.freelancer_jobs.contains(_freelancer) {
+            match self.freelancer_jobs.contains(caller) {
                 true => {
-                    let mut jobs_of_freelancer = self.freelancer_jobs.get(_freelancer).unwrap();
-                    jobs_of_freelancer.push((job_id, false));
-                    self.freelancer_jobs.insert(_freelancer, &jobs_of_freelancer);
+                    let mut jobs_of_caller = self.freelancer_jobs.get(caller).unwrap();
+                    jobs_of_caller.push((job_id, false));
+                    self.freelancer_jobs.insert(caller, &jobs_of_caller);
                 }
                 false => {
-                    let mut jobs_of_freelancer = Vec::new();
-                    jobs_of_freelancer.push((job_id, false));
-                    self.freelancer_jobs.insert(caller, &jobs_of_freelancer);
+                    let mut jobs_of_caller = Vec::new();
+                    jobs_of_caller.push((job_id, false));
+                    self.freelancer_jobs.insert(caller, &jobs_of_caller);
                 }
             }
             //update user_info chỗ successful_jobs_and_all_jobs: all_jobs tăng thêm 1
-            let mut freelancer_detail = self.personal_account_info.get(_freelancer).unwrap();
+            let mut freelancer_detail = caller_info.unwrap();
             freelancer_detail.successful_jobs_and_all_jobs.1 =
                 freelancer_detail.successful_jobs_and_all_jobs.1 + 1;
             self.personal_account_info
                 .insert(caller, &freelancer_detail);
+            self.jobs.insert(job_id, &job);
             // Emit the event.
-            Self::env().emit_event(JobChooseTheBestBid {
+            Self::env().emit_event(SignAndJobObtained {
                 job_id,
-                freelancer: _freelancer,
+                freelancer: caller,
             });
-
-            
             Ok(())
         }
+        
+        // //chọn đấu giá công việc tốt nhất
+        // #[ink(message)]
+        // pub fn choose_the_best_bid (&mut self, job_id: JobId, _freelancer: AccountId, _desired_salary: u128) -> Result<(), JobError> {
+        //     let caller = self.env().caller();
+        //     let caller_info = self.personal_account_info.get(caller);
+        //     // kiểm tra đăng kí và role
+        //     match caller_info.clone() {
+        //         None => return Err(JobError::NotRegistered), //check đăng kí chưa
+        //         Some(user_info) => {
+        //             //check role đúng chưa
+        //             if user_info.role == AccountRole::FREELANCER {
+        //                 return Err(JobError::NotJobAssigner);
+        //             }
+        //         }
+        //     }
+        //     //check xem có phải người đó là người giao công việc hay không
+        //     let job_option = self.jobs.get(job_id);
+        //     match job_option.clone() {
+        //         None => return Err(JobError::NotExisted),
+        //         Some(job) => {
+        //             if job.person_create.unwrap() != caller {
+        //                 return Err(JobError::NotAssignThisJob);
+        //             };
+        //             if job.end_time < self.env().block_timestamp() {
+        //                 return Err(JobError::OutOfDate);
+        //             };
+        //             if job.status != Status::OPEN || job.status != Status::REOPEN {
+        //                 return Err(JobError::Proccessing);
+        //             };
+        //         },
+        //     };
+        //     //kiểm tra thông tin đấu giá và thêm vào thông tin job
+        //     let auction_detail_option = self.auction.get(job_id);
+        //     match auction_detail_option {
+        //         None => {
+        //             return Err(JobError::NoBidder);
+        //         },
+        //         Some(auction_detail) => {
+        //             if !auction_detail.contains(&(_freelancer, _desired_salary)){
+        //                 return Err(JobError::InvalidBidder)
+        //             }
+        //         },
+        //     }
+        //     //update lại thông tin liên quan đến nhận job
+        //     let mut job = job_option.unwrap();
+        //     job.status = Status::DOING;
+        //     job.person_obtain = Some(_freelancer);
+        //     self.jobs.insert(job_id, &job);
+        //     //update công việc của freelancer
+        //     match self.freelancer_jobs.contains(_freelancer) {
+        //         true => {
+        //             let mut jobs_of_freelancer = self.freelancer_jobs.get(_freelancer).unwrap();
+        //             jobs_of_freelancer.push((job_id, false));
+        //             self.freelancer_jobs.insert(_freelancer, &jobs_of_freelancer);
+        //         }
+        //         false => {
+        //             let mut jobs_of_freelancer = Vec::new();
+        //             jobs_of_freelancer.push((job_id, false));
+        //             self.freelancer_jobs.insert(caller, &jobs_of_freelancer);
+        //         }
+        //     }
+        //     //update user_info chỗ successful_jobs_and_all_jobs: all_jobs tăng thêm 1
+        //     let mut freelancer_detail = self.personal_account_info.get(_freelancer).unwrap();
+        //     freelancer_detail.successful_jobs_and_all_jobs.1 =
+        //         freelancer_detail.successful_jobs_and_all_jobs.1 + 1;
+        //     self.personal_account_info
+        //         .insert(caller, &freelancer_detail);
+        //     // Emit the event.
+        //     Self::env().emit_event(JobChooseTheBestBid {
+        //         job_id,
+        //         freelancer: _freelancer,
+        //     });
+        //     Ok(())
+        // }
 
 
 
@@ -769,68 +912,67 @@ mod polkalance {
             jobs
         }
 
-        #[ink(message)]
-        pub fn obtain(&mut self, job_id: JobId) -> Result<(), JobError> {
-            // Cho phép người dùng nhận công việc mới.
-            //
-            // Hàm này cho phép người phân công công việc tạo các công việc mới.
+        // #[ink(message)]
+        // pub fn obtain(&mut self, job_id: JobId) -> Result<(), JobError> {
+        //     // Cho phép người dùng nhận công việc mới.
+        //     // Hàm này cho phép người phân công công việc tạo các công việc mới.
 
-            let caller = self.env().caller();
-            let caller_info = self.personal_account_info.get(caller);
-            // kiểm tra đăng kí và role
-            match caller_info.clone() {
-                None => return Err(JobError::NotRegistered), //check đăng kí chưa
-                Some(user_info) => {
-                    //check role đúng chưa
-                    if user_info.role != AccountRole::FREELANCER {
-                        return Err(JobError::NotFreelancer);
-                    }
-                }
-            }
-            let mut job = self.jobs.get(job_id).ok_or(JobError::NotExisted)?;
-            //check end_time
-            if job.end_time < self.env().block_timestamp() {
-                return Err(JobError::OutOfDate);
-            };
+        //     let caller = self.env().caller();
+        //     let caller_info = self.personal_account_info.get(caller);
+        //     // kiểm tra đăng kí và role
+        //     match caller_info.clone() {
+        //         None => return Err(JobError::NotRegistered), //check đăng kí chưa
+        //         Some(user_info) => {
+        //             //check role đúng chưa
+        //             if user_info.role != AccountRole::FREELANCER {
+        //                 return Err(JobError::NotFreelancer);
+        //             }
+        //         }
+        //     }
+        //     let mut job = self.jobs.get(job_id).ok_or(JobError::NotExisted)?;
+        //     //check end_time
+        //     if job.end_time < self.env().block_timestamp() {
+        //         return Err(JobError::OutOfDate);
+        //     };
 
-            match job.status {
-                Status::DOING => return Err(JobError::Proccessing),
-                Status::REVIEW | Status::UNQUALIFIED => return Err(JobError::Submited),
-                Status::CANCELED | Status::FINISH => return Err(JobError::Finish),
-                Status::OPEN | Status::REOPEN => {
-                    //update lại thông tin job
-                    job.status = Status::DOING;
-                    job.person_obtain = Some(caller);
-                    //update công việc của freelancer
-                    match self.freelancer_jobs.contains(caller) {
-                        true => {
-                            let mut jobs_of_caller = self.freelancer_jobs.get(caller).unwrap();
-                            jobs_of_caller.push((job_id, false));
-                            self.freelancer_jobs.insert(caller, &jobs_of_caller);
-                        }
-                        false => {
-                            let mut jobs_of_caller = Vec::new();
-                            jobs_of_caller.push((job_id, false));
-                            self.freelancer_jobs.insert(caller, &jobs_of_caller);
-                        }
-                    }
-                    //update user_info chỗ successful_jobs_and_all_jobs: all_jobs tăng thêm 1
-                    let mut freelancer_detail = caller_info.unwrap();
-                    freelancer_detail.successful_jobs_and_all_jobs.1 =
-                        freelancer_detail.successful_jobs_and_all_jobs.1 + 1;
-                    self.personal_account_info
-                        .insert(caller, &freelancer_detail);
-                    self.jobs.insert(job_id, &job);
-                    // Emit the event.
-                    Self::env().emit_event(JobObtained {
-                        job_id,
-                        freelancer: caller,
-                    });
-                }
-            }
+        //     match job.status {
+        //         Status::DOING => return Err(JobError::Proccessing),
+        //         Status::REVIEW | Status::UNQUALIFIED => return Err(JobError::Submited),
+        //         Status::CANCELED | Status::FINISH => return Err(JobError::Finish),
+        //         Status::OPEN | Status::REOPEN => {
+        //             //update lại thông tin job
+        //             job.status = Status::DOING;
+        //             job.person_obtain = Some(caller);
+        //             //update công việc của freelancer
+        //             match self.freelancer_jobs.contains(caller) {
+        //                 true => {
+        //                     let mut jobs_of_caller = self.freelancer_jobs.get(caller).unwrap();
+        //                     jobs_of_caller.push((job_id, false));
+        //                     self.freelancer_jobs.insert(caller, &jobs_of_caller);
+        //                 }
+        //                 false => {
+        //                     let mut jobs_of_caller = Vec::new();
+        //                     jobs_of_caller.push((job_id, false));
+        //                     self.freelancer_jobs.insert(caller, &jobs_of_caller);
+        //                 }
+        //             }
+        //             //update user_info chỗ successful_jobs_and_all_jobs: all_jobs tăng thêm 1
+        //             let mut freelancer_detail = caller_info.unwrap();
+        //             freelancer_detail.successful_jobs_and_all_jobs.1 =
+        //                 freelancer_detail.successful_jobs_and_all_jobs.1 + 1;
+        //             self.personal_account_info
+        //                 .insert(caller, &freelancer_detail);
+        //             self.jobs.insert(job_id, &job);
+        //             // Emit the event.
+        //             Self::env().emit_event(SignAndJobObtained {
+        //                 job_id,
+        //                 freelancer: caller,
+        //             });
+        //         }
+        //     }
 
-            Ok(())
-        }
+        //     Ok(())
+        // }
 
         #[ink(message)]
         pub fn submit(&mut self, job_id: JobId, result: String) -> Result<(), JobError> {
@@ -914,7 +1056,7 @@ mod polkalance {
         }
 
         #[ink(message, payable)]
-        pub fn aproval(&mut self, job_id: JobId) -> Result<(), JobError> {
+        pub fn approval(&mut self, job_id: JobId) -> Result<(), JobError> {
             let caller = self.env().caller();
             let caller_info = self.personal_account_info.get(caller);
             // kiểm tra đăng kí và role
@@ -981,7 +1123,11 @@ mod polkalance {
                     //     .insert(job.person_obtain.unwrap(), &(job_id, true));
                     // chuyển tiền và giữ lại phần trăm phí
                     // let budget = job.budget * (100 - FEE_PERCENTAGE as u128) / 100;
+                    
+                    //chuyển tiền pay (desired_salary) cho freelancer
                     let _ = self.env().transfer(freelancer, job.pay);
+                    //chuyển tiền thừa lại cho company
+                    let _ = self.env().transfer(caller, job.budget-job.pay);
                     self.jobs.insert(job_id, &job);
                 }
             }
@@ -1466,11 +1612,11 @@ mod polkalance {
             assert!(result.is_ok());
         }
 
-        fn obtain_job(contract: &mut Account, caller: AccountId, job_id: u128) {
-            set_caller(caller);
-            let result = contract.obtain(job_id);
-            assert!(result.is_ok());
-        }
+        // fn obtain_job(contract: &mut Account, caller: AccountId, job_id: u128) {
+        //     set_caller(caller);
+        //     let result = contract.obtain(job_id);
+        //     assert!(result.is_ok());
+        // }
 
         fn submit_job(contract: &mut Account, caller: AccountId, job_id: u128) {
             set_caller(caller);
@@ -1591,7 +1737,7 @@ mod polkalance {
             );
             //bob là người gọi
             set_caller(bob);
-            let result = account.obtain(0);
+            // let result = account.obtain(0);
             assert!(result.is_ok());
             let job = account.jobs.get(0).unwrap();
             assert_eq!(job.status, Status::DOING);
@@ -1642,7 +1788,7 @@ mod polkalance {
                 },
             );
             set_caller(freelancer);
-            account.obtain(0).unwrap();
+            // account.obtain(0).unwrap();
             let input = "This is the job result.".to_string();
             let result = account.submit(0, input.clone());
             assert!(result.is_ok());
@@ -1746,7 +1892,7 @@ mod polkalance {
             assert_eq!(result, Err(JobError::NotTaked));
             //bob nhận việc và alice reject
             set_caller(default_accounts().bob);
-            let _ = account.obtain(0);
+            // let _ = account.obtain(0);
             set_caller(default_accounts().alice);
             let result = account.reject(0);
             assert_eq!(result, Err(JobError::Proccessing));
@@ -1765,7 +1911,7 @@ mod polkalance {
             register_owner(&mut account, default_accounts().alice);
             create_new_job(&mut account, default_accounts().alice);
             register_freelancer(&mut account, default_accounts().bob);
-            obtain_job(&mut account, default_accounts().bob, 0);
+            // obtain_job(&mut account, default_accounts().bob, 0);
             submit_job(&mut account, default_accounts().bob, 0);
             set_caller(default_accounts().alice);
             let result = account.reject(0);
@@ -1777,40 +1923,40 @@ mod polkalance {
             let mut account = build_contract();
             set_caller(default_accounts().alice);
             //check lỗi chưa đăng kí
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert_eq!(result, Err(JobError::NotRegistered));
             //alice đăng kí user và tạo job
             register_owner(&mut account, default_accounts().alice);
             create_new_job(&mut account, default_accounts().alice);
             //bob đăng kí freelancer
             register_freelancer(&mut account, default_accounts().bob);
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert_eq!(result, Err(JobError::NotJobAssigner));
             //charlie đăng kí và reject
             register_owner(&mut account, default_accounts().charlie);
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert_eq!(result, Err(JobError::NotAssignThisJob));
             //check alice aproval job
             set_caller(default_accounts().alice);
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert_eq!(result, Err(JobError::NotTaked));
             // //bob nhận việc và alice reject
             set_caller(default_accounts().bob);
-            let _ = account.obtain(0);
+            // let _ = account.obtain(0);
             set_caller(default_accounts().alice);
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert_eq!(result, Err(JobError::Proccessing));
             //chỉnh trạng thái công việc cancle
             let mut job0 = account.jobs.get(0).unwrap();
             job0.status = Status::CANCELED;
             account.jobs.insert(0, &job0);
             set_caller(default_accounts().alice);
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert_eq!(result, Err(JobError::Finish));
         }
 
         #[ink::test]
-        fn test_aproval_should_work() {
+        fn test_approval_should_work() {
             let mut account = build_contract();
             let alice = default_accounts().alice;
             let bob = default_accounts().bob;
@@ -1824,10 +1970,10 @@ mod polkalance {
             //không hiểu sao lại lỗi chỗ này
             // assert_eq!(get_balance_of(alice), old_balance_of_alice - 1000);
             register_freelancer(&mut account, bob);
-            obtain_job(&mut account, bob, 0);
+            // obtain_job(&mut account, bob, 0);
             submit_job(&mut account, bob, 0);
             set_caller(alice);
-            let result = account.aproval(0);
+            let result = account.approval(0);
             assert!(result.is_ok());
         }
     }

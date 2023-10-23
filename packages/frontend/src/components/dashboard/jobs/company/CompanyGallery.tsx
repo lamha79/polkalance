@@ -98,6 +98,7 @@ const CompanyGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
+      
       // setSearchJobsResult(output);
     } catch (e) {
       console.error(e);
@@ -110,17 +111,11 @@ const CompanyGallery: FC = () => {
     }
   };
   useEffect(() => {
-    // setJobs([job]);
-    // alert(isConnected);
     if (isConnected && activeChain && activeAccount) {
       searchJobs();
     }
-    if (fetchSearchJob){
-      setFetchSearchJob(false)
-    } 
-    // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, fetchSearchJob]);
-  ////A//
+  }, [contract, api]);
+  //////
   return (
     <Flex flexDir="column">
       {!jobsFetching && (
