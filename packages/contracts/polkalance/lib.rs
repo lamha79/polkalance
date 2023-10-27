@@ -193,7 +193,6 @@ mod polkalance {
         reporter: Option<AccountId>, // người được phép tố cáo
         require_rating: (bool, bool), // yêu cầu đánh giá của (người giao việc, người nhận việc)
         unqualifier: bool,   // smart contract phát hiện công việc không đạt chất lượng (quá hạn)
-        
         required_deposit_of_owner: Balance, //onwer quy định khoản này và deposit vào, khi hoàn thành công việc, tiền sẽ được trả về.
         required_deposit_of_freelancer: Balance, //owner quy định khoản này. Khi freelancer ký hợp đồng thì thực hiện chuyển tiền vào smc, tiền được trả khi hoàn thành công việc.
     }
@@ -342,6 +341,7 @@ mod polkalance {
         InvalidTermination, // yêu cầu chấm dứt không hợp lệ
         InvalidReport,      // yêu cầu tố cáo không hợp lệ
         InvalidRating,      // yêu cầu đánh giá không hợp lệ
+        InvalidPoint,       // điểm đánh giá không hợp lệ
 
         //lỗi liên quan tới thương lượng
         NoNegotiator,       //không có người thương lượng
@@ -1598,7 +1598,7 @@ mod polkalance {
                 // Status::FINISH => return Err(JobError::Finished),
             }
             
-            //thực hiện chuyển tiền
+            //thực hiện chuyển tiền 
             match _wrong_person {
                 //trong trường hợp ko có ai sai, chuyển tiền cho
                 //+ freelancer: tiền phần trăm theo hợp đồng + tiền deposit bắt buộc
@@ -1710,7 +1710,16 @@ mod polkalance {
         }
 
         #[ink(message)]
-        pub fn rating(&mut self, job_id: JobId, rating_point: RatingPoint) -> Result<(), JobError> {
+        pub fn rating(&mut self, job_id: JobId, point: u8) -> Result<(), JobError> {
+            if point > 6 {return Err(JobError::InvalidPoint);}
+            let rating_point = match point {
+                1 => RatingPoint::OneStar,
+                2 => RatingPoint::TwoStars,
+                3 => RatingPoint::ThreeStars,
+                4 => RatingPoint::FourStars,
+                5 => RatingPoint::FiveStars,
+                _ => RatingPoint::default(),
+            };
             let mut job = self.jobs.get(job_id).ok_or(JobError::NotExisted)?;
             // Get the caller's address
             let caller = self.env().caller();
@@ -1724,7 +1733,7 @@ mod polkalance {
                 Status::DOING | Status::UNQUALIFIED | Status::REVIEW => {
                     return Err(JobError::Processing)
                 }
-                Status::CANCELED => return Err(JobError::NotExisted),
+                Status::CANCELED => return Err(JobError::Canceled),
                 Status::FINISH => match (caller, job.require_rating) {
                     (a, (b, _)) if (a == job.person_create.unwrap() && b) => {
                         // update ratings
@@ -1744,6 +1753,11 @@ mod polkalance {
                         }
                         job.require_rating.0 = false;
                         self.jobs.insert(job_id, &job);
+                        //rating cho user
+                        let mut freelancer = self.personal_account_info.get(job.person_obtain.unwrap()).unwrap();
+                        freelancer.rating_points.0 += point as u32;
+                        freelancer.rating_points.1 += 1;
+                        self.personal_account_info.insert(job.person_obtain.unwrap(), &freelancer);
                     }
                     (a, (_, c)) if (a == job.person_obtain.unwrap() && c) => {
                         // update ratings
@@ -1763,6 +1777,11 @@ mod polkalance {
                         }
                         job.require_rating.1 = false;
                         self.jobs.insert(job_id, &job);
+                        //rating cho owner
+                        let mut owner = self.personal_account_info.get(job.person_create.unwrap()).unwrap();
+                        owner.rating_points.0 += point as u32;
+                        owner.rating_points.1 += 1;
+                        self.personal_account_info.insert(job.person_obtain.unwrap(), &owner);
                     }
                     _ => return Err(JobError::InvalidRating),
                 },
