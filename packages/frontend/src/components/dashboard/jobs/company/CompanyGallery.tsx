@@ -1,5 +1,5 @@
 import { Box, Flex, SimpleGrid, Spinner, useToast, Text } from '@chakra-ui/react'
-import { useJobs } from '../../../../front-provider/src'
+import { useJobs, useLanding } from '../../../../front-provider/src'
 import JobCard2 from '../../../../components/card/JobCard2'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
@@ -18,6 +18,7 @@ const CompanyGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push } = useRouter()
   const toast = useToast()
+  const {setUseFormDone, useFormDone} = useLanding()
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
@@ -111,10 +112,11 @@ const CompanyGallery: FC = () => {
     }
   };
   useEffect(() => {
-    if (isConnected && activeChain && activeAccount) {
-      searchJobs();
+    searchJobs();
+    if (useFormDone) {
+      setUseFormDone(false)
     }
-  }, [contract, api]);
+  }, [contract, api, useFormDone]);
   //////
   return (
     <Flex flexDir="column">

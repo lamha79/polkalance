@@ -92,7 +92,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     
     try {
       await contractTx(api, activeAccount.address, contract, 'register', {}, [
-        values.firstname + values.lastname, values.email, values.currentUserType
+        values.firstname + ' ' + values.lastname, values.email, values.currentUserType
       ])
       toast({
         title: <Text mt={-0.5}>Account registered Successfully</Text>,

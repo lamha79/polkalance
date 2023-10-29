@@ -30,6 +30,7 @@ import { useCreateJob } from '../hooks/useCreateJob'
 //thêm vào
 import { ContractIds } from '../../deployments/deployments'
 const DECIMAL_NUMBER = 1_000_000_000_000;  
+import { useLanding } from '@front-provider/src'
 
 
 interface RadioUserType {
@@ -54,6 +55,7 @@ interface FormData {
   category: string
   budget: number
   duration: number
+  requiredDepositOfFreelancer: number
 }
 
 const validationSchema = Yup.object().shape({
@@ -68,6 +70,10 @@ const validationSchema = Yup.object().shape({
     .transform((value, originalValue) => parseInt(originalValue))
     .moreThan(0)
     .required('Duration is required'),
+  requiredDepositOfFreelancer: Yup.number()
+    .transform((value, originalValue) => parseInt(originalValue))
+    .moreThan(0)
+    .required('Deposit Of Freelancer is required'),
 })
 
 interface CreateJobFormProps {
@@ -82,6 +88,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
   const toast = useToast()
 
   // thêm vào
+  const {setUseFormDone} = useLanding();
   const [loading, setLoading] = useState(false)
   const { api, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
@@ -89,12 +96,14 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return
     }
+    console.log(values)
     try {
       await contractTx(api, activeAccount.address, contract, 'create_job', {value: values.budget * DECIMAL_NUMBER}, [
         values.jobTitle,
         values.description,
         values.category,
         values.duration,
+        values.requiredDepositOfFreelancer * DECIMAL_NUMBER,
       ])
 
       toast({
@@ -112,6 +121,8 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
         isClosable: true,
         position: 'top-right',
       })
+    } finally {
+      setUseFormDone(true)
     }
   }
 
@@ -130,6 +141,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
         category: '',
         budget: 0,
         duration: 0,
+        requiredDepositOfFreelancer: 0,
       }}
       validationSchema={validationSchema}
       isInitialValid={false}
@@ -182,20 +194,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
               {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
             </ErrorMessage>
           </FormControl>
-          <FormControl id="budget" mb={6}>
-            <FormLabel>Budget</FormLabel>
-            <Field
-              name="budget"
-              placeholder="Budget"
-              as={Input}
-              type="number"
-              isInvalid={errors.budget && touched.budget}
-            />
-            <ErrorMessage name="budget">
-              {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
-            </ErrorMessage>
-          </FormControl>
-          <FormControl id="duration" isRequired>
+          <FormControl id="duration" isRequired mb={6}>
             <FormLabel>Duration</FormLabel>
             <Field
               name="duration"
@@ -208,6 +207,33 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
               {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
             </ErrorMessage>
           </FormControl>
+          <FormControl id="budget" isRequired mb={6}>
+            <FormLabel>Budget</FormLabel>
+            <Field
+              name="budget"
+              placeholder="Budget"
+              as={Input}
+              type="number"
+              isInvalid={errors.duration && touched.duration}
+            />
+            <ErrorMessage name="budget">
+              {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
+            </ErrorMessage>
+          </FormControl>
+          <FormControl id="requiredDepositOfFreelancer" isRequired mb={6}>
+            <FormLabel>Require Deposit Of Freelancer</FormLabel>
+            <Field
+              name="requiredDepositOfFreelancer"
+              placeholder="Require Deposit Of Freelancer"
+              as={Input}
+              type="number"
+              isInvalid={errors.duration && touched.duration}
+            />
+            <ErrorMessage name="requiredDepositOfFreelancer">
+              {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
+            </ErrorMessage>
+          </FormControl>
+          
           <FormControl mb={4}>
             {!activeAccount && (
               <Box fontWeight="600" textAlign="center" px={6} py={2.5} cursor="default">

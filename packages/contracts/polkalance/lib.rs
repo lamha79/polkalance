@@ -165,7 +165,7 @@ mod polkalance {
         // list_jobs_take: Mapping<AccountId, Vec<(JobId, bool)>>, // danh sách công việc đã nhận <id,(job_id,hoàn thành hay chưa?))>
         ratings: Mapping<AccountId, Vec<(JobId, Option<RatingPoint>)>>, // <JobId: id công việc, Điểm đánh giá>
         reports: Mapping<AccountId, Vec<(JobId, Option<ReportInfo>)>>, // <JobId: id công việc, Thông tin tố cáo>
-        auction: Mapping<JobId, Vec<(AccountId, u128)>>, //đấu giá công việc
+        auction: Mapping<JobId, Vec<(AccountId, u128, u128)>>, //đấu giá công việc job_id => (người đấu giá, tiền mong muốn được trả của freelancer, tiền cọc mong muốn của công ty)
         contracts: Mapping<JobId, Contract>,
     }
 
@@ -717,7 +717,6 @@ mod polkalance {
             description: String,
             string_category: String,
             duration: u64,  //duration là nhập số ngày chú ý timestamp tính theo mili giây
-            required_deposit_of_owner: Balance, //trên front end làm 2 chỗ nhập liệu riêng và cộng lại khi thực hiện transaction nên sẽ ko có lỗi khi thực hiện phép trừ balance ở dưới, nếu balance ko đủ thì khi thực hiện transaction sẽ tự thông báo ko đủ balance (bên ví nó tự báo)
             required_deposit_of_freelancer: Balance,
         ) -> Result<(), JobError> {
             let caller = self.env().caller();
@@ -733,7 +732,7 @@ mod polkalance {
             //     }
             // }
             let deposite = self.env().transferred_value();
-            let budget = (deposite - required_deposit_of_owner) * (100 - FEE_PERCENTAGE as u128) / 100;
+            let budget = deposite * (100 - FEE_PERCENTAGE as u128) / 100;
             let pay = budget;
             let start_time = self.env().block_timestamp();
             let category = match string_category.to_lowercase().as_str() {
@@ -764,7 +763,7 @@ mod polkalance {
                 reporter: None,
                 require_rating: (false, false),
                 unqualifier: false,
-                required_deposit_of_owner: required_deposit_of_owner,
+                required_deposit_of_owner: 0,
                 required_deposit_of_freelancer: required_deposit_of_freelancer,
             };
             self.jobs.insert(current_id, &job);
@@ -788,7 +787,7 @@ mod polkalance {
                 owner_detail.successful_jobs_and_all_jobs.1 + 1;
             self.personal_account_info.insert(caller, &owner_detail);
             //update tổng tiền phí thu được 
-            self.fee_balance += (deposite - required_deposit_of_owner) * (FEE_PERCENTAGE as u128) / 100;
+            self.fee_balance += deposite * (FEE_PERCENTAGE as u128) / 100;
             // Emit the event.
             Self::env().emit_event(JobCreated {
                 name: name,
@@ -800,7 +799,7 @@ mod polkalance {
         }
 
         #[ink(message)]
-        pub fn job_auction (&mut self, job_id: JobId, desired_salary: u128) -> Result<(), JobError> {
+        pub fn job_auction (&mut self, job_id: JobId, desired_salary: u128, required_deposit_of_owner: Balance) -> Result<(), JobError> {
             // check caller đã đăng kí hay chưa và có phải là freelancer hay không
             let caller = self.env().caller();
             // let caller_info = self.personal_account_info.get(caller);
@@ -819,7 +818,7 @@ mod polkalance {
             match option_job.clone() {
                 None => return Err(JobError::NotExisted),
                 Some(job) => {
-                    if job.status != Status::OPEN && job.status != Status::REOPEN && job.status != Status::AUCTIONING  {
+                    if job.status != Status::OPEN && job.status != Status::REOPEN && job.status != Status::AUCTIONING {
                         return Err(JobError::Processing)
                     };
                     if self.env().block_timestamp() > job.end_time {
@@ -836,14 +835,14 @@ mod polkalance {
             match job_auctions_option {
                 None => {
                     let mut new_job_auctions = Vec::new();
-                    new_job_auctions.push((caller, desired_salary));
+                    new_job_auctions.push((caller, desired_salary, required_deposit_of_owner));
                     self.auction.insert(job_id, &new_job_auctions);
                 },
                 Some(mut job_auctions) => {
                     if let Some(index) = job_auctions.iter().position(|x| x.0 == caller) { //nếu đấu giá lại thì thông tin được ghi đè.
                         job_auctions[index].1 = desired_salary;
                     } else {
-                        job_auctions.push((caller, desired_salary));
+                        job_auctions.push((caller, desired_salary, required_deposit_of_owner));
                         self.auction.insert(job_id, &job_auctions);
                     }
                 }
@@ -872,7 +871,7 @@ mod polkalance {
         // onwer và freelancer sẽ tương tác với nhau qua web2 để phỏng vấn, trao đổi các thông tin: chi tiết công việc, điều khoản, phần trăm tiền freelancer nhận được nếu job không hoàn thành (do bên owner không hợp tác)
         // sẽ có vòng thương lượng để có thể thay đổi số tiền được trả nếu thương lượng thành công. (sử dụng tiền trong thương lượng làm tiền trả mà không dùng chỗ này nữa)
         // nếu freelancer không hợp tác thì không được hưởng khoản tiền trong hợp đồng này.
-        #[ink(message)]
+        #[ink(message, payable)]
         pub fn create_contract(&mut self, job_id: JobId, party_b: AccountId, rules: String, percent_paid_when_contract_fail: u8, duration: u8) -> Result<(), JobError> {
             let caller = self.env().caller();
             let caller_info = self.personal_account_info.get(caller);
@@ -890,27 +889,47 @@ mod polkalance {
                     }
                 }
             }
-            let job_option = self.jobs.get(job_id);
-            match job_option {
-                None => return Err(JobError::NotExisted),
-                Some(job) => {
-                    if job.person_create.unwrap() != caller {
-                        return Err(JobError::NotAssignThisJob);
-                    };
-                    if job.end_time < self.env().block_timestamp() {
-                        return Err(JobError::OutOfDate);
-                    };
-                    if job.status == Status::OPEN || job.status == Status::REOPEN {
-                        return Err(JobError::NoBidder)
-                    };
-                    if job.status != Status::AUCTIONING  {
-                        return Err(JobError::Processing)
-                    };
-                },
+            let mut job = self.jobs.get(job_id).ok_or(JobError::NotExisted)?;
+            if job.person_create.unwrap() != caller {
+                return Err(JobError::NotAssignThisJob);
             };
-            if !self.auction.get(job_id).unwrap().iter().position(|&x| x.0==party_b).is_some(){
+            if job.end_time < self.env().block_timestamp() {
+                return Err(JobError::OutOfDate);
+            };
+            if job.status == Status::OPEN || job.status == Status::REOPEN {
+                return Err(JobError::NoBidder)
+            };
+            if job.status != Status::AUCTIONING  {
+                return Err(JobError::Processing)
+            };
+            // match job {
+            //     None => return Err(JobError::NotExisted),
+            //     Some(job) => {
+            //         if job.person_create.unwrap() != caller {
+            //             return Err(JobError::NotAssignThisJob);
+            //         };
+            //         if job.end_time < self.env().block_timestamp() {
+            //             return Err(JobError::OutOfDate);
+            //         };
+            //         if job.status == Status::OPEN || job.status == Status::REOPEN {
+            //             return Err(JobError::NoBidder)
+            //         };
+            //         if job.status != Status::AUCTIONING  {
+            //             return Err(JobError::Processing)
+            //         };
+            //     },
+            // };
+            let require_deposit = self.env().transferred_value();
+            if let Some(index) = self.auction.get(job_id).unwrap().iter().position(|&x| x.0==party_b) {
+                if require_deposit != self.auction.get(job_id).unwrap()[index].2 {
+                    return Err(JobError::InvalidDeposit);
+                }
+            } else {
                 return Err(JobError::NotBidder);
             }
+            // if !self.auction.get(job_id).unwrap().iter().position(|&x| x.0==party_b).is_some(){
+            //     return Err(JobError::NotBidder);
+            // }
             let contract = Contract{
                 job_id: job_id,
                 party_a: Some(caller),
@@ -922,6 +941,9 @@ mod polkalance {
                 deadline_to_sign_contract: self.env().block_timestamp() + (duration as u64) * 60 * 60 * 1000, //duration sẽ là số giờ sau khi tạo contract thì freelancer phải kí
             };
             self.contracts.insert(job_id, &contract);
+            // update lại thông tin job
+            job.required_deposit_of_owner = require_deposit;
+            self.jobs.insert(job_id, &job);
             Self::env().emit_event(CreateContract{
                 job_id: job_id,
                 onwer: caller,
@@ -1977,13 +1999,12 @@ mod polkalance {
             let description = "detail of user's job".to_string();
             let string_category = "it".to_string();
             let duration: u64 = 1;
-            let required_deposit_of_owner = 20;
             let required_deposit_of_freelancer = 10;
             //set số lượng tiền deposit vào smartcontract.
             transfer_in(caller, contract.env().account_id(), 120);
             //set block time_stamp bằng 10 => start_time = 10
             set_block_timestamp(10);
-            contract.create_job(name, description, string_category, duration, required_deposit_of_owner, required_deposit_of_freelancer)?;
+            contract.create_job(name, description, string_category, duration, required_deposit_of_freelancer)?;
             Ok(())
         }
 
@@ -2095,7 +2116,6 @@ mod polkalance {
                 "This is a description of my new job.".to_string(),
                 "it".to_string(),
                 1, // 1 day
-                20,
                 10,
             );
             //kiểm tra balance của alice và của contract
@@ -2112,13 +2132,13 @@ mod polkalance {
                 category: Category::IT,
                 result: None,
                 status: Status::OPEN,
-                budget: 97,                  
+                budget: 116,                  
                 fee_percentage: 3,              
                 start_time: 10,            
                 end_time: 10 + 24 * 60 * 60 * 1000, 
                 person_create: Some(alice), 
                 person_obtain: None,
-                pay: 97,
+                pay: 116,
                 negotiation_pay: 0,
                 feedback: String::new(),
                 request_negotiation: false,
@@ -2126,7 +2146,7 @@ mod polkalance {
                 reporter: None,
                 require_rating: (false, false),
                 unqualifier: false,
-                required_deposit_of_owner: 20,
+                required_deposit_of_owner: 0,
                 required_deposit_of_freelancer: 10, 
             };
             assert_eq!(job,job_info);

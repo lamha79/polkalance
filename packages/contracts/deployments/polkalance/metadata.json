@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xa02fbcdf6d658f44ed0686021d0ed66d19e69672ec68c22a6edff61b3dba8b93",
+    "hash": "0x5f33aee56335ec545d307f101b802945871faf7a44bdc800ff11bc24fa6c0caf",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.71.1",
     "build_info": {
@@ -984,15 +984,6 @@
             }
           },
           {
-            "label": "required_deposit_of_owner",
-            "type": {
-              "displayName": [
-                "Balance"
-              ],
-              "type": 3
-            }
-          },
-          {
             "label": "required_deposit_of_freelancer",
             "type": {
               "displayName": [
@@ -1032,6 +1023,15 @@
             "type": {
               "displayName": [
                 "u128"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "label": "required_deposit_of_owner",
+            "type": {
+              "displayName": [
+                "Balance"
               ],
               "type": 3
             }
@@ -1103,7 +1103,7 @@
         "docs": [],
         "label": "create_contract",
         "mutates": true,
-        "payable": false,
+        "payable": true,
         "returnType": {
           "displayName": [
             "ink",
@@ -2630,6 +2630,7 @@
         "def": {
           "tuple": [
             0,
+            3,
             3
           ]
         }
