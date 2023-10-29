@@ -819,7 +819,7 @@ mod polkalance {
             match option_job.clone() {
                 None => return Err(JobError::NotExisted),
                 Some(job) => {
-                    if job.status != Status::OPEN || job.status != Status::REOPEN || job.status != Status::AUCTIONING  {
+                    if job.status != Status::OPEN && job.status != Status::REOPEN && job.status != Status::AUCTIONING  {
                         return Err(JobError::Processing)
                     };
                     if self.env().block_timestamp() > job.end_time {
@@ -2160,12 +2160,23 @@ mod polkalance {
             let alice = default_accounts().alice;
             set_balance(alice, 119);
             let _ = register_owner(&mut account, alice);
+            //------------------------------------------
+            //check với alice => ko đủ balance => panic
+            // let result = create_new_job(&mut account, alice);
+            //------------------------------------------
             //lấy bob, set_balance cho bob, đăng kí freelancer cho bob
             let bob = default_accounts().bob;
             set_balance(bob, 200);
             let _ = register_freelancer(&mut account, bob);
-            //check với alice => ko đủ balance
-            // let result = create_new_job(&mut account, alice);
+            let result = create_new_job(&mut account, bob);
+            assert_eq!(result, Err(JobError::NotJobAssigner));
+            //lấy eve, set_balance cho eve, không đăng ký tk cho eve
+            let eve = default_accounts().eve;
+            set_balance(eve, 200);
+            let _ = register_freelancer(&mut account, eve);
+            
+            
+            
 
         }
         // #[ink::test]

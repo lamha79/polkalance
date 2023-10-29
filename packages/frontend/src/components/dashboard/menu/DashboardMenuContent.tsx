@@ -31,7 +31,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
       const freelanceMenu: MenuElement[] = [
         { view: '/dashboard', label: 'Dashboard' },
         { view: '/dashboard/offers', label: 'Find work' },
-        { view: '/dashboard/jobs', label: 'All open Jobs' }, //nhớ bật lên
+        { view: '/dashboard/jobs', label: 'All open Jobs' },
         // { view: '/dashboard/contracts', label: 'My Contracts' },
         { view: '/dashboard/doingjob', label: 'All my doing jobs' }
       ];
