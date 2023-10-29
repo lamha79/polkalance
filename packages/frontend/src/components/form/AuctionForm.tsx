@@ -92,11 +92,11 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
     console.log(jobSubmitId);
     try {
       await contractTx(api, activeAccount.address, contract, 'jobAuction', {}, [
-        // jobSubmitId, values.desired_salary, values.required_deposit_of_owner
-        1, 1, 2
+        jobSubmitId, values.desired_salary, values.required_deposit_of_owner
+        // 1, 1, 2
       ])
       toast({
-        title: <Text mt={-0.5}>Submit successfully</Text>,
+        title: <Text mt={-0.5}>Auction successfully</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',
@@ -173,7 +173,7 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
                     isChecked={field.checked}
                     isInvalid={errors.agreeTOS !== undefined && touched.agreeTOS}
                   >
-                    Are your sure this result?
+                    Do you want auction this job?
                   </Checkbox>
                 )}
               </Field>

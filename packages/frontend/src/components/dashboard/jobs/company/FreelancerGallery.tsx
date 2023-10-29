@@ -17,7 +17,7 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace, reload} = useRouter()
   const toast = useToast()
-  const {setAuctionModalOpen, jobSubmitId} = useLanding();
+  const {setAuctionModalOpen, jobSubmitId, setJobSubmitId, useFormDone, setUseFormDone} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -76,10 +76,10 @@ const FreelancerGallery: FC = () => {
   };
   useEffect(() => {
       searchJobs();
-      if (fetchObtain){
-        setFetchObtain(false) 
+      if (useFormDone){
+        setUseFormDone(false)
       }
-  }, [contract, api, fetchObtain]);
+  }, [contract, api, useFormDone]);
   //////
   return (
     <Flex flexDir="column">
@@ -90,8 +90,8 @@ const FreelancerGallery: FC = () => {
               {jobs?.map((j, k) => (
                 <JobCard2 job={j} key={k} onClick={() =>
                   {
+                    setJobSubmitId(parseInt(j.jobId));
                     alert(jobSubmitId);
-                    obtainJob(parseInt(j.jobId));
                     setAuctionModalOpen(true);
                   }
                 } />
