@@ -1,5 +1,5 @@
 import { Box, Flex, SimpleGrid, Spinner, useToast, Text } from '@chakra-ui/react'
-import { useJobs } from '../../../../front-provider/src'
+import { useJobs, useLanding } from '../../../../front-provider/src'
 import JobCard2 from '../../../card/JobCard2'
 import router, {useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
@@ -17,6 +17,7 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace, reload} = useRouter()
   const toast = useToast()
+  const {setSubmitModalOpen} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -87,7 +88,9 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => obtainJob(parseInt(j.jobId))
+                <JobCard2 job={j} key={k} onClick={() => 
+                  // obtainJob(parseInt(j.jobId))
+                  setSubmitModalOpen(true)
                 } />
               ))}
             </SimpleGrid>
