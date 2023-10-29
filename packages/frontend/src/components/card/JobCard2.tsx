@@ -193,7 +193,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         </Text>
       </Flex>
       <Flex mt={4} flexWrap="wrap" rowGap={2}>
-        {!mobileDisplay && activeAccountUser && job.status == ("OPEN" || job.status == "REOPEN") && type === UserTypeEnum.Freelancer &&<Button
+        {!mobileDisplay && activeAccountUser && (job.status == "OPEN" || job.status == "REOPEN" || job.status == "AUCTIONING") && type === UserTypeEnum.Freelancer &&<Button
           ml="auto"
           variant="outline"
           px="12px !important"

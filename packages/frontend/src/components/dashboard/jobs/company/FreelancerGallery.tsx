@@ -91,7 +91,6 @@ const FreelancerGallery: FC = () => {
                 <JobCard2 job={j} key={k} onClick={() =>
                   {
                     setJobSubmitId(parseInt(j.jobId));
-                    alert(jobSubmitId);
                     setAuctionModalOpen(true);
                   }
                 } />

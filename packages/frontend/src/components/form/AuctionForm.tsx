@@ -93,7 +93,6 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
     try {
       await contractTx(api, activeAccount.address, contract, 'jobAuction', {}, [
         jobSubmitId, values.desired_salary, values.required_deposit_of_owner
-        // 1, 1, 2
       ])
       toast({
         title: <Text mt={-0.5}>Auction successfully</Text>,
