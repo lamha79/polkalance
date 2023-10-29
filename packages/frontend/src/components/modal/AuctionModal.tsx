@@ -15,7 +15,7 @@ import {
 import { useInkathon } from '@scio-labs/use-inkathon'
 import { useLanding } from '../../front-provider/src'
 import { FC } from 'react';
-import SubmitForm from '../form/SubmitForm';
+import AuctionForm from '../form/AuctionForm';
 import { useResponsive } from '../hooks/useResponsive';
 
 const AuctionModal: FC = () => {
@@ -38,10 +38,10 @@ const AuctionModal: FC = () => {
       {(desktopDisplay || tabletDisplay) && <Modal isOpen={auctionModalOpen} onClose={close} isCentered={mobileDisplay ? false : true} size={{base: 'full', md: "xl"}}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Submit Result</ModalHeader>
+          <ModalHeader>Auction Job</ModalHeader>
           <ModalCloseButton />
           <ModalBody >
-            <SubmitForm
+            <AuctionForm
               onSubmitSuccess={() => {
                 // disconnect?.();
                 setTimeout(() => {
@@ -52,24 +52,6 @@ const AuctionModal: FC = () => {
           </ModalBody>
         </ModalContent>
       </Modal>}
-      {/* {mobileDisplay && <Drawer placement="left" onClose={close} isOpen={submitModalOpen}>
-          <DrawerOverlay>
-            <DrawerContent>
-              <DrawerHeader>Sign up</DrawerHeader>
-              <DrawerCloseButton top=".75rem"/>
-              <DrawerBody mt={".5rem"} height="100%" display="flex" flexDir="column">
-                  <SubmitForm
-                  onSubmitSuccess={() => {
-                    disconnect?.();
-                    setTimeout(() => {
-                      setSubmitModalOpen(false);
-                    }, 200);
-                  }}
-                />
-              </DrawerBody>
-            </DrawerContent>
-          </DrawerOverlay>
-        </Drawer>} */}
     </>
   );
 };

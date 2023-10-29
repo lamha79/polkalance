@@ -206,7 +206,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           maxH="26px"
           onClick={() => onClick?.()}
         >
-          Obtain
+          Auction
         </Button>}
         {!mobileDisplay && activeAccountUser && job.status == ("DOING") && <Button
           ml="auto"

@@ -53,18 +53,26 @@ const RadioGroupUserType: RadioUserType[] = [
 ]
 
 interface FormData {
-  result: string
+  desired_salary: number,
+  required_deposit_of_owner: number,
 }
 
 const validationSchema = Yup.object().shape({
-  result: Yup.string().min(2).required('Result required'),
+  desired_salary: Yup.number()
+    .transform((value, originalValue) => parseInt(originalValue))
+    .moreThan(0)
+    .required('Desired salary is required'),
+  required_deposit_of_owner: Yup.number()
+    .transform((value, originalValue) => parseInt(originalValue))
+    .moreThan(0)
+    .required('Deposit of owner is required'),
 })
 
-interface SignupFormProps {
+interface AuctionFormProps {
   onSubmitSuccess: () => void
 }
 
-const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
+const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
   const {
     activeAccount
   } = useInkathon()
@@ -76,15 +84,16 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
   const { api, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const { push } = useRouter()
-  const updateRegister = async (values: FormData) => {
-        
+  const auctionJob = async (values: FormData) => {
+     
     if (!activeAccount || !contract || !activeSigner || !api) {
       return false
     }
-    
+    console.log(jobSubmitId);
     try {
-      await contractTx(api, activeAccount.address, contract, 'submit', {}, [
-        jobSubmitId,values.result
+      await contractTx(api, activeAccount.address, contract, 'jobAuction', {}, [
+        // jobSubmitId, values.desired_salary, values.required_deposit_of_owner
+        1, 1, 2
       ])
       toast({
         title: <Text mt={-0.5}>Submit successfully</Text>,
@@ -110,15 +119,16 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
   const onSubmit = async (values: FormData) => {
     if (activeAccount?.address && !loading) {
       setLoading(true)
-      updateRegister(values)
+      auctionJob(values)
       setLoading(false)
     }
   }
   return (
     <Formik
       initialValues={{
-        result: '',
         agreeTOS: false,
+        desired_salary: 0,
+        required_deposit_of_owner: 0,
       }}
       validationSchema={validationSchema}
       isInitialValid={false}
@@ -128,16 +138,29 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     >
       {({ isValid, errors, touched }) => (
         <Form>
-          <FormControl id="reusult" isRequired mb={6}>
-            <FormLabel>Your result</FormLabel>
+          <FormControl id="desired_salary" isRequired mb={6}>
+            <FormLabel>Your desired salary</FormLabel>
             <Field
-              name="result"
-              placeholder="Enter your result"
+              name="desired_salary"
+              placeholder="Enter your desired salary"
               as={Input}
-              type="result"
-              isInvalid={errors.result && touched.result}
+              type="desired_salary"
+              isInvalid={errors.desired_salary && touched.desired_salary}
             />
-            <ErrorMessage name="result">
+            <ErrorMessage name="desired_salary">
+              {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
+            </ErrorMessage>
+          </FormControl>
+          <FormControl id="required_deposit_of_owner" isRequired mb={6}>
+            <FormLabel>Required deposit of company</FormLabel>
+            <Field
+              name="required_deposit_of_owner"
+              placeholder="Enter required deposit of company"
+              as={Input}
+              type="required_deposit_of_owner"
+              isInvalid={errors.required_deposit_of_owner && touched.required_deposit_of_owner}
+            />
+            <ErrorMessage name="required_deposit_of_owner">
               {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
             </ErrorMessage>
           </FormControl>
@@ -201,7 +224,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
             loadingText="Waiting for wallet signature"
             spinnerPlacement="end"
           >
-            Submit job
+            Auction job
           </Button>
         </Form>
       )}
@@ -209,4 +232,4 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
   )
 }
 
-export default SignupForm
+export default AuctionForm

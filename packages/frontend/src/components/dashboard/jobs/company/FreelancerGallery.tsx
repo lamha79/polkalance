@@ -17,7 +17,7 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace, reload} = useRouter()
   const toast = useToast()
-  const {setSubmitModalOpen} = useLanding();
+  const {setAuctionModalOpen, jobSubmitId} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -88,9 +88,12 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => 
-                  // obtainJob(parseInt(j.jobId))
-                  setSubmitModalOpen(true)
+                <JobCard2 job={j} key={k} onClick={() =>
+                  {
+                    alert(jobSubmitId);
+                    obtainJob(parseInt(j.jobId));
+                    setAuctionModalOpen(true);
+                  }
                 } />
               ))}
             </SimpleGrid>
