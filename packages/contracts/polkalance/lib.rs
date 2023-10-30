@@ -280,7 +280,7 @@ mod polkalance {
     }
 
 
-    #[derive(scale::Decode, scale::Encode, Default, Debug, Clone)]
+    #[derive(scale::Decode, scale::Encode, Default, Debug, Clone, PartialEq)]
     #[cfg_attr(
         feature = "std",
         derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout)
@@ -841,6 +841,8 @@ mod polkalance {
                 Some(mut job_auctions) => {
                     if let Some(index) = job_auctions.iter().position(|x| x.0 == caller) { //nếu đấu giá lại thì thông tin được ghi đè.
                         job_auctions[index].1 = desired_salary;
+                        job_auctions[index].2 = required_deposit_of_owner;
+                        self.auction.insert(job_id, &job_auctions);
                     } else {
                         job_auctions.push((caller, desired_salary, required_deposit_of_owner));
                         self.auction.insert(job_id, &job_auctions);
@@ -853,13 +855,15 @@ mod polkalance {
 
             //Chỉnh lại trạng thái công việc đã thành công của onwer_jobs (người thứ hai trở đi auction vẫn ghi đè chỗ này)
             let mut owner_jobs = self.owner_jobs.get(job.person_create.unwrap()).unwrap();
-            for element in owner_jobs.iter_mut() {
-                if element.0 == job_id {
-                    element.1 = Status::AUCTIONING;
-                    break;
-                }
-            }
-            self.owner_jobs.insert(caller, &owner_jobs);
+            let index = owner_jobs.iter().position(|(x, _)| *x == job_id).unwrap();
+            owner_jobs[index].1 = Status::AUCTIONING;
+            // for element in (&mut owner_jobs).iter_mut() {
+            //     if element.0 == job_id {
+            //         element.1 = Status::AUCTIONING;
+            //         break;
+            //     }
+            // }
+            self.owner_jobs.insert(job.person_create.unwrap(), &owner_jobs);
             //emit event
             Self::env().emit_event(JobAuction {
                 job_id: job_id,
@@ -1922,7 +1926,7 @@ mod polkalance {
         // vec để set địa chỉ contract.
         const CONTRACT: [u8; 32] = [7; 32];
 
-        // lấy dãy các account truy cập alice là [1;32] bov là [2;32]...
+        // lấy dãy các account truy cập alice là [1;32] bob là [2;32]...
         // cách truy cập là default_accounts().alice, ...
         fn default_accounts() -> test::DefaultAccounts<Environment> {
             ink::env::test::default_accounts::<Environment>()
@@ -1992,23 +1996,62 @@ mod polkalance {
             constract.register(name, detail, string_role)?;
             Ok(())
         }
-        //tạo job với thời hạn là 1 ngày, tiền bắt buộc deposit của onwer là 20 và của freelancer là 10
+        //tạo job với thời hạn là 1 ngày, budget là 100 và của require freelancer là 10
         fn create_new_job(contract: &mut Account, caller: AccountId) -> Result<(), JobError> {
-            set_caller(caller);
             let name = "user's job".to_string();
             let description = "detail of user's job".to_string();
             let string_category = "it".to_string();
             let duration: u64 = 1;
             let required_deposit_of_freelancer = 10;
             //set số lượng tiền deposit vào smartcontract.
-            transfer_in(caller, contract.env().account_id(), 120);
+            transfer_in(caller, contract.env().account_id(), 100);
             //set block time_stamp bằng 10 => start_time = 10
-            set_block_timestamp(10);
+            set_block_timestamp(10000);
             contract.create_job(name, description, string_category, duration, required_deposit_of_freelancer)?;
             Ok(())
         }
 
+        //đăng kí với tên và role (f: freelancer, c: company)
+        fn register_user_with_role_for(account: &mut Account, name: &str, role: char) -> Option<AccountId> {
+            let user_option = match name {
+                "alice" => Some(default_accounts().alice),
+                "bob" => Some(default_accounts().bob),
+                "eve" => Some(default_accounts().eve),
+                "charlie" => Some(default_accounts().charlie),
+                _ => None,
+            };
+            let role = if role == 'f' {
+                "freelancer"
+            } else {
+                "teamlead"
+            };
 
+            if let Some(user) = user_option {
+                set_balance(user, 200);
+                set_caller(user);
+                let _ = account.register(
+                    name.to_string(),
+                    "detail".to_string(),
+                    role.to_string(),
+                );
+            }
+            user_option
+        }
+
+        fn auction_job (account: &mut Account, freelancer: AccountId, job_id: JobId, desired_salary: u128, required_deposit_of_owner: Balance) -> Result<(), JobError> {
+            set_caller(freelancer);
+            account.job_auction(job_id, desired_salary, required_deposit_of_owner)?;
+            Ok(())
+        }
+
+        fn create_contract (account: &mut Account, party_a: AccountId, balance_of_party_a: Balance, job_id: JobId, party_b: AccountId, percent_paid_when_contract_fail: u8, duration: u8) -> Result<(), JobError> {
+            transfer_in(party_a, account.env().account_id(), balance_of_party_a);
+            let rule = String::from("These are the terms of the contract");
+            account.create_contract(job_id, party_b, rule, percent_paid_when_contract_fail, duration)?;
+            Ok(())
+        }
+
+        
         fn submit_job(contract: &mut Account, caller: AccountId, job_id: u128) {
             set_caller(caller);
             let result_job = "this is a result of this job".to_string();
@@ -2067,7 +2110,9 @@ mod polkalance {
             assert_eq!(account.check_caller_is_freelancer(alice),Err(JobError::NotFreelancer));
             assert_eq!(account.check_caller_is_freelancer(bob),Ok(()));
             assert_eq!(account.check_caller_is_owner(alice),Ok(()));
-            assert_eq!(account.check_caller_is_owner(bob),Err(JobError::NotJobAssigner));         
+            assert_eq!(account.check_caller_is_owner(bob),Err(JobError::NotJobAssigner));   
+            //check all_freelancer
+            assert_eq!(account.all_freelancer, vec![bob]);      
         }
 
         #[ink::test]
@@ -2106,8 +2151,10 @@ mod polkalance {
                 "Alice's details".to_string(),
                 "individual".to_string(),
             );
+            //cách tính số tiền deposit vào smc
+            //tạo job => 100 = 97(budget) + 3(phí) 
             //set số lượng tiền deposit vào smartcontract.
-            transfer_in(alice, account_address, 120);
+            transfer_in(alice, account_address, 100);
             //set block time_stamp bằng 10 => start_time = 10
             set_block_timestamp(10);
             // Create a new job.
@@ -2116,11 +2163,11 @@ mod polkalance {
                 "This is a description of my new job.".to_string(),
                 "it".to_string(),
                 1, // 1 day
-                10,
+                10, //tiền yêu cầu của freelancer
             );
             //kiểm tra balance của alice và của contract
-            assert_eq!(get_balance_of(alice),80);
-            assert_eq!(get_balance_of(account_address),120);
+            assert_eq!(get_balance_of(alice),100);
+            assert_eq!(get_balance_of(account_address),100);
             //kiểm tra onchain storage đúng hay chưa
             assert!(result.is_ok());
             //kiểm tra thông tin job index 0
@@ -2132,13 +2179,13 @@ mod polkalance {
                 category: Category::IT,
                 result: None,
                 status: Status::OPEN,
-                budget: 116,                  
+                budget: 97,                  
                 fee_percentage: 3,              
                 start_time: 10,            
                 end_time: 10 + 24 * 60 * 60 * 1000, 
                 person_create: Some(alice), 
                 person_obtain: None,
-                pay: 116,
+                pay: 97,
                 negotiation_pay: 0,
                 feedback: String::new(),
                 request_negotiation: false,
@@ -2175,10 +2222,9 @@ mod polkalance {
         fn test_create_job_should_fail() {
             //build contract với địa chỉ là [7;32]
             let mut account = build_contract();
-            let account_address = account.env().account_id();
             //lấy alice, set_balance cho alice, đăng kí owner cho alice
             let alice = default_accounts().alice;
-            set_balance(alice, 119);
+            set_balance(alice, 99);
             let _ = register_owner(&mut account, alice);
             //------------------------------------------
             //check với alice => ko đủ balance => panic
@@ -2194,9 +2240,171 @@ mod polkalance {
             let eve = default_accounts().eve;
             set_balance(eve, 200);
             let _ = register_freelancer(&mut account, eve);
-            
-            
-            
+        }
+
+
+        #[ink::test]
+        fn test_job_auction_success() {
+            let mut account = build_contract();
+            //đăng kí 3 account là alice (company), bob (freelancer) và charlie (freelancer)
+            let alice = register_user_with_role_for(&mut account, "alice", 'c').unwrap();
+            let bob = register_user_with_role_for(&mut account, "bob", 'f').unwrap();
+            let charlie = register_user_with_role_for(&mut account, "charlie", 'f').unwrap();
+            //check all_freelancer 
+            assert_eq!(account.all_freelancer, vec![bob,charlie]);
+            //alice tạo job
+            let _ = create_new_job(&mut account, alice);
+            //kiểm tra status job trước khi auction 
+            assert_eq!(account.jobs.get(0).unwrap().status, Status::OPEN);
+            //bob và charlie auction job 
+            set_caller(bob);
+            let _ = account.job_auction(0, 10, 20);
+            set_caller(charlie);
+            let _ = account.job_auction(0, 9, 21);
+            //check auction
+            let auction_of_job_0 = account.auction.get(0).unwrap();
+            assert_eq!(
+                auction_of_job_0,
+                vec![
+                    (bob, 10, 20),
+                    (charlie, 9, 21)
+                ]
+            );
+            //check auction again
+            set_caller(bob);
+            let _ = account.job_auction(0, 7, 17);
+            let auction_of_job_0 = account.auction.get(0).unwrap();
+            assert_eq!(
+                auction_of_job_0,
+                vec![
+                    (bob, 7, 17),
+                    (charlie, 9, 21)
+                ]
+            );
+            //kiểm tra status job
+            assert_eq!(account.jobs.get(0).unwrap().status, Status::AUCTIONING);
+            assert_eq!(account.owner_jobs.get(alice).unwrap(), vec![(0, Status::AUCTIONING)]);
+        }
+
+        #[ink::test]
+        fn test_job_auction_should_fail() {
+            let mut account = build_contract();
+            //đăng kí 3 account là alice (company), bob (company) và charlie (chưa đăng kí)
+            let alice = register_user_with_role_for(&mut account, "alice", 'c').unwrap();
+            let bob = register_user_with_role_for(&mut account, "bob", 'c').unwrap();
+            let eve = register_user_with_role_for(&mut account, "eve", 'f').unwrap();
+            let charlie = default_accounts().charlie;
+            //alice tạo job
+            let _ = create_new_job(&mut account, alice);
+            //test bob auction
+            set_caller(bob);
+            let res = account.job_auction(0, 10, 20);
+            assert_eq!(res, Err(JobError::NotFreelancer));
+            //test charlie auction 
+            set_caller(charlie);
+            let res = account.job_auction(0, 10, 20);
+            assert_eq!(res, Err(JobError::NotRegistered));
+            //check eve auction 1 job không tồn tại
+            set_caller(eve);
+            let res = account.job_auction(1, 10, 20);
+            assert_eq!(res, Err(JobError::NotExisted));
+            //--------------------- tùy chỉnh thông tin job và test ----------------
+            //test status
+            let mut job_0 = account.jobs.get(0).unwrap();
+            for status in vec![Status::DOING, Status::REVIEW, Status::UNQUALIFIED, Status::REVIEW, Status::FINISH, Status::CANCELED]{
+                job_0.status = status;
+                account.jobs.insert(0, &job_0);
+                set_caller(eve);
+                let res = account.job_auction(0, 10, 20);
+                assert_eq!(res, Err(JobError::Processing));
+            }
+            //test time
+            job_0.status = Status::OPEN;
+            account.jobs.insert(0, &job_0);
+            set_caller(eve);
+            set_block_timestamp(86420000); //1 ngày 12 giây
+            let res = account.job_auction(0, 10, 20);
+            assert_eq!(res, Err(JobError::OutOfDate));
+            //test desired_salary
+            set_caller(eve);
+            set_block_timestamp(1602);
+            let res = account.job_auction(0, 100, 20);
+            assert_eq!(res, Err(JobError::InvalidBid));
+        }   
+
+
+        #[ink::test]
+        fn test_create_contract_success() {
+            let mut account = build_contract();
+            //đăng kí 3 account là alice (company), bob (freelancer) và eve (freelancer)
+            let alice = register_user_with_role_for(&mut account, "alice", 'c').unwrap();
+            let bob = register_user_with_role_for(&mut account, "bob", 'f').unwrap();
+            let eve = register_user_with_role_for(&mut account, "eve", 'f').unwrap();
+            //alice tạo job
+            let _ = create_new_job(&mut account, alice);
+            //bob auction job
+            let _ = auction_job(&mut account, bob, 0, 10, 20);
+            //eve auction job 
+            let _ = auction_job(&mut account, eve, 0, 8, 20);
+            //alice chọn bob và tạo hợp đồng
+            let rule = String::from("These are the terms of the contract");
+            transfer_in(alice, account.env().account_id(), 20);
+            let res = account.create_contract(0, bob, rule, 5, 2); //(job_id, party_b, rule, percent_paid_when_contract_fail, duration)
+            assert_eq!(res, Ok(()));
+            //--------------------- check onchain storage ----------------------------
+            //check account alice 
+            assert_eq!(get_balance_of(alice), 80); //200 - 100 - 20
+            assert_eq!(get_balance_of(account.env().account_id()), 120); //100 + 20
+            //check jobs
+            assert_eq!(account.jobs.get(0).unwrap().status, Status::AUCTIONING);
+            //check owner_jobs
+            assert_eq!(account.owner_jobs.get(alice).unwrap(), vec![(0, Status::AUCTIONING)]);
+            //check contract 
+            assert_eq!(
+                account.contracts.get(0).unwrap(),
+                Contract {
+                    job_id: 0,
+                    party_a: Some(alice),
+                    party_a_consent: Some(true),
+                    party_b: Some(bob),
+                    party_b_consent: None,
+                    rules: String::from("These are the terms of the contract"),
+                    percent_paid_when_contract_fail: 5,
+                    deadline_to_sign_contract: 7210000,  //10 giây cộng 2 giờ deadline ký hợp đồng
+                }
+            )
+
+        }
+
+
+        //đang code
+        #[ink::test]
+        fn test_create_contract_should_fail() {
+            let mut account = build_contract();
+            //đăng kí 3 account là alice (company), bob (freelancer) và eve (freelancer)
+            let alice = register_user_with_role_for(&mut account, "alice", 'c').unwrap();
+            let bob = register_user_with_role_for(&mut account, "bob", 'f').unwrap();
+            let eve = register_user_with_role_for(&mut account, "eve", 'f').unwrap();
+            let charlie = default_accounts().charlie;
+            //alice tạo job
+            let _ = create_new_job(&mut account, alice);
+            // let _ = create_new_job(&mut account, alice);
+            //bob auction job
+            let _ = auction_job(&mut account, bob, 0, 10, 20);
+            //eve auction job 
+            let _ = auction_job(&mut account, eve, 0, 8, 20);
+            //test hợp đồng đã tồn tại hay chưa
+            // fn create_contract (account: &mut Account, party_a: AccountId, balance_of_party_a: Balance, job_id: JobId, party_b: AccountId, percent_paid_when_contract_fail: u8, duration: u8) -> Result<(), JobError> {
+            let res = create_contract(&mut account, alice, 20, 0, bob, 5, 2);
+            assert_eq!(res, Ok(()));
+            let res = create_contract(&mut account, alice, 20, 0, bob, 5, 2);
+            assert_eq!(res, Err(JobError::CreatedContract));
+            let res = create_contract(&mut account, alice, 20, 0, eve, 5, 2);
+            assert_eq!(res, Err(JobError::CreatedContract));
+            //test role của người gọi
+            // let res = create_contract(&mut account, charlie, 20, 1, bob, 5, 2);
+            // assert_eq!(res, Err(JobError::NotRegistered));
+
 
         }
         // #[ink::test]
