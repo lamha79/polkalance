@@ -1941,12 +1941,12 @@ mod polkalance {
             set_callee(contract_address);
             Account::new()
         }
-
+        //set thời gian để thực hiện 1 transaction
         fn set_block_timestamp(value: Timestamp){
             ink::env::test::set_block_timestamp::<ink::env::DefaultEnvironment>(value)
         }
 
-
+        //hàm chuyển tiền từ caller sang callee
         fn transfer_in(caller: AccountId, callee: AccountId, value: Balance) {
             set_caller(caller);
             set_callee(callee);
@@ -1963,6 +1963,7 @@ mod polkalance {
             Ok(())
         }
 
+        //đăng kí account với role là freelancer
         fn register_freelancer(constract: &mut Account, caller: AccountId) -> Result<(), JobError>{
             set_caller(caller);
             let name = "Freelancer".to_string();
@@ -2013,12 +2014,14 @@ mod polkalance {
             user_option
         }
 
+        //hàm đấu giá job
         fn auction_job (account: &mut Account, freelancer: AccountId, job_id: JobId, desired_salary: u128, required_deposit_of_owner: Balance) -> Result<(), JobError> {
             set_caller(freelancer);
             account.job_auction(job_id, desired_salary, required_deposit_of_owner)?;
             Ok(())
         }
 
+        //hàm tạo hợp đồng
         fn create_contract (account: &mut Account, party_a: AccountId, balance_of_party_a: Balance, job_id: JobId, party_b: AccountId, percent_paid_when_contract_fail: u8, duration: u8, time_create_contract: Timestamp) -> Result<(), JobError> {
             transfer_in(party_a, account.env().account_id(), balance_of_party_a);
             let rule = String::from("These are the terms of the contract");
@@ -2027,6 +2030,7 @@ mod polkalance {
             Ok(())
         }
 
+        //hàm hủy hợp đồng
         fn cancel_contract(account: &mut Account, caller: AccountId, job_id: JobId, time_cancel: Timestamp) -> Result<(), JobError> {
             set_block_timestamp(time_cancel);
             set_caller(caller);
@@ -2034,6 +2038,7 @@ mod polkalance {
             Ok(())
         }
         
+        //hàm submit job
         fn submit_job(contract: &mut Account, caller: AccountId, job_id: u128) {
             set_caller(caller);
             let result_job = "this is a result of this job".to_string();
@@ -2444,7 +2449,7 @@ mod polkalance {
             let _ = auction_job(&mut account, charlie, 0, 97, 20);
             let _ = create_contract(&mut account, alice, 20, 0, charlie, 5, 2, 30000);
             // assert_eq!(get_balance_of(alice), 80);
-            assert_eq!(get_balance_of(account.env().account_id()), 120);
+            // assert_eq!(get_balance_of(account.env().account_id()), 120);
             // assert_eq!((account.jobs.get(0).unwrap().budget, account.jobs.get(0).unwrap().required_deposit_of_owner), (97, 20));
             //hạn kí hợp đồng là 30s + 2 giờ
             set_block_timestamp(7230001); //sau hạn 1 mili giây
@@ -2459,6 +2464,8 @@ mod polkalance {
             );
             //kiểm tra balance 
             // assert_eq!(get_balance_of(alice), 197);
+            assert_eq!(get_balance_of(account.env().account_id()), 120); //chưa hề chuyển tiền ra ngoài @@
+
 
         }
 
