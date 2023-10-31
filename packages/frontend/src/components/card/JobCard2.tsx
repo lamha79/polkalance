@@ -19,7 +19,7 @@ import { UserTypeEnum } from '../../utility/src';
 const getDay = (date: string) => {
   const a = parseInt(date.replace(/,/g, ''));
   const newdate = new Date(a);
-  return  newdate.toLocaleString()
+  return newdate.toLocaleString()
 }
 ///////
 
@@ -31,8 +31,8 @@ interface JobCardProps {
 }
 const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: JobCardProps) => {
   const { getCategoryColorForSkill } = useColoredBadges();
-  const {desktopDisplay, mobileDisplay} = useResponsive();
-  const {activeAccountUser, type} = useLanding();
+  const { desktopDisplay, mobileDisplay } = useResponsive();
+  const { activeAccountUser, type } = useLanding();
 
   let skillsLength = 0;
   const skillLimit = desktopDisplay ? 45 : mobileDisplay ? 25 : 35
@@ -56,7 +56,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
             lineHeight="120%"
             color="neutral.black"
           >
-            {job?.name} 
+            {job?.name}
           </Text>
           {/* <Text
             fontFamily="Comfortaa"
@@ -113,7 +113,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         >
           PAY: {job.pay} ZERO
         </Text>
-        {job.status === "REVIEW" &&<Text
+        {job.status === "REVIEW" && <Text
           fontFamily="Comfortaa"
           fontWeight="700"
           fontSize="14px"
@@ -193,7 +193,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         </Text>
       </Flex>
       <Flex mt={4} flexWrap="wrap" rowGap={2}>
-        {!mobileDisplay && activeAccountUser && (job.status == "OPEN" || job.status == "REOPEN" || job.status == "AUCTIONING") && type === UserTypeEnum.Freelancer &&<Button
+        {!mobileDisplay && activeAccountUser && (job.status == "OPEN" || job.status == "REOPEN" || job.status == "AUCTIONING") && type === UserTypeEnum.Freelancer && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -253,9 +253,8 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         >
           Approval
         </Button>}
-      </Flex>
-      {mobileDisplay && <Button
-          mt={2}
+        {!mobileDisplay && activeAccountUser && (job.status == "AUCTIONING") && type === UserTypeEnum.Company && <Button
+          ml="auto"
           variant="outline"
           px="12px !important"
           py="2px !important"
@@ -267,8 +266,25 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           maxH="26px"
           onClick={() => onClick?.()}
         >
-          See more
+          Create Contract
         </Button>}
+
+      </Flex>
+      {mobileDisplay && <Button
+        mt={2}
+        variant="outline"
+        px="12px !important"
+        py="2px !important"
+        bgColor="white"
+        borderColor="neutral.gray"
+        fontSize="14px"
+        fontWeight="400"
+        lineHeight="100%"
+        maxH="26px"
+        onClick={() => onClick?.()}
+      >
+        See more
+      </Button>}
       {blurred && (
         <Box
           position="absolute"

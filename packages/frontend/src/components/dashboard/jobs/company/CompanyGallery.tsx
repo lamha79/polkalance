@@ -13,12 +13,11 @@ import {
 import { ContractIds } from '@/deployments/deployments'
 import { CreateJob, CreateJob1 } from '../../../../utility/src';
 
-
 const CompanyGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push } = useRouter()
   const toast = useToast()
-  const {setUseFormDone, useFormDone} = useLanding()
+  const {setUseFormDone, useFormDone, setCreateContractModalOpen} = useLanding()
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
@@ -128,8 +127,7 @@ const CompanyGallery: FC = () => {
                 <JobCard2 
                   job={j} 
                   key={k} 
-                  onClick={() => {}}
-                  onClick1={() => {}}    
+                  onClick={() => {setCreateContractModalOpen(true)}}
                 />
               ))}
               

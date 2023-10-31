@@ -16,6 +16,7 @@ type LandingContextInterface = {
   isCheckWallet: boolean;
   jobSubmitId: number;
   useFormDone: boolean;
+  createContractModalOpen: boolean;
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
@@ -27,6 +28,7 @@ type LandingContextInterface = {
   setIsCheckWallet: (check: boolean) => void;
   setJobSubmitId: (jobId: number) => void;
   setUseFormDone: (x: boolean) => void;
+  setCreateContractModalOpen: (open: boolean) => void;
 };
 
 export const LandingContext = createContext<LandingContextInterface>({
@@ -41,6 +43,8 @@ export const LandingContext = createContext<LandingContextInterface>({
   isCheckWallet: false,
   jobSubmitId: 0,
   useFormDone: false,
+  createContractModalOpen: false,
+  
   setType: () => {},
   setCurrentView: () => {},
   setSignupModalOpen: () => {},
@@ -52,6 +56,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   setIsCheckWallet: () => {},
   setJobSubmitId: () => {},
   setUseFormDone: () => {},
+  setCreateContractModalOpen: () => {},
 });
 
 export const LandingProvider = ({ children }: { children: ReactNode }) => {
@@ -66,6 +71,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [isCheckWallet, setIsCheckWallet] = useState(false);
   const [jobSubmitId, setJobSubmitId] = useState(0);
   const [useFormDone, setUseFormDone] = useState(false);
+  const [createContractModalOpen, setCreateContractModalOpen] = useState(false);
   
   return (
     <LandingContext.Provider
@@ -81,6 +87,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         isCheckWallet,
         jobSubmitId,
         useFormDone,
+        createContractModalOpen,
         setType,
         setCurrentView,
         setSignupModalOpen,
@@ -92,6 +99,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setIsCheckWallet,
         setJobSubmitId,
         setUseFormDone,
+        setCreateContractModalOpen,
       }}
     >
       {children}
@@ -112,6 +120,7 @@ export function useLanding() {
     isCheckWallet,
     jobSubmitId,
     useFormDone, 
+    createContractModalOpen,
     setType,
     setCurrentView,
     setSignupModalOpen,
@@ -123,6 +132,7 @@ export function useLanding() {
     setIsCheckWallet,
     setJobSubmitId,
     setUseFormDone,
+    setCreateContractModalOpen,
   } = useContext(LandingContext);
 
   const handleViewChange = (inView: boolean, entry: IntersectionObserverEntry) => {
@@ -151,6 +161,7 @@ export function useLanding() {
     isCheckWallet,
     jobSubmitId,
     useFormDone,
+    createContractModalOpen,
     setType,
     handleViewChange,
     setCurrentView,
@@ -164,5 +175,6 @@ export function useLanding() {
     setIsCheckWallet,
     setJobSubmitId,
     setUseFormDone,
+    setCreateContractModalOpen,
   };
 }
