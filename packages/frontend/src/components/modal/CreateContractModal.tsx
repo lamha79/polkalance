@@ -18,7 +18,7 @@ import { FC } from 'react';
 import CreateContractForm from '../form/CreateContractForm';
 import { useResponsive } from '../hooks/useResponsive';
 
-const createContractModal: FC = () => {
+const CreateContractModal: FC = () => {
   const { createContractModalOpen, setCreateContractModalOpen } = useLanding();
   const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
 
@@ -56,4 +56,4 @@ const createContractModal: FC = () => {
   );
 };
 
-export default createContractModal;
+export default CreateContractModal;

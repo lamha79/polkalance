@@ -14,12 +14,12 @@ import { ContractIds } from '@/deployments/deployments'
 import { CreateJob, CreateJob1 } from '../../../../utility/src';
 
 const CompanyGallery: FC = () => {
-  const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
+  const { jobs, jobsFetching, setJobsFetching, setJobs } = useJobs()
   const { push } = useRouter()
   const toast = useToast()
-  const {setUseFormDone, useFormDone, setCreateContractModalOpen} = useLanding()
+  const { setUseFormDone, useFormDone, setCreateContractModalOpen } = useLanding()
   //////
-  const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
+  const { api, activeSigner, activeAccount, isConnected, activeChain } = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
   const [fetchSearchJob, setFetchSearchJob] = useState<boolean>(false);
   // const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
@@ -90,7 +90,7 @@ const CompanyGallery: FC = () => {
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_open_jobs_no_params', {}, []);
+      const result = await contractQuery(api, activeAccount.address, contract, 'get_all_open_jobs_no_params', {}, []);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs_no_params');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
@@ -98,7 +98,7 @@ const CompanyGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
-      
+
       // setSearchJobsResult(output);
     } catch (e) {
       console.error(e);
@@ -124,13 +124,13 @@ const CompanyGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 
-                  job={j} 
-                  key={k} 
-                  onClick={() => {setCreateContractModalOpen(true)}}
+                <JobCard2
+                  job={j}
+                  key={k}
+                  onClick={() => { setCreateContractModalOpen(true) }}
                 />
               ))}
-              
+
             </SimpleGrid>
           )}
           {!jobs ||
@@ -144,7 +144,7 @@ const CompanyGallery: FC = () => {
                 left="50%"
                 transform="translate(-50%, -50%)"
               >
-                No jobs available 
+                No jobs available
               </Box>
             ))}
         </>

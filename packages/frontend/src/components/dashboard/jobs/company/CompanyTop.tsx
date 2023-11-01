@@ -13,8 +13,8 @@ const CompanyTop: FC<CompanyTopProps> = ({ onCreate }) => {
       <Box ml="auto">
         <Button variant="primary" leftIcon={<FileIcon />} onClick={() => {
           onCreate();
-          setCreateJobModalOpen(true);            
-          }}>
+          setCreateJobModalOpen(true);
+        }}>
           Create new job
         </Button>
       </Box>

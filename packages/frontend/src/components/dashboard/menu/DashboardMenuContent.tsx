@@ -5,59 +5,59 @@ import { UserTypeEnum } from "../../../utility/src";
 import { useRouter } from "next/router";
 import { FC } from "react";
 interface MenuElement {
-    view: string;
-    label: string;
-  }
-  
-interface DashboardMenuContentProps {
-    onCloseMenu?: () => void;
+  view: string;
+  label: string;
 }
 
-const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
-    const { type ,activeAccountUser } = useLanding();
-    const { pathname, push } = useRouter();
-    const { user } = useCurrentUser();
-    const { company } = useCurrentCompany();
-    const {mobileDisplay, tabletDisplay, desktopDisplay} = useResponsive();
+interface DashboardMenuContentProps {
+  onCloseMenu?: () => void;
+}
 
-    const companyMenu: MenuElement[] = [
-        { view: '/dashboard', label: 'Dashboard' },
-        { view: '/dashboard/offers', label: 'Find profiles' },
-        { view: '/dashboard/jobs', label: 'All open (reopen) job' },
-        { view: '/dashboard/doingjob', label: 'All rewiew jobs' },
-        // { view: '/dashboard/contracts', label: 'My Contracts' }
-      ];
-      
-      const freelanceMenu: MenuElement[] = [
-        { view: '/dashboard', label: 'Dashboard' },
-        { view: '/dashboard/offers', label: 'Find work' },
-        { view: '/dashboard/jobs', label: 'All open Jobs' },
-        // { view: '/dashboard/contracts', label: 'My Contracts' },
-        { view: '/dashboard/doingjob', label: 'All my doing jobs' }
-      ];
+const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) => {
+  const { type, activeAccountUser } = useLanding();
+  const { pathname, push } = useRouter();
+  const { user } = useCurrentUser();
+  const { company } = useCurrentCompany();
+  const { mobileDisplay, tabletDisplay, desktopDisplay } = useResponsive();
 
-    // if (mobileDisplay || tabletDisplay) {
-    //     companyMenu.push({view: '/dashboard/chat', label: 'Chat'});
-    //     freelanceMenu.push({view: '/dashboard/chat', label: 'Chat'});
-    // }
-    
-    let menuElement: MenuElement[] = [];
-    if (type === UserTypeEnum.Freelancer) {
-      menuElement = freelanceMenu;
+  const companyMenu: MenuElement[] = [
+    { view: '/dashboard', label: 'Dashboard' },
+    { view: '/dashboard/offers', label: 'Find profiles' },
+    { view: '/dashboard/jobs', label: 'All open (reopen) job' },
+    { view: '/dashboard/doingjob', label: 'All rewiew jobs' },
+    // { view: '/dashboard/contracts', label: 'My Contracts' }
+  ];
+
+  const freelanceMenu: MenuElement[] = [
+    { view: '/dashboard', label: 'Dashboard' },
+    { view: '/dashboard/offers', label: 'Find work' },
+    { view: '/dashboard/jobs', label: 'All open Jobs' },
+    // { view: '/dashboard/contracts', label: 'My Contracts' },
+    { view: '/dashboard/doingjob', label: 'All my doing jobs' }
+  ];
+
+  // if (mobileDisplay || tabletDisplay) {
+  //     companyMenu.push({view: '/dashboard/chat', label: 'Chat'});
+  //     freelanceMenu.push({view: '/dashboard/chat', label: 'Chat'});
+  // }
+
+  let menuElement: MenuElement[] = [];
+  if (type === UserTypeEnum.Freelancer) {
+    menuElement = freelanceMenu;
+  }
+  if (type === UserTypeEnum.Company) {
+    menuElement = companyMenu;
+  }
+
+  const handleViewChange = (view: string) => {
+    if (pathname !== view) {
+      push(view);
+      // alert(view);
+      if (onCloseMenu !== undefined) onCloseMenu();
     }
-    if (type === UserTypeEnum.Company) {
-      menuElement = companyMenu;
-    }
-  
-    const handleViewChange = (view: string) => {
-      if (pathname !== view) {
-        push(view);
-        // alert(view);
-        if (onCloseMenu !== undefined) onCloseMenu();
-      }
-    };
+  };
 
-    return    <>
+  return <>
     <Flex
       alignItems="center"
       cursor="pointer"
@@ -65,19 +65,19 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
       bgColor={pathname === '/dashboard/profile' ? 'brand.primary' : 'none'}
       p={2}
       borderRadius="8px"
-      minH={{base: "32px", lg: "48px"}}
+      minH={{ base: "32px", lg: "48px" }}
       justifyContent={!user ? 'center' : 'start'}
       onClick={() => handleViewChange('/dashboard/profile')}
     >
       {(user && activeAccountUser) && (
         <>
-          <Box w="48px" h="48px" ml={{base: "auto", lg: 0}}>
+          <Box w="48px" h="48px" ml={{ base: "auto", lg: 0 }}>
             <Avatar />
           </Box>
 
           <Text
             ml={2}
-            mr={{base: "auto", lg: 0}}
+            mr={{ base: "auto", lg: 0 }}
             fontSize="14px"
             fontWeight="700"
             lineHeight="120%"
@@ -92,12 +92,12 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
         <>
           {company && (
             <>
-              <Box w="48px" h="48px" ml={{base: "auto", lg: 0}}>
+              <Box w="48px" h="48px" ml={{ base: "auto", lg: 0 }}>
                 <Avatar borderRadius="16px" />
               </Box>
               <Text
                 ml={2}
-                mr={{base: "auto", lg: 0}}
+                mr={{ base: "auto", lg: 0 }}
                 fontSize="14px"
                 fontWeight="700"
                 lineHeight="120%"
@@ -127,7 +127,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({onCloseMenu}) => {
       return (
         <Button
           key={k}
-          my={{base: 2, lg: 0}}
+          my={{ base: 2, lg: 0 }}
           variant={active ? 'primary' : 'link'}
           onClick={() => handleViewChange(v.view)}
         >

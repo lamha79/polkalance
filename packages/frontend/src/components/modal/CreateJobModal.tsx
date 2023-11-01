@@ -19,7 +19,7 @@ import { useResponsive } from '../hooks/useResponsive';
 
 const CreateJobModal: FC = () => {
   const { createJobModalOpen, setCreateJobModalOpen } = useLanding();
-  const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
+  const { mobileDisplay, tabletDisplay, desktopDisplay } = useResponsive();
 
   const close = () => {
     setTimeout(() => {
@@ -29,7 +29,7 @@ const CreateJobModal: FC = () => {
 
   return (
     <>
-      {(desktopDisplay || tabletDisplay) && <Modal isOpen={createJobModalOpen} onClose={close} isCentered={mobileDisplay ? false : true} size={{base: 'full', md: "xl"}}>
+      {(desktopDisplay || tabletDisplay) && <Modal isOpen={createJobModalOpen} onClose={close} isCentered={mobileDisplay ? false : true} size={{ base: 'full', md: "xl" }}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Job</ModalHeader>
@@ -46,22 +46,22 @@ const CreateJobModal: FC = () => {
         </ModalContent>
       </Modal>}
       {mobileDisplay && <Drawer placement="left" onClose={close} isOpen={createJobModalOpen}>
-          <DrawerOverlay>
-            <DrawerContent>
-              <DrawerHeader>Sign up</DrawerHeader>
-              <DrawerCloseButton top=".75rem"/>
-              <DrawerBody mt={".5rem"} height="100%" display="flex" flexDir="column">
-                  <CreateJobForm
-                  onSubmitSuccess={() => {
-                    setTimeout(() => {
-                      setCreateJobModalOpen(false);
-                    }, 200);
-                  }}
-                />
-              </DrawerBody>
-            </DrawerContent>
-          </DrawerOverlay>
-        </Drawer>}
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerHeader>Sign up</DrawerHeader>
+            <DrawerCloseButton top=".75rem" />
+            <DrawerBody mt={".5rem"} height="100%" display="flex" flexDir="column">
+              <CreateJobForm
+                onSubmitSuccess={() => {
+                  setTimeout(() => {
+                    setCreateJobModalOpen(false);
+                  }, 200);
+                }}
+              />
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>}
     </>
   );
 };

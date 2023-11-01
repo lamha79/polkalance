@@ -1,7 +1,7 @@
 import { Box, Flex, SimpleGrid, Spinner, useToast, Text } from '@chakra-ui/react'
 import { useJobs, useLanding } from '../../../../front-provider/src'
 import JobCard2 from '../../../card/JobCard2'
-import router, {useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import {
   contractQuery,
@@ -14,12 +14,12 @@ import { ContractIds } from '@/deployments/deployments'
 import { CreateJob, CreateJob1 } from '../../../../utility/src';
 import { shallowCopy } from 'ethers/lib/utils'
 const FreelancerGallery: FC = () => {
-  const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
-  const { push, replace, reload} = useRouter()
+  const { jobs, jobsFetching, setJobsFetching, setJobs } = useJobs()
+  const { push, replace, reload } = useRouter()
   const toast = useToast()
-  const {setAuctionModalOpen, jobSubmitId, setJobSubmitId, useFormDone, setUseFormDone} = useLanding();
+  const { setAuctionModalOpen, jobSubmitId, setJobSubmitId, useFormDone, setUseFormDone } = useLanding();
   //////
-  const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
+  const { api, activeSigner, activeAccount, isConnected, activeChain } = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const [fetchObtain, setFetchObtain] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
@@ -46,7 +46,7 @@ const FreelancerGallery: FC = () => {
         isClosable: true,
         position: 'top-right',
       })
-    } 
+    }
     finally {
       setFetchObtain(true)
     }
@@ -57,7 +57,7 @@ const FreelancerGallery: FC = () => {
     setFetchIsLoading(true);
     if (!contract || !api || !activeAccount) return null;
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_open_jobs_no_params', {}, []);
+      const result = await contractQuery(api, activeAccount.address, contract, 'get_all_open_jobs_no_params', {}, []);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs_no_params');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
@@ -75,10 +75,10 @@ const FreelancerGallery: FC = () => {
     }
   };
   useEffect(() => {
-      searchJobs();
-      if (useFormDone){
-        setUseFormDone(false)
-      }
+    searchJobs();
+    if (useFormDone) {
+      setUseFormDone(false)
+    }
   }, [contract, api, useFormDone]);
   //////
   return (
@@ -88,11 +88,10 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() =>
-                  {
-                    setJobSubmitId(parseInt(j.jobId));
-                    setAuctionModalOpen(true);
-                  }
+                <JobCard2 job={j} key={k} onClick={() => {
+                  setJobSubmitId(parseInt(j.jobId));
+                  setAuctionModalOpen(true);
+                }
                 } />
               ))}
             </SimpleGrid>
@@ -108,7 +107,7 @@ const FreelancerGallery: FC = () => {
                 left="50%"
                 transform="translate(-50%, -50%)"
               >
-                No jobs available 
+                No jobs available
               </Box>
             ))}
         </>
