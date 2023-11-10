@@ -474,14 +474,14 @@ mod polkalance {
 
         pub fn string_to_status(status: Vec<String>) -> Vec<Status>{
             let mut status_mapping: Mapping<String, Status> = Mapping::default();
-            status_mapping.insert("open".to_string(), &Status::OPEN);
-            status_mapping.insert("auctioning".to_string(), &Status::AUCTIONING);
-            status_mapping.insert("doing".to_string(), &Status::DOING);
-            status_mapping.insert("review".to_string(), &Status::REVIEW);
-            status_mapping.insert("unqualified".to_string(), &Status::UNQUALIFIED);
-            status_mapping.insert("reopen".to_string(), &Status::REOPEN);
-            status_mapping.insert("finish".to_string(), &Status::FINISH);
-            status_mapping.insert("canceled".to_string(), &Status::CANCELED);
+            status_mapping.insert(String::from("open"), &Status::OPEN);
+            status_mapping.insert(String::from("auctioning"), &Status::AUCTIONING);
+            status_mapping.insert(String::from("doing"), &Status::DOING);
+            status_mapping.insert(String::from("review"), &Status::REVIEW);
+            status_mapping.insert(String::from("unqualified"), &Status::UNQUALIFIED);
+            status_mapping.insert(String::from("reopen"), &Status::REOPEN);
+            status_mapping.insert(String::from("finish"), &Status::FINISH);
+            status_mapping.insert(String::from("canceled"), &Status::CANCELED);
             let mut res = Vec::new();
             for item in status {
                  res.push(status_mapping.get(item).unwrap());
@@ -1518,7 +1518,7 @@ mod polkalance {
             if point > 6 || point == 0 {
                 return Err(JobError::InvalidPoint);
             }
-            let rating_points = vec![
+            let rating_points = [
                 RatingPoint::OneStar, 
                 RatingPoint::TwoStars, 
                 RatingPoint::ThreeStars, 
