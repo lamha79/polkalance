@@ -161,8 +161,6 @@ mod polkalance {
         owner_jobs: Mapping<AccountId, Vec<(JobId, Status)>>, //khi tạo job phải add thông tin vào, thay đổi khi create, approval, respond_negotiate thành công
         freelancer_jobs: Mapping<AccountId, Vec<(JobId, Status)>>, //khi nhận job phải add thông tin vào, thay đổi khi obtain, approval, respond_negotiate thành công
         all_freelancer: Vec<AccountId>,
-        // list_jobs_assign: Mapping<AccountId, Vec<(JobId, bool)>>, // danh sách công việc đã giao <id,(job_id,hoàn thành hay chưa?))>
-        // list_jobs_take: Mapping<AccountId, Vec<(JobId, bool)>>, // danh sách công việc đã nhận <id,(job_id,hoàn thành hay chưa?))>
         ratings: Mapping<AccountId, Vec<(JobId, Option<RatingPoint>)>>, // <JobId: id công việc, Điểm đánh giá>
         reports: Mapping<AccountId, Vec<(JobId, Option<ReportInfo>)>>, // <JobId: id công việc, Thông tin tố cáo>
         auction: Mapping<JobId, Vec<(AccountId, u128, u128)>>, //đấu giá công việc job_id => (người đấu giá, tiền mong muốn được trả của freelancer, tiền cọc mong muốn của công ty)
@@ -459,7 +457,7 @@ mod polkalance {
         }
 
         // get tất cả open job no parametter (open, reopen và auctioning)
-        // message này ai query cũng được
+        //--------------------> dùng trong đấu giá công việc
         #[ink(message)]
         pub fn get_all_open_jobs_no_params(&self) -> Result<Vec<Job>, JobError> {
             let mut jobs = Vec::<Job>::new();
@@ -473,33 +471,91 @@ mod polkalance {
             Ok(open_jobs)
         }
 
-        //get tất cả các job open hoặc reopen hoặc auctioning của owner dùng cho dashboard all open jobs của company
-        //quản lý tất cả các công việc được tạo và chưa có ai làm của owner đó
+
+        pub fn string_to_status(status: Vec<String>) -> Vec<Status>{
+            let mut status_mapping: Mapping<String, Status> = Mapping::default();
+            status_mapping.insert("open".to_string(), &Status::OPEN);
+            status_mapping.insert("auctioning".to_string(), &Status::AUCTIONING);
+            status_mapping.insert("doing".to_string(), &Status::DOING);
+            status_mapping.insert("review".to_string(), &Status::REVIEW);
+            status_mapping.insert("unqualified".to_string(), &Status::UNQUALIFIED);
+            status_mapping.insert("reopen".to_string(), &Status::REOPEN);
+            status_mapping.insert("finish".to_string(), &Status::FINISH);
+            status_mapping.insert("canceled".to_string(), &Status::CANCELED);
+            let mut res = Vec::new();
+            for item in status {
+                 res.push(status_mapping.get(item).unwrap());
+            }
+            res
+        }
+        // get tất cả các job của owner với trạng thái cho trước
+        // ---------------------> query trong các dashboard
         #[ink(message)]
-        pub fn get_all_open_jobs_of_onwer(&self) -> Result<Vec<Job>, JobError> {
+        pub fn get_all_jobs_of_owner_with_status(&self, status_string: Vec<String>) -> Result<Vec<Job>, JobError>{
             let owner = self.env().caller();
+            let status = Self::string_to_status(status_string);
             let owner_job_id = self
                 .owner_jobs
                 .get(owner)
                 .unwrap()
                 .into_iter()
-                .filter(|x| x.1 == Status::OPEN || x.1 == Status::REOPEN || x.1 == Status::AUCTIONING)
+                .filter(|x| status.contains(&x.1))
                 .collect::<Vec<(JobId,Status)>>();
-            let mut open_jobs = Vec::new();
+            let mut result_jobs = Vec::new();
             for i in owner_job_id {
-                open_jobs.push(self.jobs.get(i.0).unwrap())
+                result_jobs.push(self.jobs.get(i.0).unwrap())
             }
-            // let mut jobs = Vec::<Job>::new();
-            // for i in 0..self.current_job_id {
-            //     jobs.push(self.jobs.get(i).unwrap());
-            // }
-            // let open_jobs = jobs
-            //     .into_iter()
-            //     .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN)
-            //     .filter(|job| job.person_create.unwrap() == owner)
-            //     .collect();
-            Ok(open_jobs)
+            Ok(result_jobs)
         }
+
+        // get tất cả các job của freelancer với trạng thái cho trước
+        // ---------------------> query trong các dashboard
+        #[ink(message)]
+        pub fn get_all_jobs_of_freelancer_with_status(&self, status_string: Vec<String>) -> Result<Vec<Job>, JobError>{
+            let freelancer = self.env().caller();
+            let status = Self::string_to_status(status_string);
+            let freelancer_job_id = self
+                .freelancer_jobs
+                .get(freelancer)
+                .unwrap()
+                .into_iter()
+                .filter(|x| status.contains(&x.1))
+                .collect::<Vec<(JobId,Status)>>();
+            let mut result_jobs = Vec::new();
+            for i in freelancer_job_id {
+                result_jobs.push(self.jobs.get(i.0).unwrap())
+            }
+            Ok(result_jobs)
+        }
+
+        
+        // //get tất cả các job open hoặc reopen hoặc auctioning của owner dùng cho dashboard all open jobs của company
+        // //quản lý tất cả các công việc được tạo và chưa có ai làm của owner đó
+        // #[ink(message)]
+        // pub fn get_all_open_jobs_of_onwer(&self) -> Result<Vec<Job>, JobError> {
+        //     let owner = self.env().caller();
+        //     let owner_job_id = self
+        //         .owner_jobs
+        //         .get(owner)
+        //         .unwrap()
+        //         .into_iter()
+        //         .filter(|x| x.1 == Status::OPEN || x.1 == Status::REOPEN || x.1 == Status::AUCTIONING)
+        //         .collect::<Vec<(JobId,Status)>>();
+        //     let mut open_jobs = Vec::new();
+        //     for i in owner_job_id {
+        //         open_jobs.push(self.jobs.get(i.0).unwrap())
+        //     }
+        //     // let mut jobs = Vec::<Job>::new();
+        //     // for i in 0..self.current_job_id {
+        //     //     jobs.push(self.jobs.get(i).unwrap());
+        //     // }
+        //     // let open_jobs = jobs
+        //     //     .into_iter()
+        //     //     .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN)
+        //     //     .filter(|job| job.person_create.unwrap() == owner)
+        //     //     .collect();
+        //     Ok(open_jobs)
+        // }
 
         //get tất cả open job theo category để freelancer lọc và chọn việc để đấu giá
         #[ink(message)]
@@ -528,91 +584,91 @@ mod polkalance {
             Ok(open_jobs)
         }
 
-        // get tất cả doing job của freelancer để submit, người gọi là freelancer đã obtain công việc đó
-        #[ink(message)]
-        pub fn get_all_doing_jobs_of_freelancer(&self) -> Result<Vec<Job>, JobError> {
-            let freelancer = self.env().caller();
-            let doing_job_ids = self.freelancer_jobs
-                .get(freelancer)
-                .unwrap()
-                .into_iter()
-                .filter(|x| x.1 == Status::DOING)
-                .collect::<Vec<(JobId, Status)>>();
-            let mut doing_jobs = Vec::new();
-            for i in doing_job_ids {
-                doing_jobs.push(self.jobs.get(i.0).unwrap())
-            }
-            // let mut jobs = Vec::<Job>::new();
-            // for i in 0..self.current_job_id {
-            //     jobs.push(self.jobs.get(i).unwrap());
-            // }
-            // let doing_jobs = jobs
-            //     .into_iter()
-            //     .filter(|job| job.status == Status::DOING)
-            //     .filter(|job| job.person_obtain.unwrap() == freelancer)
-            //     .collect();
-            Ok(doing_jobs)
-        }
+        // // get tất cả doing job của freelancer để submit, người gọi là freelancer đã obtain công việc đó
+        // #[ink(message)]
+        // pub fn get_all_doing_jobs_of_freelancer(&self) -> Result<Vec<Job>, JobError> {
+        //     let freelancer = self.env().caller();
+        //     let doing_job_ids = self.freelancer_jobs
+        //         .get(freelancer)
+        //         .unwrap()
+        //         .into_iter()
+        //         .filter(|x| x.1 == Status::DOING)
+        //         .collect::<Vec<(JobId, Status)>>();
+        //     let mut doing_jobs = Vec::new();
+        //     for i in doing_job_ids {
+        //         doing_jobs.push(self.jobs.get(i.0).unwrap())
+        //     }
+        //     // let mut jobs = Vec::<Job>::new();
+        //     // for i in 0..self.current_job_id {
+        //     //     jobs.push(self.jobs.get(i).unwrap());
+        //     // }
+        //     // let doing_jobs = jobs
+        //     //     .into_iter()
+        //     //     .filter(|job| job.status == Status::DOING)
+        //     //     .filter(|job| job.person_obtain.unwrap() == freelancer)
+        //     //     .collect();
+        //     Ok(doing_jobs)
+        // }
 
-        // get tất cả doing job của company để quản lí, người gọi là company
-        #[ink(message)]
-        pub fn get_all_doing_jobs_of_company(&self) -> Result<Vec<Job>, JobError> {
-            let owner = self.env().caller();
-            let doing_job_ids = self.owner_jobs
-                .get(owner)
-                .unwrap()
-                .into_iter()
-                .filter(|x| x.1 == Status::DOING)
-                .collect::<Vec<(JobId, Status)>>();
-            let mut doing_jobs = Vec::new();
-            for i in doing_job_ids {
-                doing_jobs.push(self.jobs.get(i.0).unwrap())
-            }
-            Ok(doing_jobs)
-        }
+        // // get tất cả doing job của company để quản lí, người gọi là company
+        // #[ink(message)]
+        // pub fn get_all_doing_jobs_of_company(&self) -> Result<Vec<Job>, JobError> {
+        //     let owner = self.env().caller();
+        //     let doing_job_ids = self.owner_jobs
+        //         .get(owner)
+        //         .unwrap()
+        //         .into_iter()
+        //         .filter(|x| x.1 == Status::DOING)
+        //         .collect::<Vec<(JobId, Status)>>();
+        //     let mut doing_jobs = Vec::new();
+        //     for i in doing_job_ids {
+        //         doing_jobs.push(self.jobs.get(i.0).unwrap())
+        //     }
+        //     Ok(doing_jobs)
+        // }
 
         // get tất cả các review job của freelancer (job mà freelancer đã submit), người gọi là freelancer
-        #[ink(message)]
-        pub fn get_all_review_jobs_of_freelancer(&self) -> Result<Vec<Job>, JobError> {
-            let freelancer = self.env().caller();
-            let review_job_id = self.freelancer_jobs
-                .get(freelancer)
-                .unwrap()
-                .into_iter()
-                .filter(|x| x.1 == Status::REVIEW)
-                .collect::<Vec<(JobId, Status)>>();
-            let mut review_jobs = Vec::new();
-            for i in review_job_id {
-                review_jobs.push(self.jobs.get(i.0).unwrap())
-            }
-            Ok(review_jobs)
-        }
+        // #[ink(message)]
+        // pub fn get_all_review_jobs_of_freelancer(&self) -> Result<Vec<Job>, JobError> {
+        //     let freelancer = self.env().caller();
+        //     let review_job_id = self.freelancer_jobs
+        //         .get(freelancer)
+        //         .unwrap()
+        //         .into_iter()
+        //         .filter(|x| x.1 == Status::REVIEW)
+        //         .collect::<Vec<(JobId, Status)>>();
+        //     let mut review_jobs = Vec::new();
+        //     for i in review_job_id {
+        //         review_jobs.push(self.jobs.get(i.0).unwrap())
+        //     }
+        //     Ok(review_jobs)
+        // }
 
-        // get tất cả các review job của onwer, người gọi là owner
-        #[ink(message)]
-        pub fn get_all_review_jobs_of_owner(&self) -> Result<Vec<Job>, JobError> {
-            let owner = self.env().caller();
-            let review_job_id = self.owner_jobs
-                .get(owner)
-                .unwrap()
-                .into_iter()
-                .filter(|x| x.1 == Status::REVIEW)
-                .collect::<Vec<(JobId, Status)>>();
-            let mut review_jobs = Vec::new();
-            for i in review_job_id {
-                review_jobs.push(self.jobs.get(i.0).unwrap())
-            }
-            // let mut jobs = Vec::<Job>::new();
-            // for i in 0..self.current_job_id {
-            //     jobs.push(self.jobs.get(i).unwrap());
-            // }
-            // let doing_jobs = jobs
-            //     .into_iter()
-            //     .filter(|job| job.status == Status::REVIEW)
-            //     .filter(|job| job.person_create.unwrap() == owner)
-            //     .collect();
-            Ok(review_jobs)
-        }
+        // // get tất cả các review job của onwer, người gọi là owner
+        // #[ink(message)]
+        // pub fn get_all_review_jobs_of_owner(&self) -> Result<Vec<Job>, JobError> {
+        //     let owner = self.env().caller();
+        //     let review_job_id = self.owner_jobs
+        //         .get(owner)
+        //         .unwrap()
+        //         .into_iter()
+        //         .filter(|x| x.1 == Status::REVIEW)
+        //         .collect::<Vec<(JobId, Status)>>();
+        //     let mut review_jobs = Vec::new();
+        //     for i in review_job_id {
+        //         review_jobs.push(self.jobs.get(i.0).unwrap())
+        //     }
+        //     // let mut jobs = Vec::<Job>::new();
+        //     // for i in 0..self.current_job_id {
+        //     //     jobs.push(self.jobs.get(i).unwrap());
+        //     // }
+        //     // let doing_jobs = jobs
+        //     //     .into_iter()
+        //     //     .filter(|job| job.status == Status::REVIEW)
+        //     //     .filter(|job| job.person_create.unwrap() == owner)
+        //     //     .collect();
+        //     Ok(review_jobs)
+        // }
 
 
         // get tối đa 20 freelancer => name, Vec<category>
@@ -1675,6 +1731,7 @@ mod polkalance {
                     let balance_paid_for_freelancer = job.pay * percent_paid_when_contract_fail as u128 / 100;
                     let _ = self.env().transfer(freelancer, balance_paid_for_freelancer + job.required_deposit_of_freelancer);
                     let _ = self.env().transfer(owner, job.budget - balance_paid_for_freelancer + job.required_deposit_of_owner);
+                    job.require_rating = (true, true);
                 },
                 Some(person) => {
                     //nếu lỗi là owner thì thanh toán theo hợp đồng và mất tiền cọc
@@ -1684,11 +1741,13 @@ mod polkalance {
                         let _ = self.env().transfer(freelancer, balance_paid_for_freelancer + job.required_deposit_of_freelancer + job.required_deposit_of_owner);
                         let _ = self.env().transfer(owner, job.budget - balance_paid_for_freelancer);
                         job.reporter = Some(freelancer);
+                        job.require_rating = (false, true);
                     }
                     //nếu lỗi là freelancer mất tiền cọc và ko thanh toán theo hợp đồng 
                     else if person == freelancer { 
                         let _ = self.env().transfer(owner, job.budget + job.required_deposit_of_owner + job.required_deposit_of_freelancer);
                         job.reporter = Some(owner);
+                        job.require_rating = (true, false);
                     }
                 }
             }
@@ -1715,12 +1774,13 @@ mod polkalance {
                 .personal_account_info
                 .get(&caller)
                 .ok_or(JobError::NotRegistered)?;
+            if job.reporter == None {
+                return Err(JobError::InvalidReport);
+            }
             match caller {
                 x if x == job.reporter.unwrap() => {
                     job.reporter = None;
                     self.jobs.insert(job_id, &job);
-                    // self.list_jobs_take
-                    //     .insert(job.person_obtain.unwrap(), &(job_id, false));
                     match x {
                         y if y == job.person_create.unwrap() => {
                             // self.reports
@@ -1778,15 +1838,25 @@ mod polkalance {
 
         #[ink(message)]
         pub fn rating(&mut self, job_id: JobId, point: u8) -> Result<(), JobError> {
-            if point > 6 {return Err(JobError::InvalidPoint);}
-            let rating_point = match point {
-                1 => RatingPoint::OneStar,
-                2 => RatingPoint::TwoStars,
-                3 => RatingPoint::ThreeStars,
-                4 => RatingPoint::FourStars,
-                5 => RatingPoint::FiveStars,
-                _ => RatingPoint::default(),
-            };
+            if point > 6 || point == 0 {
+                return Err(JobError::InvalidPoint);
+            }
+            let rating_points = vec![
+                RatingPoint::OneStar, 
+                RatingPoint::TwoStars, 
+                RatingPoint::ThreeStars, 
+                RatingPoint::FourStars,
+                RatingPoint::FiveStars
+            ];
+            let rating_point = rating_points[point as usize - 1].clone();
+            // let rating_point = match point {
+            //     1 => RatingPoint::OneStar,
+            //     2 => RatingPoint::TwoStars,
+            //     3 => RatingPoint::ThreeStars,
+            //     4 => RatingPoint::FourStars,
+            //     5 => RatingPoint::FiveStars,
+            //     _ => RatingPoint::default(),
+            // };
             let mut job = self.jobs.get(job_id).ok_or(JobError::NotExisted)?;
             // Get the caller's address
             let caller = self.env().caller();
@@ -1809,22 +1879,22 @@ mod polkalance {
                                 let mut ratings_of_onwer = self.ratings.get(caller).unwrap();
                                 ratings_of_onwer.push((job_id, Some(rating_point.clone())));
                                 self.ratings
-                                    .insert(job.person_obtain.unwrap(), &ratings_of_onwer);
+                                    .insert(caller, &ratings_of_onwer);
                             }
                             false => {
                                 let mut ratings_of_onwer = Vec::new();
                                 ratings_of_onwer.push((job_id, Some(rating_point.clone())));
                                 self.ratings
-                                    .insert(job.person_obtain.unwrap(), &ratings_of_onwer);
+                                    .insert(caller, &ratings_of_onwer);
                             }
                         }
                         job.require_rating.0 = false;
                         self.jobs.insert(job_id, &job);
                         //rating cho user
-                        let mut freelancer = self.personal_account_info.get(job.person_obtain.unwrap()).unwrap();
-                        freelancer.rating_points.0 += point as u32;
-                        freelancer.rating_points.1 += 1;
-                        self.personal_account_info.insert(job.person_obtain.unwrap(), &freelancer);
+                        let mut freelancer_info = self.personal_account_info.get(job.person_obtain.unwrap()).unwrap();
+                        freelancer_info.rating_points.0 += point as u32;
+                        freelancer_info.rating_points.1 += 1;
+                        self.personal_account_info.insert(job.person_obtain.unwrap(), &freelancer_info);
                     }
                     (a, (_, c)) if (a == job.person_obtain.unwrap() && c) => {
                         // update ratings
@@ -1833,13 +1903,13 @@ mod polkalance {
                                 let mut ratings_of_freelancer = self.ratings.get(caller).unwrap();
                                 ratings_of_freelancer.push((job_id, Some(rating_point.clone())));
                                 self.ratings
-                                    .insert(job.person_create.unwrap(), &ratings_of_freelancer);
+                                    .insert(caller, &ratings_of_freelancer);
                             }
                             false => {
                                 let mut ratings_of_freelancer = Vec::new();
                                 ratings_of_freelancer.push((job_id, Some(rating_point.clone())));
                                 self.ratings
-                                    .insert(job.person_create.unwrap(), &ratings_of_freelancer);
+                                    .insert(caller, &ratings_of_freelancer);
                             }
                         }
                         job.require_rating.1 = false;
@@ -1848,7 +1918,7 @@ mod polkalance {
                         let mut owner = self.personal_account_info.get(job.person_create.unwrap()).unwrap();
                         owner.rating_points.0 += point as u32;
                         owner.rating_points.1 += 1;
-                        self.personal_account_info.insert(job.person_obtain.unwrap(), &owner);
+                        self.personal_account_info.insert(job.person_create.unwrap(), &owner);
                     }
                     _ => return Err(JobError::InvalidRating),
                 },
@@ -2249,6 +2319,94 @@ mod polkalance {
             let _ = register_freelancer(&mut account, eve);
         }
 
+        #[ink::test]
+        fn test_get_all_jobs_of_owner_with_status() {
+            let mut account = build_contract();
+            let alice = default_accounts().alice;
+            let _ = register_owner(&mut account, alice);
+            let _ = create_new_job(&mut account, alice, 10000);
+            let _ = create_new_job(&mut account, alice, 10000);
+            let _ = create_new_job(&mut account, alice, 10000);
+            let mut job_2 = account.jobs.get(2).unwrap();
+            job_2.status = Status::DOING;
+            account.jobs.insert(2, &job_2);
+            let res = Account::get_all_jobs_of_owner_with_status(&account, vec!["open".to_string(), "doing".to_string()]);
+            let desired_results = Ok(vec![
+                Job {
+                    name: String::from("user's job"),
+                    job_id: 0,
+                    description: String::from("detail of user's job"),
+                    category: Category::IT,
+                    result: None,
+                    status: Status::OPEN,
+                    budget: 97,                  
+                    fee_percentage: 3,              
+                    start_time: 10000,            
+                    end_time: 86410000, 
+                    person_create: Some(alice), 
+                    person_obtain: None,
+                    pay: 97,
+                    negotiation_pay: 0,
+                    feedback: String::new(),
+                    request_negotiation: false,
+                    requester: None,
+                    reporter: None,
+                    require_rating: (false, false),
+                    unqualifier: false,
+                    required_deposit_of_owner: 0,
+                    required_deposit_of_freelancer: 10, 
+                },
+                Job {
+                    name: String::from("user's job"),
+                    job_id: 1,
+                    description: String::from("detail of user's job"),
+                    category: Category::IT,
+                    result: None,
+                    status: Status::OPEN,
+                    budget: 97,                  
+                    fee_percentage: 3,              
+                    start_time: 10000,            
+                    end_time: 86410000, 
+                    person_create: Some(alice), 
+                    person_obtain: None,
+                    pay: 97,
+                    negotiation_pay: 0,
+                    feedback: String::new(),
+                    request_negotiation: false,
+                    requester: None,
+                    reporter: None,
+                    require_rating: (false, false),
+                    unqualifier: false,
+                    required_deposit_of_owner: 0,
+                    required_deposit_of_freelancer: 10, 
+                },
+                Job {
+                    name: String::from("user's job"),
+                    job_id: 2,
+                    description: String::from("detail of user's job"),
+                    category: Category::IT,
+                    result: None,
+                    status: Status::DOING,
+                    budget: 97,                  
+                    fee_percentage: 3,              
+                    start_time: 10000,            
+                    end_time: 86410000, 
+                    person_create: Some(alice), 
+                    person_obtain: None,
+                    pay: 97,
+                    negotiation_pay: 0,
+                    feedback: String::new(),
+                    request_negotiation: false,
+                    requester: None,
+                    reporter: None,
+                    require_rating: (false, false),
+                    unqualifier: false,
+                    required_deposit_of_owner: 0,
+                    required_deposit_of_freelancer: 10, 
+                }
+            ]);
+            assert_eq!(res, desired_results);
+        }
 
         #[ink::test]
         fn test_job_auction_success() {
@@ -3108,16 +3266,11 @@ mod polkalance {
             assert_eq!(get_balance_of(bob), 204);
         }
 
-        //đang code 
-        #[ink::test]
-        fn test_report() {
-            
-        }
-
-        fn set_job_to_check_report(contract: &mut Account, job_id: JobId, reporter: AccountId){
+        
+        fn set_job_to_check_report_and_rating(contract: &mut Account, job_id: JobId, owner: AccountId, freelancer: AccountId, reporter: AccountId, require_rating: (bool, bool)){
             let job = Job{
                 name: "job it 1".to_string(),
-                job_id: 0,
+                job_id: job_id,
                 description: "job detail".to_string(),
                 category: Category::IT,
                 result: Some("ket qua".to_string()),
@@ -3126,20 +3279,114 @@ mod polkalance {
                 fee_percentage: 3,
                 start_time: 10000,
                 end_time: 86410000,
-                person_create: Some(default_accounts().alice),
-                person_obtain: Some(default_accounts().bob),
+                person_create: Some(owner),
+                person_obtain: Some(freelancer),
                 pay: 97,
                 negotiation_pay : 0, 
                 feedback: String::new(), 
                 request_negotiation: false,
                 requester: None,
-                reporter: None,
-                require_rating: (false, false),
+                reporter: Some(reporter),
+                require_rating: require_rating,
                 unqualifier: false,
                 required_deposit_of_owner: 10,
                 required_deposit_of_freelancer: 20,
             };
+            contract.jobs.insert(job_id, &job);
         }
+
+        #[ink::test]
+        fn test_report() {
+            let mut account = build_contract();
+            let alice = register_user_with_role_for(&mut account, "alice", 'c').unwrap();
+            let bob = register_user_with_role_for(&mut account, "bob", 'f').unwrap();
+            //--------------- alice report -------------------
+            set_job_to_check_report_and_rating(&mut account, 0, alice, bob, alice, (false, false));
+            set_job_to_check_report_and_rating(&mut account, 2, alice, bob, alice, (false, false));
+            set_caller(alice);
+            let _ = account.report(0, "Toi khong hai long".to_string());
+            assert_eq!(account.reports.get(bob).unwrap(), vec![(0 as u128, Some("Toi khong hai long".to_string()))]);
+            let _ = account.report(2, "Toi khong hai long".to_string());
+            assert_eq!(account.reports.get(bob).unwrap(), vec![(0 as u128, Some("Toi khong hai long".to_string())), (2 as u128, Some("Toi khong hai long".to_string()))]);
+            //--------------- alice report lại -------------------
+            set_caller(alice);
+            let res = account.report(0, "Toi khong hai long".to_string());
+            assert_eq!(res, Err(JobError::InvalidReport));
+            //--------------- bob report -------------------
+            set_caller(bob);
+            let res = account.report(0, "Toi khong hai long".to_string());
+            assert_eq!(res, Err(JobError::InvalidReport));
+            //--------------- bob report job 1 -------------------
+            set_job_to_check_report_and_rating(&mut account, 1, alice, bob, alice, (false, false));
+            set_caller(bob);
+            let res = account.report(0, "Toi khong hai long".to_string());
+            assert_eq!(res, Err(JobError::InvalidReport));
+            //--------------- eve report job 1 -------------------
+            let eve = default_accounts().eve;
+            let _ = register_owner(&mut account, eve);
+            // let _ = register_freelancer(&mut account, eve);
+            set_caller(eve);
+            let res = account.report(0, "Toi khong hai long".to_string());
+            assert_eq!(res, Err(JobError::InvalidReport));
+        }
+
+        #[ink::test]
+        fn test_rating() {
+            let mut account = build_contract();
+            let alice = register_user_with_role_for(&mut account, "alice", 'c').unwrap();
+            let bob = register_user_with_role_for(&mut account, "bob", 'f').unwrap();
+            // ---------------------------TH1--------------------------
+            set_job_to_check_report_and_rating(&mut account, 0, alice, bob, alice, (false, false));
+            // set_caller(alice);
+            set_caller(bob);
+            let res = account.rating(0, 4);
+            assert_eq!(res, Err(JobError::InvalidRating));
+            // ---------------------------TH2--------------------------
+            set_job_to_check_report_and_rating(&mut account, 0, alice, bob, alice, (true, false));
+            //---------------------
+            set_caller(alice);
+            let res = account.rating(0, 3);
+            assert_eq!(res, Ok(()));
+            assert_eq!(account.ratings.get(alice), Some(vec![(0,Some(RatingPoint::ThreeStars))]));
+            assert_eq!(account.ratings.get(bob), None);
+            assert_eq!(account.personal_account_info.get(bob).unwrap().rating_points, (3, 1));
+            assert_eq!(account.personal_account_info.get(alice).unwrap().rating_points, (0, 0));
+            //---------------------
+            set_caller(bob);
+            let res = account.rating(0, 4);
+            assert_eq!(res, Err(JobError::InvalidRating));
+            // ---------------------------TH3--------------------------
+            set_job_to_check_report_and_rating(&mut account, 0, alice, bob, alice, (false, true));
+            //---------------------
+            set_caller(alice);
+            let res = account.rating(0, 4);
+            assert_eq!(res, Err(JobError::InvalidRating));
+            //---------------------
+            set_caller(bob);
+            let res = account.rating(0, 4);
+            assert_eq!(res, Ok(()));
+            assert_eq!(account.ratings.get(bob), Some(vec![(0,Some(RatingPoint::FourStars))]));
+            assert_eq!(account.personal_account_info.get(bob).unwrap().rating_points, (3, 1));
+            assert_eq!(account.personal_account_info.get(alice).unwrap().rating_points, (4, 1));
+            // ---------------------------TH4--------------------------
+            set_job_to_check_report_and_rating(&mut account, 1, alice, bob, alice, (true, true));
+            set_caller(alice);
+            let _ = account.rating(1, 5);
+            set_caller(bob);
+            let _ = account.rating(1, 5);
+            assert_eq!(account.ratings.get(alice), Some(vec![
+                (0,Some(RatingPoint::ThreeStars)),
+                (1,Some(RatingPoint::FiveStars))
+            ]));
+            assert_eq!(account.ratings.get(bob), Some(vec![
+                (0,Some(RatingPoint::FourStars)),
+                (1,Some(RatingPoint::FiveStars))
+            ]));
+            assert_eq!(account.personal_account_info.get(bob).unwrap().rating_points, (8, 2));
+            assert_eq!(account.personal_account_info.get(alice).unwrap().rating_points, (9, 2));
+        }
+
+        
         // #[ink::test]
         // fn test_obtain_success() {
         //     //build contract với địa chỉ là [7;32]
