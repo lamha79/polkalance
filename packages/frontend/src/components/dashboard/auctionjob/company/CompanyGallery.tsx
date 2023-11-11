@@ -16,7 +16,7 @@ import { CreateJob, CreateJob1 } from '../../../../utility/src';
 const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const toast = useToast()
-  const { setAuctionModalOpen, setJobSubmitId, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  const { setCreateContractModalOpen, setJobSubmitId, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
@@ -64,7 +64,7 @@ const FreelancerGallery: FC = () => {
               {jobs?.map((j, k) => (
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
-                  setAuctionModalOpen(true);
+                  setCreateContractModalOpen(true);
                   setJobSubmitId(parseInt(j.jobId));
                 }} />              
               ))}

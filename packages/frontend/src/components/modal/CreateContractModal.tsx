@@ -38,7 +38,7 @@ const CreateContractModal: FC = () => {
       {(desktopDisplay || tabletDisplay) && <Modal isOpen={createContractModalOpen} onClose={close} isCentered={mobileDisplay ? false : true} size={{base: 'full', md: "xl"}}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>createContract Job</ModalHeader>
+          <ModalHeader>Create Contract</ModalHeader>
           <ModalCloseButton />
           <ModalBody >
             <CreateContractForm
