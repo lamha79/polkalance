@@ -65,6 +65,7 @@ export interface CreateJob extends JobKey {
   description: string; 
   category: string;
   pay: string;
+  startTime: string; 
   endTime: string; 
   status: string;
   personCreate: string,

@@ -70,8 +70,11 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         </Flex>
         <Flex flexDir="column" ml="auto">
           <Box textStyle="h5" as="span" color="neutral.dsGray">
-            {job?.endTime && (
-              <>End Time: {getDay(job.endTime)}</>
+            {job?.endTime &&job?.startTime && (
+              <>
+                <>Start Time: {getDay(job.startTime)}</> <br></br>
+                <>End Time: {getDay(job.endTime)}</>
+              </>
             )}
           </Box>
         </Flex>

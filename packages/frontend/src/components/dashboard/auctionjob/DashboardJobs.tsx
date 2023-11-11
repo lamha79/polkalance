@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { FC } from 'react';
 import CompanyGallery from './company/CompanyGallery';
 import FreelancerGallery from './freelancer/FreelancerGallery';
-import CompanyTop from './company/CompanyTop';
 const MotionBox = motion(Box);
 
 const DashboardJobs: FC = () => {
@@ -19,37 +18,37 @@ const DashboardJobs: FC = () => {
   };
 
   return (
-    <Flex px={{ base: 0, lg: 6 }} flexDir="column" w="100%" h="100%" minH="calc( 100vh - 80px )">
+    <Flex px={{base: 0, lg: 6}} flexDir="column" w="100%" h="100%" minH="calc( 100vh - 80px )">
       <Flex
         flexDir="column"
         w="100%"
         flexGrow="1"
         bgColor="neutral.white"
-        px={{ base: 4, lg: 8 }}
-        py={{ base: 2, lg: 6 }}
-        gap={{ base: 4, lg: 8 }}
-        borderRadius={{ base: '32px', lg: "64px" }}
+        px={{base: 4, lg: 8}}
+        py={{base: 2, lg: 6}}
+        gap={{base: 4, lg: 8}}
+        borderRadius={{base: '32px', lg: "64px"}}
       >
         <AnimatePresence mode="wait">
           {type === UserTypeEnum.Freelancer && (
             <MotionBox
-              key="company"
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={contentVariants}
-              transition={{ ease: 'easeInOut', duration: 0.3 }}
-            >
-              <Flex flexDir="column" gap={4}>
-                <Box textStyle="h2" as="h1" w="100%" textAlign="left">
-                  Open jobs
-                </Box>
-                <Flex flexDir="column" gap={6}>
-                  {/* <CompanyTop onCreate={() => push('/dashboard/jobs/create')} /> */}
-                  <FreelancerGallery />
-                </Flex>
+            key="company"
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={contentVariants}
+            transition={{ ease: 'easeInOut', duration: 0.3 }}
+          >
+            <Flex flexDir="column" gap={4}>
+              <Box textStyle="h2" as="h1" w="100%" textAlign="left">
+                Auction jobs
+              </Box>
+              <Flex flexDir="column" gap={6}>
+                {/* <CompanyTop onCreate={() => push('/dashboard/jobs/create')} /> */}
+                <FreelancerGallery />
               </Flex>
-            </MotionBox>
+            </Flex>
+          </MotionBox>
           )}
           {type === UserTypeEnum.Company && (
             <MotionBox
@@ -62,12 +61,12 @@ const DashboardJobs: FC = () => {
             >
               <Flex flexDir="column" gap={4}>
                 <Box textStyle="h2" as="h1" w="100%" textAlign="left">
-                  Open jobs
+                  Auction jobs
                 </Box>
                 <Flex flexDir="column" gap={6}>
-                  <CompanyTop onCreate={() => push('')} />
-                  <CompanyGallery />
-                </Flex>
+                {/* <CompanyTop onCreate={() => push('/dashboard/jobs/create')} /> */}
+                <CompanyGallery />
+              </Flex>
               </Flex>
             </MotionBox>
           )}

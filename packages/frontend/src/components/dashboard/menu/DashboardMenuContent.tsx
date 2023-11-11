@@ -23,7 +23,8 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
   const companyMenu: MenuElement[] = [
     { view: '/dashboard', label: 'Dashboard' },
     { view: '/dashboard/offers', label: 'Find profiles' },
-    { view: '/dashboard/jobs', label: 'All open (reopen) job' },
+    { view: '/dashboard/jobs', label: 'Open jobs' },
+    { view: '/dashboard/auctionjob', label: 'Auction jobs' },
     { view: '/dashboard/doingjob', label: 'All rewiew jobs' },
     // { view: '/dashboard/contracts', label: 'My Contracts' }
   ];
@@ -31,7 +32,8 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
   const freelanceMenu: MenuElement[] = [
     { view: '/dashboard', label: 'Dashboard' },
     { view: '/dashboard/offers', label: 'Find work' },
-    { view: '/dashboard/jobs', label: 'All open Jobs' },
+    { view: '/dashboard/jobs', label: 'Open jobs' },
+    { view: '/dashboard/auctionjob', label: 'Auction jobs' },
     // { view: '/dashboard/contracts', label: 'My Contracts' },
     { view: '/dashboard/doingjob', label: 'All my doing jobs' }
   ];
