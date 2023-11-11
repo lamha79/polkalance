@@ -20,8 +20,8 @@ const CompanyGallery: FC = () => {
   const { setUseFormDone, useFormDone, setCreateContractModalOpen } = useLanding()
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain } = useInkathon()
-  const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
-  const [fetchSearchJob, setFetchSearchJob] = useState<boolean>(false);
+  // const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
+  // const [fetchSearchJob, setFetchSearchJob] = useState<boolean>(false);
   // const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   //////
@@ -84,7 +84,8 @@ const CompanyGallery: FC = () => {
   //////
   const searchJobs = async () => {
     if (!contract || !api || !activeAccount) return null;
-    setFetchIsLoading(true);
+    // setFetchIsLoading(true);
+    setJobsFetching(true);
     try {
       const result = await contractQuery(api, activeAccount.address, contract, 'get_all_jobs_of_owner_with_status', {}, ['open']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_owner_with_status');
@@ -97,8 +98,9 @@ const CompanyGallery: FC = () => {
     } catch (e) {
       setJobs([])
     } finally {
-      setFetchIsLoading(false);
-      setFetchSearchJob(true);
+      // setFetchIsLoading(false);
+      // setFetchSearchJob(true);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
