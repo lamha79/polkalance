@@ -17,7 +17,7 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace } = useRouter()
   const toast = useToast()
-  const { setSubmitModalOpen, setJobSubmitId, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  const { setSubmitModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -95,7 +95,7 @@ const FreelancerGallery: FC = () => {
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setSubmitModalOpen(true);
-                  setJobSubmitId(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId));
                 }} />              
               ))}
             </SimpleGrid>

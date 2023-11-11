@@ -16,15 +16,11 @@ import { CreateJob, CreateJob1 } from '../../../../utility/src';
 const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const toast = useToast()
-  const { setAuctionModalOpen, setJobSubmitId, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  const { setAuctionModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const searchAuctionJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount +"=((");
-    setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
@@ -36,13 +32,9 @@ const FreelancerGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
-      // setSearchJobsResult(output);
     } catch (e) {
       console.log(e);
-
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      setJobs([])
     } finally {
       setFetchIsLoading(false);
     }
@@ -54,7 +46,6 @@ const FreelancerGallery: FC = () => {
     }
   }, [contract, api, useFormDone]);
 
-  //////
   return (
     <Flex flexDir="column">
       {!jobsFetching && (
@@ -65,7 +56,7 @@ const FreelancerGallery: FC = () => {
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setAuctionModalOpen(true);
-                  setJobSubmitId(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId));
                 }} />              
               ))}
             </SimpleGrid>

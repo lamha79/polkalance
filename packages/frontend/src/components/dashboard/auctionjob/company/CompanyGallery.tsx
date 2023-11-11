@@ -16,17 +16,13 @@ import { CreateJob, CreateJob1 } from '../../../../utility/src';
 const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const toast = useToast()
-  const { setCreateContractModalOpen, setJobSubmitId, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  const { setCreateContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const searchAuctionJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount +"=((");
-    setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
-    setFetchIsLoading(true);
+    setJobsFetching(true);
     try {
       const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_owner_with_status', {}, ['auctioning']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_owner_with_status');
@@ -36,15 +32,11 @@ const FreelancerGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
-      // setSearchJobsResult(output);
     } catch (e) {
       console.log(e);
-
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      setJobs([])
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
@@ -54,7 +46,6 @@ const FreelancerGallery: FC = () => {
     }
   }, [contract, api, useFormDone]);
 
-  //////
   return (
     <Flex flexDir="column">
       {!jobsFetching && (
@@ -65,7 +56,7 @@ const FreelancerGallery: FC = () => {
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setCreateContractModalOpen(true);
-                  setJobSubmitId(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId));
                 }} />              
               ))}
             </SimpleGrid>

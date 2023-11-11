@@ -83,28 +83,19 @@ const CompanyGallery: FC = () => {
   // };
   //////
   const searchJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount +"=((");
-    // setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address, contract, 'get_all_open_jobs_no_params', {}, []);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_open_jobs_no_params');
+      const result = await contractQuery(api, activeAccount.address, contract, 'get_all_jobs_of_owner_with_status', {}, ['open']);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_owner_with_status');
+      if (isError) throw new Error(decodedOutput);
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
       const jobs = data as CreateJob[];
       setJobs(jobs)
-      if (isError) throw new Error(decodedOutput);
-
-      // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      setJobs([])
     } finally {
       setFetchIsLoading(false);
       setFetchSearchJob(true);

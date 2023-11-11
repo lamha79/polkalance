@@ -14,7 +14,7 @@ type LandingContextInterface = {
   activeAccountUser: boolean;
   hasScroll: boolean;
   isCheckWallet: boolean;
-  jobSubmitId: number;
+  jobIdForForm: number;
   useFormDone: boolean;
   createContractModalOpen: boolean;
   setType: (user: ViewType) => void;
@@ -26,7 +26,7 @@ type LandingContextInterface = {
   setActiveAccountUser: (open: boolean) => void;
   setHasScroll: (hasScroll: boolean) => void;
   setIsCheckWallet: (check: boolean) => void;
-  setJobSubmitId: (jobId: number) => void;
+  setJobIdForForm: (jobId: number) => void;
   setUseFormDone: (x: boolean) => void;
   setCreateContractModalOpen: (open: boolean) => void;
 };
@@ -41,7 +41,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   activeAccountUser: false, 
   hasScroll: false,
   isCheckWallet: false,
-  jobSubmitId: 0,
+  jobIdForForm: 0,
   useFormDone: false,
   createContractModalOpen: false,
   
@@ -54,7 +54,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   setActiveAccountUser: () => {},
   setHasScroll: () => {},
   setIsCheckWallet: () => {},
-  setJobSubmitId: () => {},
+  setJobIdForForm: () => {},
   setUseFormDone: () => {},
   setCreateContractModalOpen: () => {},
 });
@@ -69,7 +69,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [activeAccountUser, setActiveAccountUser] = useState(false);
   const [hasScroll, setHasScroll] = useState(false);
   const [isCheckWallet, setIsCheckWallet] = useState(false);
-  const [jobSubmitId, setJobSubmitId] = useState(0);
+  const [jobIdForForm, setJobIdForForm] = useState(0);
   const [useFormDone, setUseFormDone] = useState(false);
   const [createContractModalOpen, setCreateContractModalOpen] = useState(false);
   
@@ -85,7 +85,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         hasScroll,
         activeAccountUser,
         isCheckWallet,
-        jobSubmitId,
+        jobIdForForm,
         useFormDone,
         createContractModalOpen,
         setType,
@@ -97,7 +97,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setActiveAccountUser,
         setHasScroll,
         setIsCheckWallet,
-        setJobSubmitId,
+        setJobIdForForm,
         setUseFormDone,
         setCreateContractModalOpen,
       }}
@@ -118,7 +118,7 @@ export function useLanding() {
     hasScroll,
     activeAccountUser,
     isCheckWallet,
-    jobSubmitId,
+    jobIdForForm,
     useFormDone, 
     createContractModalOpen,
     setType,
@@ -130,7 +130,7 @@ export function useLanding() {
     setActiveAccountUser,
     setHasScroll,
     setIsCheckWallet,
-    setJobSubmitId,
+    setJobIdForForm,
     setUseFormDone,
     setCreateContractModalOpen,
   } = useContext(LandingContext);
@@ -159,7 +159,7 @@ export function useLanding() {
     hasScroll,
     activeAccountUser,
     isCheckWallet,
-    jobSubmitId,
+    jobIdForForm,
     useFormDone,
     createContractModalOpen,
     setType,
@@ -173,7 +173,7 @@ export function useLanding() {
     handleScroll,
     setHasScroll,
     setIsCheckWallet,
-    setJobSubmitId,
+    setJobIdForForm,
     setUseFormDone,
     setCreateContractModalOpen,
   };
