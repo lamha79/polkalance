@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xb2cacebb31b7e6a985d81dc9e310faba3bc04baa46c163ac8228339b4833ebd6",
+    "hash": "0xd6188a7e4cc90cf2d2c51d14ed183cbf2da89cfd23ee2e6d6717d5a74289e968",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.71.1",
     "build_info": {
@@ -62,13 +62,13 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 51
+        "type": 58
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 50
+        "type": 57
       },
       "maxEventTopics": 4,
       "timestamp": {
@@ -1033,6 +1033,32 @@
               ],
               "type": 3
             }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "get_all_auctioneer",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 50
+        },
+        "selector": "0xdf6101b9"
+      },
+      {
+        "args": [
+          {
+            "label": "job_id",
+            "type": {
+              "displayName": [
+                "JobId"
+              ],
+              "type": 3
+            }
           },
           {
             "label": "party_b",
@@ -1084,6 +1110,22 @@
           "type": 24
         },
         "selector": "0x36458718"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "get_all_contract",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 52
+        },
+        "selector": "0x21c3b46e"
       },
       {
         "args": [
@@ -2787,110 +2829,114 @@
               },
               {
                 "index": 11,
-                "name": "NotExistedThisContract"
+                "name": "NoAuctioneer"
               },
               {
                 "index": 12,
-                "name": "NotPartyA"
+                "name": "NotExistedThisContract"
               },
               {
                 "index": 13,
-                "name": "NotPartyB"
+                "name": "NotPartyA"
               },
               {
                 "index": 14,
-                "name": "Signed"
+                "name": "NotPartyB"
               },
               {
                 "index": 15,
-                "name": "CreatedContract"
+                "name": "Signed"
               },
               {
                 "index": 16,
-                "name": "ConfirmationTimeExpires"
+                "name": "CreatedContract"
               },
               {
                 "index": 17,
-                "name": "ConfirmationTimeNotExpires"
+                "name": "ConfirmationTimeExpires"
               },
               {
                 "index": 18,
-                "name": "InvalidDeposit"
+                "name": "ConfirmationTimeNotExpires"
               },
               {
                 "index": 19,
-                "name": "NotExisted"
+                "name": "InvalidDeposit"
               },
               {
                 "index": 20,
-                "name": "NotTaked"
+                "name": "NotExisted"
               },
               {
                 "index": 21,
-                "name": "Taked"
+                "name": "NotTaked"
               },
               {
                 "index": 22,
-                "name": "NotTakeThisJob"
+                "name": "Taked"
               },
               {
                 "index": 23,
-                "name": "NotAssignThisJob"
+                "name": "NotTakeThisJob"
               },
               {
                 "index": 24,
-                "name": "OutOfDate"
+                "name": "NotAssignThisJob"
               },
               {
                 "index": 25,
-                "name": "Submitted"
+                "name": "OutOfDate"
               },
               {
                 "index": 26,
-                "name": "Processing"
+                "name": "Submitted"
               },
               {
                 "index": 27,
-                "name": "Finished"
+                "name": "Processing"
               },
               {
                 "index": 28,
-                "name": "Canceled"
+                "name": "Finished"
               },
               {
                 "index": 29,
-                "name": "InvalidPayAmount"
+                "name": "Canceled"
               },
               {
                 "index": 30,
-                "name": "InvalidNegotiation"
+                "name": "InvalidPayAmount"
               },
               {
                 "index": 31,
-                "name": "InvalidTermination"
+                "name": "InvalidNegotiation"
               },
               {
                 "index": 32,
-                "name": "InvalidReport"
+                "name": "InvalidTermination"
               },
               {
                 "index": 33,
-                "name": "InvalidRating"
+                "name": "InvalidReport"
               },
               {
                 "index": 34,
-                "name": "InvalidPoint"
+                "name": "InvalidRating"
               },
               {
                 "index": 35,
-                "name": "NotYourContract"
+                "name": "InvalidPoint"
               },
               {
                 "index": 36,
-                "name": "NoNegotiator"
+                "name": "NotYourContract"
               },
               {
                 "index": 37,
+                "name": "NoNegotiator"
+              },
+              {
+                "index": 38,
                 "name": "HaveNegotiator"
               }
             ]
@@ -3696,6 +3742,273 @@
       "id": 50,
       "type": {
         "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 51
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 23
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 51
+          },
+          {
+            "name": "E",
+            "type": 23
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 51,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 19
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 19
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 52,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 53
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 23
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 53
+          },
+          {
+            "name": "E",
+            "type": 23
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 53,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 54
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 54
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 54,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 55
+          }
+        }
+      }
+    },
+    {
+      "id": 55,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "job_id",
+                "type": 3,
+                "typeName": "JobId"
+              },
+              {
+                "name": "party_a",
+                "type": 34,
+                "typeName": "Option<AccountId>"
+              },
+              {
+                "name": "party_a_consent",
+                "type": 56,
+                "typeName": "Option<bool>"
+              },
+              {
+                "name": "party_b",
+                "type": 34,
+                "typeName": "Option<AccountId>"
+              },
+              {
+                "name": "party_b_consent",
+                "type": 56,
+                "typeName": "Option<bool>"
+              },
+              {
+                "name": "rules",
+                "type": 4,
+                "typeName": "String"
+              },
+              {
+                "name": "percent_paid_when_contract_fail",
+                "type": 2,
+                "typeName": "u8"
+              },
+              {
+                "name": "deadline_to_sign_contract",
+                "type": 5,
+                "typeName": "Timestamp"
+              }
+            ]
+          }
+        },
+        "path": [
+          "polkalance",
+          "polkalance",
+          "Contract"
+        ]
+      }
+    },
+    {
+      "id": 56,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 6
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 6
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 57,
+      "type": {
+        "def": {
           "composite": {
             "fields": [
               {
@@ -3713,7 +4026,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 58,
       "type": {
         "def": {
           "variant": {}

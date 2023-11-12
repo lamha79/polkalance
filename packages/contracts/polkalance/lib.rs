@@ -315,7 +315,8 @@ mod polkalance {
         InvalidBidder,      //người đấu giá không hợp lệ
         NoBidder,           //không có người đấu giá job
         NotBidder,          //không phải người đấu giá
-
+        //lỗi liên quan đến lấy thông tin người đấu giá 
+        NoAuctioneer,       //không có người đấu giá
         //lỗi liên quan đến contract
         NotExistedThisContract,             //hơp đồng không tồn tại
         NotPartyA,                          //không phải là bên A trong hợp đồng
@@ -468,7 +469,7 @@ mod polkalance {
             }
             let open_jobs = jobs
                 .into_iter()
-                .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN)
+                .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN || job.status == Status::AUCTIONING)
                 .collect();
             Ok(open_jobs)
         }
@@ -495,7 +496,7 @@ mod polkalance {
             res
         }
         // get tất cả các job của owner với trạng thái cho trước
-        // ví dụ: muốn get open job, reopen job thì status_string = "open,reopen;
+        // ví dụ: muốn get open job, reopen job thì status_string = "open,reopen";
         // ---------------------> query trong các dashboard
         #[ink(message)]
         pub fn get_all_jobs_of_owner_with_status(&self, status_string: String) -> Result<Vec<Job>, JobError>{
@@ -710,6 +711,8 @@ mod polkalance {
             Ok(())
         }
 
+
+
         #[ink(message)]
         pub fn job_auction (&mut self, job_id: JobId, desired_salary: u128, required_deposit_of_owner: Balance) -> Result<(), JobError> {
             // check caller đã đăng kí hay chưa và có phải là freelancer hay không
@@ -782,6 +785,15 @@ mod polkalance {
             Ok(())
         }
 
+        // chưa viết test
+        // get tất cả thông tin của những người auction công việc. 
+        #[ink(message)]
+        pub fn get_all_auctioneer(&self, job_id: JobId) -> Result<Vec<(AccountId, u128, u128)>, JobError> {
+            let all_auctioneer = self.auction.get(job_id).ok_or(JobError::NoAuctioneer)?;
+            Ok(all_auctioneer)
+        }
+
+
         // onwer và freelancer sẽ tương tác với nhau qua web2 để phỏng vấn, trao đổi các thông tin: chi tiết công việc, điều khoản, phần trăm tiền freelancer nhận được nếu job không hoàn thành (do bên owner không hợp tác)
         // sẽ có vòng thương lượng để có thể thay đổi số tiền được trả nếu thương lượng thành công. (sử dụng tiền trong thương lượng làm tiền trả mà không dùng chỗ này nữa)
         // nếu freelancer không hợp tác thì không được hưởng khoản tiền trong hợp đồng này.
@@ -837,6 +849,30 @@ mod polkalance {
             Ok(())
         }
 
+        // chưa viết test
+        // get tất cả các contract của những người company. 
+        #[ink(message)]
+        pub fn get_all_contract(&self) -> Result<Vec<Contract>, JobError> {
+            let caller = self.env().caller();
+            self.check_caller_is_owner(caller)?;
+            if let Some(all_auctioning_job_ids_of_caller) = self.owner_jobs.get(caller) {
+                let res :Vec<(u128,Status)> = all_auctioning_job_ids_of_caller.into_iter().filter(|x| x.1 == Status::AUCTIONING).collect();
+                let all_job_ids: Vec<u128> = res.into_iter().map(|(x, _)| x).collect();
+                let mut all_contracts = Vec::new();
+                for job_id in all_job_ids {
+                    if let Some(contract) = self.contracts.get(job_id) {
+                        all_contracts.push(contract);
+                    }
+                }
+                if all_contracts.len() == 0 {
+                    return Err(JobError::NoAuctioneer);
+                } else {
+                    return Ok(all_contracts)
+                }
+            } else {
+                return Err(JobError::NoAuctioneer);
+            };
+        }
 
         //hủy hợp đồng dùng khi quá hạn mà freelancer ko chịu kí hợp đồng
         #[ink(message, payable)]
