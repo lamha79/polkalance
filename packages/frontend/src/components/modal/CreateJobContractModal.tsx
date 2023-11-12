@@ -15,11 +15,11 @@ import {
 import { useInkathon } from '@scio-labs/use-inkathon'
 import { useLanding } from '../../front-provider/src'
 import { FC } from 'react';
-import CreateContractForm from '../form/CreateContractForm';
+import CreateJobContractForm from '../form/CreateJobContractForm';
 import { useResponsive } from '../hooks/useResponsive';
 
-const CreateContractModal: FC = () => {
-  const { createContractModalOpen, setCreateContractModalOpen } = useLanding();
+const CreateJobContractModal: FC = () => {
+  const { createJobContractModalOpen, setCreateJobContractModalOpen } = useLanding();
   const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
 
   const {
@@ -29,19 +29,19 @@ const CreateContractModal: FC = () => {
   const close = () => {
     // disconnect?.();
     setTimeout(() => {
-      setCreateContractModalOpen(false);
+      setCreateJobContractModalOpen(false);
     }, 200);
   };
 
   return (
     <>
-      {(desktopDisplay || tabletDisplay) && <Modal isOpen={createContractModalOpen} onClose={close} isCentered={mobileDisplay ? false : true} size={{base: 'full', md: "xl"}}>
+      {(desktopDisplay || tabletDisplay) && <Modal isOpen={createJobContractModalOpen} onClose={close} isCentered={mobileDisplay ? false : true} size={{base: 'full', md: "xl"}}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create Contract</ModalHeader>
           <ModalCloseButton />
           <ModalBody >
-            <CreateContractForm
+            <CreateJobContractForm
               // onSubmitSuccess={() => {
               //   // disconnect?.();
               //   setTimeout(() => {
@@ -56,4 +56,4 @@ const CreateContractModal: FC = () => {
   );
 };
 
-export default CreateContractModal;
+export default CreateJobContractModal;

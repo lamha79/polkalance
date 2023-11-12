@@ -77,7 +77,7 @@ import JobCard2 from '@components/card/JobCard2'
 //   onSubmitSuccess: () => void
 // }
 
-const CreateContractForm: FC = () => {
+const CreateJobContractForm: FC = () => {
 //   const {
 //     activeAccount
 //   } = useInkathon()
@@ -134,7 +134,7 @@ const CreateContractForm: FC = () => {
   }
   //////////////////////
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
-  const { setCreateJobContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone} = useLanding();
+  const { setAuctionModalOpen, setJobIdForForm, submitModalOpen, useFormDone} = useLanding();
   const [allAuctioneer, setAllAuctioneer] = useState<Auctioneer[]>([]);
   const {api, activeAccount} = useInkathon();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
@@ -175,7 +175,7 @@ const CreateContractForm: FC = () => {
 const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick }: AuctioneersProps) => {
   return (
     <Box
-      p={10}
+      p={6}
       borderColor="neutral.gray"
       borderWidth="1px"
       borderRadius="32px"
@@ -187,16 +187,17 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
       <Text
             fontFamily="Comfortaa"
             fontWeight="700"
-            fontSize="12px"
+            fontSize="14px"
             lineHeight="120%"
             color="neutral.black"
           >
             {
+              // // console.log(auctioneer?.freelancer);
+              // <h1>Ta chia hao</h1>
               <>
-                <h1>create contract form</h1>
-                <h1>Freelancer Address: {auctioneer[0]}</h1>
-                <h1>Desired Salary: {auctioneer[1]} TZERO</h1>
-                <h1>Required Deposit Of Company: {auctioneer[1]} TZERO</h1>
+                <h1>Freelancer: {auctioneer[0]}</h1>
+                <h1>Desired Salary: {auctioneer[1]}</h1>
+                <h1>Required Deposit Of Company: {auctioneer[1]}</h1>
               </>
             }
       </Text>
@@ -316,7 +317,7 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
         <SimpleGrid columns={{ base: 1, lg: 1 }} spacing={8} w="100%">
            {
               allAuctioneer?.map((j, k) => (
-                <AuctioneersCard auctioneer={j} key={k} onClick={()=>{setCreateJobContractModalOpen(true)}}/>
+                <AuctioneersCard auctioneer={j} key={k} onClick={()=>{setAuctionModalOpen(true)}}/>
               ))
            }
         </SimpleGrid>
@@ -380,4 +381,4 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
   )
 }
 
-export default CreateContractForm
+export default CreateJobContractForm

@@ -77,22 +77,21 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
     activeAccount
   } = useInkathon()
   const toast = useToast()
-  const {jobSubmitId, setUseFormDone} = useLanding();
+  const {jobIdForForm, setUseFormDone} = useLanding();
 
   // thêm vào
   const [loading, setLoading] = useState(false)
   const { api, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  const { push } = useRouter()
   const auctionJob = async (values: FormData) => {
      
     if (!activeAccount || !contract || !activeSigner || !api) {
       return false
     }
-    console.log(jobSubmitId);
+    console.log(jobIdForForm);
     try {
       await contractTx(api, activeAccount.address, contract, 'jobAuction', {}, [
-        jobSubmitId, values.desired_salary, values.required_deposit_of_owner
+        jobIdForForm, values.desired_salary, values.required_deposit_of_owner
       ])
       toast({
         title: <Text mt={-0.5}>Auction successfully</Text>,
@@ -102,7 +101,7 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
       })
       onSubmitSuccess();
     } catch (e: any) {
-      let error = e.errorMessage;
+      const error = e.errorMessage;
       toast({
         title: <Text mt={-0.5}>{error}</Text>,
         status: 'error',

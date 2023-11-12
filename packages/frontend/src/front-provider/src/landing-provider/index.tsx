@@ -17,6 +17,7 @@ type LandingContextInterface = {
   jobIdForForm: number;
   useFormDone: boolean;
   createContractModalOpen: boolean;
+  createJobContractModalOpen: boolean;
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
@@ -29,6 +30,7 @@ type LandingContextInterface = {
   setJobIdForForm: (jobId: number) => void;
   setUseFormDone: (x: boolean) => void;
   setCreateContractModalOpen: (open: boolean) => void;
+  setCreateJobContractModalOpen: (open: boolean) => void;
 };
 
 export const LandingContext = createContext<LandingContextInterface>({
@@ -44,7 +46,8 @@ export const LandingContext = createContext<LandingContextInterface>({
   jobIdForForm: 0,
   useFormDone: false,
   createContractModalOpen: false,
-  
+  createJobContractModalOpen: false,
+
   setType: () => {},
   setCurrentView: () => {},
   setSignupModalOpen: () => {},
@@ -57,6 +60,8 @@ export const LandingContext = createContext<LandingContextInterface>({
   setJobIdForForm: () => {},
   setUseFormDone: () => {},
   setCreateContractModalOpen: () => {},
+  setCreateJobContractModalOpen: () => {},
+
 });
 
 export const LandingProvider = ({ children }: { children: ReactNode }) => {
@@ -72,6 +77,8 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [jobIdForForm, setJobIdForForm] = useState(0);
   const [useFormDone, setUseFormDone] = useState(false);
   const [createContractModalOpen, setCreateContractModalOpen] = useState(false);
+  const [createJobContractModalOpen, setCreateJobContractModalOpen] = useState(false);
+
   
   return (
     <LandingContext.Provider
@@ -88,6 +95,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         jobIdForForm,
         useFormDone,
         createContractModalOpen,
+        createJobContractModalOpen,
         setType,
         setCurrentView,
         setSignupModalOpen,
@@ -100,6 +108,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setJobIdForForm,
         setUseFormDone,
         setCreateContractModalOpen,
+        setCreateJobContractModalOpen,
       }}
     >
       {children}
@@ -121,6 +130,7 @@ export function useLanding() {
     jobIdForForm,
     useFormDone, 
     createContractModalOpen,
+    createJobContractModalOpen,
     setType,
     setCurrentView,
     setSignupModalOpen,
@@ -133,6 +143,8 @@ export function useLanding() {
     setJobIdForForm,
     setUseFormDone,
     setCreateContractModalOpen,
+    setCreateJobContractModalOpen,
+
   } = useContext(LandingContext);
 
   const handleViewChange = (inView: boolean, entry: IntersectionObserverEntry) => {
@@ -162,6 +174,7 @@ export function useLanding() {
     jobIdForForm,
     useFormDone,
     createContractModalOpen,
+    createJobContractModalOpen,
     setType,
     handleViewChange,
     setCurrentView,
@@ -176,5 +189,6 @@ export function useLanding() {
     setJobIdForForm,
     setUseFormDone,
     setCreateContractModalOpen,
+    setCreateJobContractModalOpen,
   };
 }
