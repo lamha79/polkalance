@@ -134,7 +134,7 @@ const CreateContractForm: FC = () => {
   }
   //////////////////////
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
-  const { setCreateJobContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone} = useLanding();
+  const { setCreateJobContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone, jobIdForForm, setAccountForForm} = useLanding();
   const [allAuctioneer, setAllAuctioneer] = useState<Auctioneer[]>([]);
   const {api, activeAccount} = useInkathon();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
@@ -142,7 +142,7 @@ const CreateContractForm: FC = () => {
     if (!contract || !api || !activeAccount) return null;
     setJobsFetching(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_auctioneer', {}, [0]);
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_auctioneer', {}, [jobIdForForm]);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_auctioneer');
       const json = JSON.stringify(output, null, 2);
       const list_auctioneer = JSON.parse(json);
@@ -173,6 +173,7 @@ const CreateContractForm: FC = () => {
   }
 
 const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick }: AuctioneersProps) => {
+  
   return (
     <Box
       p={10}
@@ -193,7 +194,6 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
           >
             {
               <>
-                <h1>create contract form</h1>
                 <h1>Freelancer Address: {auctioneer[0]}</h1>
                 <h1>Desired Salary: {auctioneer[1]} TZERO</h1>
                 <h1>Required Deposit Of Company: {auctioneer[1]} TZERO</h1>
@@ -316,7 +316,10 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
         <SimpleGrid columns={{ base: 1, lg: 1 }} spacing={8} w="100%">
            {
               allAuctioneer?.map((j, k) => (
-                <AuctioneersCard auctioneer={j} key={k} onClick={()=>{setCreateJobContractModalOpen(true)}}/>
+                <AuctioneersCard auctioneer={j} key={k} onClick={()=>{
+                  setCreateJobContractModalOpen(true);
+                  setAccountForForm(j[0]);
+                }}/>
               ))
            }
         </SimpleGrid>
