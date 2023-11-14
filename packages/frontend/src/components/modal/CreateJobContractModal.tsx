@@ -19,7 +19,7 @@ import CreateJobContractForm from '../form/CreateJobContractForm';
 import { useResponsive } from '../hooks/useResponsive';
 
 const CreateJobContractModal: FC = () => {
-  const { createJobContractModalOpen, setCreateJobContractModalOpen } = useLanding();
+  const { createJobContractModalOpen, setCreateJobContractModalOpen, setCreateContractModalOpen } = useLanding();
   const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
 
   const {
@@ -42,12 +42,13 @@ const CreateJobContractModal: FC = () => {
           <ModalCloseButton />
           <ModalBody >
             <CreateJobContractForm
-              // onSubmitSuccess={() => {
-              //   // disconnect?.();
-              //   setTimeout(() => {
-              //     setCreateContractModalOpen(false);
-              //   }, 200);
-              // }}
+              onSubmitSuccess={() => {
+                // disconnect?.();
+                setTimeout(() => {
+                  setCreateJobContractModalOpen(false);
+                  setCreateContractModalOpen(false);
+                }, 200);
+              }}
             />
           </ModalBody>
         </ModalContent>

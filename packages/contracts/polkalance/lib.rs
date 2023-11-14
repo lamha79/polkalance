@@ -233,6 +233,7 @@ mod polkalance {
         #[default]
         OPEN,
         AUCTIONING, //đang đấu giá
+        BECREATINGCONTRACT,
         DOING,
         REVIEW,
         UNQUALIFIED, //chưa đạt yêu cầu, reject => unqualifieds => freelancer nếu đồng ý thì reopen nếu ko thì complaint
@@ -326,8 +327,10 @@ mod polkalance {
         ConfirmationTimeExpires,            // quá thời gian để ký hợp đồng
         ConfirmationTimeNotExpires,         // chưa quá thời gian để ký hợp đồng
         InvalidDeposit,                     //số tiền đặt cọc không hợp lệ
+        NoContract,                         // không có hợp đồng nào
 
         // Lỗi check job
+        NoJobs,           // không có job nào tồn tại
         NotExisted,       // Job không tồn tại
         NotTaked,         // chưa có người nhận job
         Taked,            //đã có người nhận
@@ -463,15 +466,26 @@ mod polkalance {
         //--------------------> dùng trong đấu giá công việc
         #[ink(message)]
         pub fn get_all_open_jobs_no_params(&self) -> Result<Vec<Job>, JobError> {
+            let caller = self.env().caller();
             let mut jobs = Vec::<Job>::new();
             for i in 0..self.current_job_id {
                 jobs.push(self.jobs.get(i).unwrap());
             }
-            let open_jobs = jobs
+            if let Some(freelancer_jobs) = self.freelancer_jobs.get(caller) {
+                let open_jobs = jobs
+                .into_iter()
+                .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN || (job.status == Status::AUCTIONING && !freelancer_jobs.contains(&(job.job_id, Status::AUCTIONING))))
+                .collect();
+                Ok(open_jobs)
+            } else {
+                let open_jobs = jobs
                 .into_iter()
                 .filter(|job| job.status == Status::OPEN || job.status == Status::REOPEN || job.status == Status::AUCTIONING)
+                // .filter(|&job| )
                 .collect();
-            Ok(open_jobs)
+                Ok(open_jobs)
+            }
+            
         }
 
         pub fn string_to_status(status: String) -> Vec<Status>{
@@ -501,6 +515,7 @@ mod polkalance {
         #[ink(message)]
         pub fn get_all_jobs_of_owner_with_status(&self, status_string: String) -> Result<Vec<Job>, JobError>{
             let owner = self.env().caller();
+            self.check_caller_is_owner(owner)?;
             let status = Self::string_to_status(status_string);
             if status.len() == 0 {
                 return Err(JobError::InvalidQuery);
@@ -526,6 +541,7 @@ mod polkalance {
         #[ink(message)]
         pub fn get_all_jobs_of_freelancer_with_status(&self, status_string: String) -> Result<Vec<Job>, JobError>{
             let freelancer = self.env().caller();
+            self.check_caller_is_freelancer(freelancer)?;
             let status = Self::string_to_status(status_string);
             if status.len() == 0 {
                 return Err(JobError::InvalidQuery);
@@ -758,12 +774,12 @@ mod polkalance {
             job.status = Status::AUCTIONING;
             self.jobs.insert(job_id, &job);
 
-            //Chỉnh lại trạng thái công việc đã thành công của onwer_jobs (người thứ hai trở đi auction vẫn ghi đè chỗ này)
+            //Chỉnh lại trạng thái công việc của onwer_jobs (người thứ hai trở đi auction vẫn ghi đè chỗ này)
             let mut owner_jobs = self.owner_jobs.get(job.person_create.unwrap()).unwrap();
             let index = owner_jobs.iter().position(|(x, _)| *x == job_id).unwrap();
             owner_jobs[index].1 = Status::AUCTIONING;
             self.owner_jobs.insert(job.person_create.unwrap(), &owner_jobs);
-            //Chỉnh lại trạng thái công việc đã thành công của freelancer_jobs (auction lại vẫn ghi đè chỗ này)
+            //Chỉnh lại trạng thái công việc của freelancer_jobs
             if let Some(mut freelancer_jobs) = self.freelancer_jobs.get(caller){
                 if let Some(index) = freelancer_jobs.iter().position(|(x, _)| *x == job_id){
                     freelancer_jobs[index].1 = Status::AUCTIONING;              //ghi đè
@@ -840,7 +856,24 @@ mod polkalance {
             self.contracts.insert(job_id, &contract);
             // update lại thông tin job
             job.required_deposit_of_owner = require_deposit;
+            job.status = Status::BECREATINGCONTRACT;
             self.jobs.insert(job_id, &job);
+            //Chỉnh lại trạng thái công việc của onwer_jobs 
+            let mut owner_jobs = self.owner_jobs.get(caller).unwrap();
+            let index = owner_jobs.iter().position(|(x, _)| *x == job_id).unwrap();
+            owner_jobs[index].1 = Status::BECREATINGCONTRACT;
+            self.owner_jobs.insert(caller, &owner_jobs);
+            //Chỉnh lại trạng thái công việc của freelancer_jobs
+            if let Some(mut freelancer_jobs) = self.freelancer_jobs.get(party_b){
+                if let Some(index) = freelancer_jobs.iter().position(|(x, _)| *x == job_id){
+                    freelancer_jobs[index].1 = Status::BECREATINGCONTRACT;              //ghi đè
+                    self.freelancer_jobs.insert(party_b, &freelancer_jobs);
+                }
+            } else {
+                let mut freelancer_job = Vec::new();
+                freelancer_job.push((job_id, Status::BECREATINGCONTRACT));
+                self.freelancer_jobs.insert(party_b, &freelancer_job);
+            }
             Self::env().emit_event(CreateContract{
                 job_id: job_id,
                 onwer: caller,
@@ -850,13 +883,13 @@ mod polkalance {
         }
 
         // chưa viết test
-        // get tất cả các contract của những người company. 
+        // get tất cả các contract của company. 
         #[ink(message)]
-        pub fn get_all_contract(&self) -> Result<Vec<Contract>, JobError> {
+        pub fn get_all_contract_of_owner(&self) -> Result<Vec<Contract>, JobError> {
             let caller = self.env().caller();
             self.check_caller_is_owner(caller)?;
-            if let Some(all_auctioning_job_ids_of_caller) = self.owner_jobs.get(caller) {
-                let res :Vec<(u128,Status)> = all_auctioning_job_ids_of_caller.into_iter().filter(|x| x.1 == Status::AUCTIONING).collect();
+            if let Some(all_job_ids_of_caller) = self.owner_jobs.get(caller) {
+                let res :Vec<(u128,Status)> = all_job_ids_of_caller.into_iter().filter(|x| x.1 == Status::BECREATINGCONTRACT).collect();
                 let all_job_ids: Vec<u128> = res.into_iter().map(|(x, _)| x).collect();
                 let mut all_contracts = Vec::new();
                 for job_id in all_job_ids {
@@ -865,12 +898,37 @@ mod polkalance {
                     }
                 }
                 if all_contracts.len() == 0 {
-                    return Err(JobError::NoAuctioneer);
+                    return Err(JobError::NoContract);
                 } else {
                     return Ok(all_contracts)
                 }
             } else {
-                return Err(JobError::NoAuctioneer);
+                return Err(JobError::NoJobs);
+            };
+        }
+
+        // chưa viết test
+        // get tất cả các contract của freelancer. 
+        #[ink(message)]
+        pub fn get_all_contract_of_freelancer(&self) -> Result<Vec<Contract>, JobError> {
+            let caller = self.env().caller();
+            self.check_caller_is_freelancer(caller)?;
+            if let Some(all_job_ids_of_caller) = self.freelancer_jobs.get(caller) {
+                let res :Vec<(u128,Status)> = all_job_ids_of_caller.into_iter().filter(|x| x.1 == Status::BECREATINGCONTRACT).collect();
+                let all_job_ids: Vec<u128> = res.into_iter().map(|(x, _)| x).collect();
+                let mut all_contracts = Vec::new();
+                for job_id in all_job_ids {
+                    if let Some(contract) = self.contracts.get(job_id) {
+                        all_contracts.push(contract);
+                    }
+                }
+                if all_contracts.len() == 0 {
+                    return Err(JobError::NoContract);
+                } else {
+                    return Ok(all_contracts)
+                }
+            } else {
+                return Err(JobError::NoJobs);
             };
         }
 
@@ -885,15 +943,31 @@ mod polkalance {
                 Some(contract) => {
                     match contract.party_a {
                         Some(a) if a == caller => {
-                            if contract.deadline_to_sign_contract < self.env().block_timestamp() {
-                                //xóa hợp đồng
-                                self.contracts.remove(job_id);
+                            if contract.deadline_to_sign_contract < self.env().block_timestamp() {    
                                 //xóa người đã auction
                                 let mut auctions_of_job = self.auction.get(job_id).unwrap();
                                 auctions_of_job.retain(|&i| i.0 != contract.party_b.unwrap());
                                 self.auction.insert(job_id, &auctions_of_job);
                                 let required_deposit_of_owner = self.jobs.get(job_id).unwrap().required_deposit_of_owner;
                                 let _ = self.env().transfer(caller, required_deposit_of_owner);
+                                // update lại thông tin job
+                                let mut job = self.jobs.get(job_id).unwrap();
+                                job.required_deposit_of_owner = 0;
+                                job.status = Status::REOPEN;
+                                self.jobs.insert(job_id, &job);
+                                //Chỉnh lại trạng thái công việc của onwer_jobs 
+                                let mut owner_jobs = self.owner_jobs.get(caller).unwrap();
+                                let index = owner_jobs.iter().position(|(x, _)| *x == job_id).unwrap();
+                                owner_jobs[index].1 = Status::REOPEN;
+                                self.owner_jobs.insert(caller, &owner_jobs);
+                                //Chỉnh lại trạng thái công việc của freelancer_jobs
+                                let freelancer = contract.party_b.unwrap();
+                                if let Some(mut freelancer_jobs) = self.freelancer_jobs.get(freelancer){
+                                    freelancer_jobs.push((job_id, Status::BECREATINGCONTRACT));
+                                    self.freelancer_jobs.insert(freelancer, &freelancer_jobs);
+                                }
+                                //xóa hợp đồng
+                                self.contracts.remove(job_id);
                             } else {
                                 return Err(JobError::ConfirmationTimeNotExpires)
                             }
@@ -1025,7 +1099,7 @@ mod polkalance {
             };
             // Check job status
             match job.status {
-                Status::OPEN | Status::REOPEN | Status::AUCTIONING => return Err(JobError::NotTakeThisJob),
+                Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::BECREATINGCONTRACT => return Err(JobError::NotTakeThisJob),
                 Status::REVIEW | Status::UNQUALIFIED => return Err(JobError::Submitted),
                 Status::CANCELED => return Err(JobError::Canceled),
                 Status::FINISH => return Err(JobError::Finished),
@@ -1093,7 +1167,7 @@ mod polkalance {
                 return Err(JobError::NotAssignThisJob);
             };
             match job.status {
-                Status::OPEN | Status::REOPEN | Status::AUCTIONING => return Err(JobError::NotTaked),
+                Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::BECREATINGCONTRACT => return Err(JobError::NotTaked),
                 Status::DOING | Status::UNQUALIFIED => return Err(JobError::Processing),
                 Status::CANCELED => return Err(JobError::Canceled),
                 Status::FINISH => return Err(JobError::Finished),
@@ -1159,7 +1233,7 @@ mod polkalance {
                 return Err(JobError::NotAssignThisJob);
             };
             match job.status {
-                Status::OPEN | Status::REOPEN | Status::AUCTIONING => return Err(JobError::NotTaked),
+                Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::BECREATINGCONTRACT => return Err(JobError::NotTaked),
                 Status::DOING | Status::UNQUALIFIED => return Err(JobError::Processing),
                 Status::CANCELED => return Err(JobError::Canceled),
                 Status::FINISH => return Err(JobError::Finished),
@@ -1255,7 +1329,7 @@ mod polkalance {
                     }
                     self.owner_jobs.insert(caller, &_owner_jobs);
                 },
-                Status::AUCTIONING | Status::DOING | Status::REVIEW | Status::UNQUALIFIED => return Err(JobError::Processing),
+                Status::AUCTIONING | Status::BECREATINGCONTRACT | Status::DOING | Status::REVIEW | Status::UNQUALIFIED => return Err(JobError::Processing),
                 Status::CANCELED => return Err(JobError::Canceled), // job đã bị hủy
                 Status::FINISH => return Err(JobError::Finished),   // job đã finish
             }
@@ -1309,7 +1383,7 @@ mod polkalance {
                                 return Err(JobError::InvalidNegotiation);
                             }
                         }
-                        Status::OPEN | Status::REOPEN | Status::AUCTIONING => return Err(JobError::NotTaked),
+                        Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::BECREATINGCONTRACT => return Err(JobError::NotTaked),
                         Status::DOING | Status::REVIEW => return Err(JobError::Processing),
                         Status::CANCELED => return Err(JobError::Canceled),
                         Status::FINISH => return Err(JobError::Finished),
@@ -1400,7 +1474,7 @@ mod polkalance {
                     }
                 }
                 Status::OPEN | Status::REOPEN => return Err(JobError::NotAssignThisJob),
-                Status::DOING | Status::REVIEW | Status::AUCTIONING => return Err(JobError::Processing),
+                Status::DOING | Status::REVIEW | Status::AUCTIONING | Status::BECREATINGCONTRACT => return Err(JobError::Processing),
                 Status::CANCELED => return Err(JobError::Canceled),
                 Status::FINISH => return Err(JobError::Finished),
             }
@@ -1437,7 +1511,7 @@ mod polkalance {
             // Handle different status cases
             match job.status {
                 // If the job is in the OPEN or REOPEN status, return error not take this job
-                Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::CANCELED | Status::FINISH => return Err(JobError::InvalidTermination),
+                Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::BECREATINGCONTRACT | Status::CANCELED | Status::FINISH => return Err(JobError::InvalidTermination),
                 Status::DOING => {
                     match (caller, job.unqualifier) {
                         (a, b) if (a == owner && b) => _wrong_person = Some(freelancer),
@@ -1611,7 +1685,7 @@ mod polkalance {
                 .get(&caller)
                 .ok_or(JobError::NotRegistered)?;
             match job.status {
-                Status::OPEN | Status::REOPEN | Status::AUCTIONING => return Err(JobError::NotTaked),
+                Status::OPEN | Status::REOPEN | Status::AUCTIONING | Status::BECREATINGCONTRACT => return Err(JobError::NotTaked),
                 Status::DOING | Status::UNQUALIFIED | Status::REVIEW => {
                     return Err(JobError::Processing)
                 }
@@ -2275,9 +2349,11 @@ mod polkalance {
             assert_eq!(get_balance_of(alice), 80); //200 - 100 - 20
             assert_eq!(get_balance_of(account.env().account_id()), 120); //100 + 20
             //check jobs
-            assert_eq!(account.jobs.get(0).unwrap().status, Status::AUCTIONING);
+            assert_eq!(account.jobs.get(0).unwrap().status, Status::BECREATINGCONTRACT);
             //check owner_jobs
-            assert_eq!(account.owner_jobs.get(alice).unwrap(), vec![(0, Status::AUCTIONING)]);
+            assert_eq!(account.owner_jobs.get(alice).unwrap(), vec![(0, Status::BECREATINGCONTRACT)]);
+            //check freelancer_jobs
+            assert_eq!(account.freelancer_jobs.get(bob).unwrap(), vec![(0, Status::BECREATINGCONTRACT)]);
             //check contract 
             assert_eq!(
                 account.contracts.get(0).unwrap(),

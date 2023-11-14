@@ -23,7 +23,7 @@ export default function CreateJobPage() {
   const { api, activeAccount, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const [updateIsLoading, setUpdateIsLoading] = useState<boolean>()
-  const DECIMAL_NUMBER = 1000000000000;  
+  const DECIMAL_NUMBER = 1_000_000_000_000;  
 
   const createJob = async (jobTitle: string, description: string, category: string, budget: number, duration: number) => {
     

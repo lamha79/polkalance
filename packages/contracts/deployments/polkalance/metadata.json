@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xd6188a7e4cc90cf2d2c51d14ed183cbf2da89cfd23ee2e6d6717d5a74289e968",
+    "hash": "0x8bc80b8a93442af29609fe2b98e84c0edad9d5acf72f40194a5df17d318e7722",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.71.1",
     "build_info": {
@@ -1115,7 +1115,7 @@
         "args": [],
         "default": false,
         "docs": [],
-        "label": "get_all_contract",
+        "label": "get_all_contract_of_owner",
         "mutates": false,
         "payable": false,
         "returnType": {
@@ -1125,7 +1125,23 @@
           ],
           "type": 52
         },
-        "selector": "0x21c3b46e"
+        "selector": "0x92745490"
+      },
+      {
+        "args": [],
+        "default": false,
+        "docs": [],
+        "label": "get_all_contract_of_freelancer",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 52
+        },
+        "selector": "0xe7b914dc"
       },
       {
         "args": [
@@ -1626,25 +1642,29 @@
                                 },
                                 "2": {
                                   "fields": [],
-                                  "name": "DOING"
+                                  "name": "BECREATINGCONTRACT"
                                 },
                                 "3": {
                                   "fields": [],
-                                  "name": "REVIEW"
+                                  "name": "DOING"
                                 },
                                 "4": {
                                   "fields": [],
-                                  "name": "UNQUALIFIED"
+                                  "name": "REVIEW"
                                 },
                                 "5": {
                                   "fields": [],
-                                  "name": "REOPEN"
+                                  "name": "UNQUALIFIED"
                                 },
                                 "6": {
                                   "fields": [],
-                                  "name": "FINISH"
+                                  "name": "REOPEN"
                                 },
                                 "7": {
+                                  "fields": [],
+                                  "name": "FINISH"
+                                },
+                                "8": {
                                   "fields": [],
                                   "name": "CANCELED"
                                 }
@@ -2416,26 +2436,30 @@
               },
               {
                 "index": 2,
-                "name": "DOING"
+                "name": "BECREATINGCONTRACT"
               },
               {
                 "index": 3,
-                "name": "REVIEW"
+                "name": "DOING"
               },
               {
                 "index": 4,
-                "name": "UNQUALIFIED"
+                "name": "REVIEW"
               },
               {
                 "index": 5,
-                "name": "REOPEN"
+                "name": "UNQUALIFIED"
               },
               {
                 "index": 6,
-                "name": "FINISH"
+                "name": "REOPEN"
               },
               {
                 "index": 7,
+                "name": "FINISH"
+              },
+              {
+                "index": 8,
                 "name": "CANCELED"
               }
             ]
@@ -2865,78 +2889,86 @@
               },
               {
                 "index": 20,
-                "name": "NotExisted"
+                "name": "NoContract"
               },
               {
                 "index": 21,
-                "name": "NotTaked"
+                "name": "NoJobs"
               },
               {
                 "index": 22,
-                "name": "Taked"
+                "name": "NotExisted"
               },
               {
                 "index": 23,
-                "name": "NotTakeThisJob"
+                "name": "NotTaked"
               },
               {
                 "index": 24,
-                "name": "NotAssignThisJob"
+                "name": "Taked"
               },
               {
                 "index": 25,
-                "name": "OutOfDate"
+                "name": "NotTakeThisJob"
               },
               {
                 "index": 26,
-                "name": "Submitted"
+                "name": "NotAssignThisJob"
               },
               {
                 "index": 27,
-                "name": "Processing"
+                "name": "OutOfDate"
               },
               {
                 "index": 28,
-                "name": "Finished"
+                "name": "Submitted"
               },
               {
                 "index": 29,
-                "name": "Canceled"
+                "name": "Processing"
               },
               {
                 "index": 30,
-                "name": "InvalidPayAmount"
+                "name": "Finished"
               },
               {
                 "index": 31,
-                "name": "InvalidNegotiation"
+                "name": "Canceled"
               },
               {
                 "index": 32,
-                "name": "InvalidTermination"
+                "name": "InvalidPayAmount"
               },
               {
                 "index": 33,
-                "name": "InvalidReport"
+                "name": "InvalidNegotiation"
               },
               {
                 "index": 34,
-                "name": "InvalidRating"
+                "name": "InvalidTermination"
               },
               {
                 "index": 35,
-                "name": "InvalidPoint"
+                "name": "InvalidReport"
               },
               {
                 "index": 36,
-                "name": "NotYourContract"
+                "name": "InvalidRating"
               },
               {
                 "index": 37,
-                "name": "NoNegotiator"
+                "name": "InvalidPoint"
               },
               {
                 "index": 38,
+                "name": "NotYourContract"
+              },
+              {
+                "index": 39,
+                "name": "NoNegotiator"
+              },
+              {
+                "index": 40,
                 "name": "HaveNegotiator"
               }
             ]

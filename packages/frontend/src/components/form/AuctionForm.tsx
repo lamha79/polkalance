@@ -35,7 +35,7 @@ import { ContractIds } from '../../deployments/deployments'
 import { useLanding } from '@front-provider/src'
 import { useRouter } from 'next/router'
 
-
+const DECIMAL_NUMBER = 1_000_000_000_000;
 interface RadioUserType {
   label: string
   value: string
@@ -84,14 +84,14 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
   const { api, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const auctionJob = async (values: FormData) => {
-     
+    
     if (!activeAccount || !contract || !activeSigner || !api) {
       return false
     }
     console.log(jobIdForForm);
     try {
       await contractTx(api, activeAccount.address, contract, 'jobAuction', {}, [
-        jobIdForForm, values.desired_salary, values.required_deposit_of_owner
+        jobIdForForm, values.desired_salary * DECIMAL_NUMBER, values.required_deposit_of_owner * DECIMAL_NUMBER
       ])
       toast({
         title: <Text mt={-0.5}>Auction successfully</Text>,

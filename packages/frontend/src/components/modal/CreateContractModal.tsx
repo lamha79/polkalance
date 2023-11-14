@@ -27,7 +27,7 @@ const CreateContractModal: FC = () => {
   } = useInkathon();
 
   const close = () => {
-    // disconnect?.();
+    disconnect?.();
     setTimeout(() => {
       setCreateContractModalOpen(false);
     }, 200);
@@ -43,7 +43,7 @@ const CreateContractModal: FC = () => {
           <ModalBody >
             <CreateContractForm
               // onSubmitSuccess={() => {
-              //   // disconnect?.();
+              //   disconnect?.();
               //   setTimeout(() => {
               //     setCreateContractModalOpen(false);
               //   }, 200);

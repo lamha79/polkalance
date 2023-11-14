@@ -56,6 +56,7 @@ import JobCard2 from '@components/card/JobCard2'
 //     value: UserTypeEnum.Company,
 //   },
 // ]
+const DECIMAL_NUMBER = 1_000_000_000_000;
 
 interface FormData {
   rules: string,
@@ -81,22 +82,19 @@ const validationSchema = Yup.object().shape({
 })
 
 
-// interface AuctionFormProps {
-//   onSubmitSuccess: () => void
-// }
+interface CreateJobContractFormProps {
+  onSubmitSuccess: () => void
+}
 
-const CreateJobContractForm: FC = () => {
-//   const {
-//     activeAccount
-//   } = useInkathon()
+const CreateJobContractForm: FC<CreateJobContractFormProps> = ({ onSubmitSuccess }) => {
+
   const toast = useToast()
 
-//   // thêm vào
   const [loading, setLoading] = useState(false)
   const { api, activeSigner, activeAccount} = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const { push } = useRouter()
-  //////////////////////
+
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { setAuctionModalOpen, setJobIdForForm, submitModalOpen, useFormDone, jobIdForForm, accountForForm, setUseFormDone} = useLanding();
   const [allAuctioneer, setAllAuctioneer] = useState<Auctioneer[]>([]);
@@ -108,7 +106,7 @@ const CreateJobContractForm: FC = () => {
     }
     console.log(jobIdForForm);
     try {
-      await contractTx(api, activeAccount.address, contract, 'createContract', {value: values.deposit}, [
+      await contractTx(api, activeAccount.address, contract, 'createContract', {value: values.deposit * DECIMAL_NUMBER}, [
         jobIdForForm, accountForForm, values.rules, values.percent_paid_when_contract_fail, values.duration
       ])
       toast({
@@ -128,6 +126,7 @@ const CreateJobContractForm: FC = () => {
       })
     }finally{
       setUseFormDone(true)
+      onSubmitSuccess()
     }
   }
 
@@ -136,7 +135,6 @@ const CreateJobContractForm: FC = () => {
     if (activeAccount?.address && !loading) {
       setLoading(true)
       auctionJob(values)
-      console.log(jobIdForForm, accountForForm)
       setLoading(false)
     }
   }
@@ -200,8 +198,6 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
             color="neutral.black"
           >
             {
-              // // console.log(auctioneer?.freelancer);
-              // <h1>Ta chia hao</h1>
               <>
                 <h1>Freelancer: {auctioneer[0]}</h1>
                 <h1>Desired Salary: {auctioneer[1]}</h1>
