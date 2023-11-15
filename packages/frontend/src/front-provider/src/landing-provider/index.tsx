@@ -19,6 +19,7 @@ type LandingContextInterface = {
   useFormDone: boolean;
   createContractModalOpen: boolean;
   createJobContractModalOpen: boolean;
+  signAndObtainModalOpen: boolean;
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
@@ -33,7 +34,7 @@ type LandingContextInterface = {
   setUseFormDone: (x: boolean) => void;
   setCreateContractModalOpen: (open: boolean) => void;
   setCreateJobContractModalOpen: (open: boolean) => void;
-
+  setSignAndObtainModalOpen: (open: boolean) => void;
 };
 
 export const LandingContext = createContext<LandingContextInterface>({
@@ -51,7 +52,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   useFormDone: false,
   createContractModalOpen: false,
   createJobContractModalOpen: false,
-
+  signAndObtainModalOpen: false,
   setType: () => {},
   setCurrentView: () => {},
   setSignupModalOpen: () => {},
@@ -66,7 +67,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   setUseFormDone: () => {},
   setCreateContractModalOpen: () => {},
   setCreateJobContractModalOpen: () => {},
-
+  setSignAndObtainModalOpen: () => {},
 });
 
 export const LandingProvider = ({ children }: { children: ReactNode }) => {
@@ -84,8 +85,8 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [useFormDone, setUseFormDone] = useState(false);
   const [createContractModalOpen, setCreateContractModalOpen] = useState(false);
   const [createJobContractModalOpen, setCreateJobContractModalOpen] = useState(false);
+  const [signAndObtainModalOpen, setSignAndObtainModalOpen] = useState(false);
 
-  
   return (
     <LandingContext.Provider
       value={{
@@ -103,6 +104,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         useFormDone,
         createContractModalOpen,
         createJobContractModalOpen,
+        signAndObtainModalOpen,
         setType,
         setCurrentView,
         setSignupModalOpen,
@@ -117,6 +119,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setUseFormDone,
         setCreateContractModalOpen,
         setCreateJobContractModalOpen,
+        setSignAndObtainModalOpen,
       }}
     >
       {children}
@@ -140,6 +143,7 @@ export function useLanding() {
     useFormDone, 
     createContractModalOpen,
     createJobContractModalOpen,
+    signAndObtainModalOpen,
     setType,
     setCurrentView,
     setSignupModalOpen,
@@ -154,6 +158,7 @@ export function useLanding() {
     setCreateContractModalOpen,
     setCreateJobContractModalOpen,
     setAccountForForm,
+    setSignAndObtainModalOpen,
 
   } = useContext(LandingContext);
 
@@ -186,6 +191,7 @@ export function useLanding() {
     useFormDone,
     createContractModalOpen,
     createJobContractModalOpen,
+    signAndObtainModalOpen,
     setType,
     handleViewChange,
     setCurrentView,
@@ -202,5 +208,6 @@ export function useLanding() {
     setUseFormDone,
     setCreateContractModalOpen,
     setCreateJobContractModalOpen,
+    setSignAndObtainModalOpen,
   };
 }

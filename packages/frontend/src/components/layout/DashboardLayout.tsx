@@ -9,6 +9,7 @@ import CreateJobModal from '@components/modal/CreateJobModal';
 import AuctionModal from '@components/modal/AuctionModal';
 import CreateContractModal from '@components/modal/CreateContractModal';
 import CreateJobContractModal from '@components/modal/CreateJobContractModal';
+import SignAndObtainModal from '@components/modal/SignAndObtainModal';
 import SubmitModal from '@components/modal/SubmitModal';
 
 interface DashboardLayoutProps {
@@ -37,6 +38,7 @@ const DashboardLayout: NextPage<DashboardLayoutProps> = ({ children }) => {
         {(user && activeAccountUser) && <AuctionModal />}
         {(user && activeAccountUser) && <CreateContractModal />}
         {(user && activeAccountUser) && <CreateJobContractModal />}
+        {(user && activeAccountUser) && <SignAndObtainModal />}
         {children}
         {!user && (
           <Flex w={{base: "100vw", lg: "calc(100vw - 245px)"}} ml="auto">

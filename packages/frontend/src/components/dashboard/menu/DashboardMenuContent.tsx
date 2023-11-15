@@ -25,10 +25,10 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
     { view: '/dashboard/offers', label: 'Find profiles' },
     { view: '/dashboard/jobs', label: 'Open jobs' },
     { view: '/dashboard/auctionjob', label: 'Auction jobs' },
+    { view: '/dashboard/contracts', label: 'Contracts' },
     { view: '/dashboard/doingjob', label: 'Doing jobs' },
     { view: '/dashboard/reviewjob', label: 'Review jobs' },
     { view: '/dashboard/negotiations', label: 'Negotiation jobs' },
-    // { view: '/dashboard/contracts', label: 'My Contracts' }
   ];
 
   const freelanceMenu: MenuElement[] = [
@@ -36,7 +36,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
     { view: '/dashboard/offers', label: 'Find work' },
     { view: '/dashboard/jobs', label: 'Open jobs' },
     { view: '/dashboard/auctionjob', label: 'Auction jobs' },
-    // { view: '/dashboard/contracts', label: 'My Contracts' },
+    { view: '/dashboard/contracts', label: 'Contracts' },
     { view: '/dashboard/doingjob', label: 'Doing jobs' },
     { view: '/dashboard/reviewjob', label: 'Review jobs' },
     { view: '/dashboard/negotiations', label: 'Negotiation jobs' },

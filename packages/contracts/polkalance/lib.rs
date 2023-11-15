@@ -287,9 +287,11 @@ mod polkalance {
     pub struct Contract {
         job_id: JobId,
         party_a: Option<AccountId>,
+        required_deposit_of_party_a: Balance,
         party_a_consent: Option<bool>,
         party_b: Option<AccountId>,
         party_b_consent: Option<bool>,
+        required_deposit_of_party_b: Balance,
         rules: String,
         percent_paid_when_contract_fail: u8,
         deadline_to_sign_contract: Timestamp,
@@ -495,6 +497,7 @@ mod polkalance {
                 let status_option = match item {
                     "open" => Some(Status::OPEN),
                     "auctioning" => Some(Status::AUCTIONING),
+                    "becreatingcontract" => Some(Status::BECREATINGCONTRACT),
                     "doing" => Some(Status::DOING),
                     "review" => Some(Status::REVIEW),
                     "unqualified" => Some(Status::UNQUALIFIED),
@@ -847,8 +850,10 @@ mod polkalance {
                 job_id: job_id,
                 party_a: Some(caller),
                 party_a_consent: Some(true),
+                required_deposit_of_party_a: require_deposit,
                 party_b: Some(party_b),
                 party_b_consent: None,
+                required_deposit_of_party_b: job.required_deposit_of_freelancer,
                 rules: rules,
                 percent_paid_when_contract_fail: percent_paid_when_contract_fail,
                 deadline_to_sign_contract: self.env().block_timestamp() + (duration as u64) * 60 * 60 * 1000, //duration sẽ là số giờ sau khi tạo contract thì freelancer phải kí
@@ -930,6 +935,25 @@ mod polkalance {
             } else {
                 return Err(JobError::NoJobs);
             };
+        }
+
+        // chưa viết test
+        // get thông tin contract theo job_id
+        #[ink(message)]
+        pub fn get_contract_info_of_job_id(&self, job_id: JobId) -> Result<Contract, JobError> {
+            let caller = self.env().caller();
+            if !self.personal_account_info.get(caller).is_some() {
+                return Err(JobError::NotRegistered);
+            }
+            if let Some(contract_info) = self.contracts.get(job_id) {
+                if contract_info.party_a.unwrap() == caller || contract_info.party_b.unwrap() == caller {
+                    return Ok(contract_info);
+                } else {
+                    return Err(JobError::NoContract);
+                }
+            } else {
+                return Err(JobError::NoContract);
+            }
         }
 
         //hủy hợp đồng dùng khi quá hạn mà freelancer ko chịu kí hợp đồng
@@ -2389,8 +2413,10 @@ mod polkalance {
                     job_id: 0,
                     party_a: Some(alice),
                     party_a_consent: Some(true),
+                    required_deposit_of_party_a: 20,
                     party_b: Some(bob),
                     party_b_consent: None,
+                    required_deposit_of_party_b: 10,
                     rules: String::from("These are the terms of the contract"),
                     percent_paid_when_contract_fail: 5,
                     deadline_to_sign_contract: 7210000,  //10 giây cộng 2 giờ deadline ký hợp đồng

@@ -121,7 +121,7 @@ const CompanyGallery: FC = () => {
       setIsRejectDone(false)
     }
     // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, isApprovalDone, isRejectDone]);
+  }, [contract, api, isApprovalDone, isRejectDone]);
   ////A//
   return (
     <Flex flexDir="column">

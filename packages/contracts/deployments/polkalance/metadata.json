@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xaeb28b566cc526f7d8adf4e7a382aade5b0206abbd8f68fee601ab1707f8444f",
+    "hash": "0x6c7b501975c7d54f8824adf597fe250c98f777ea2a0c3a62c0204ceba6ff56e2",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.71.1",
     "build_info": {
@@ -62,13 +62,13 @@
         "displayName": [
           "ChainExtension"
         ],
-        "type": 58
+        "type": 60
       },
       "hash": {
         "displayName": [
           "Hash"
         ],
-        "type": 57
+        "type": 59
       },
       "maxEventTopics": 4,
       "timestamp": {
@@ -1157,6 +1157,32 @@
         ],
         "default": false,
         "docs": [],
+        "label": "get_contract_info_of_job_id",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 57
+        },
+        "selector": "0xad55a1f4"
+      },
+      {
+        "args": [
+          {
+            "label": "job_id",
+            "type": {
+              "displayName": [
+                "JobId"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
         "label": "cancel_contract",
         "mutates": true,
         "payable": true,
@@ -2191,6 +2217,15 @@
                         },
                         {
                           "layout": {
+                            "leaf": {
+                              "key": "0x4a9d9f1a",
+                              "ty": 3
+                            }
+                          },
+                          "name": "required_deposit_of_party_a"
+                        },
+                        {
+                          "layout": {
                             "enum": {
                               "dispatchKey": "0x4a9d9f1a",
                               "name": "Option",
@@ -2275,6 +2310,15 @@
                             }
                           },
                           "name": "party_b_consent"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x4a9d9f1a",
+                              "ty": 3
+                            }
+                          },
+                          "name": "required_deposit_of_party_b"
                         },
                         {
                           "layout": {
@@ -3965,6 +4009,11 @@
                 "typeName": "Option<AccountId>"
               },
               {
+                "name": "required_deposit_of_party_a",
+                "type": 3,
+                "typeName": "Balance"
+              },
+              {
                 "name": "party_a_consent",
                 "type": 56,
                 "typeName": "Option<bool>"
@@ -3978,6 +4027,11 @@
                 "name": "party_b_consent",
                 "type": 56,
                 "typeName": "Option<bool>"
+              },
+              {
+                "name": "required_deposit_of_party_b",
+                "type": 3,
+                "typeName": "Balance"
               },
               {
                 "name": "rules",
@@ -4041,6 +4095,90 @@
       "id": 57,
       "type": {
         "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 58
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 23
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 58
+          },
+          {
+            "name": "E",
+            "type": 23
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 58,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 55
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 55
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 59,
+      "type": {
+        "def": {
           "composite": {
             "fields": [
               {
@@ -4058,7 +4196,7 @@
       }
     },
     {
-      "id": 58,
+      "id": 60,
       "type": {
         "def": {
           "variant": {}

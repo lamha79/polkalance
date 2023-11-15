@@ -273,6 +273,22 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           Create Contract
         </Button>}
 
+        {!mobileDisplay && activeAccountUser && (job.status == "BECREATINGCONTRACT")  && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          See contract information
+        </Button>}
+
         {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && <Button
           ml="left"
           variant="outline"

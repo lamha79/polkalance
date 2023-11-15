@@ -3,11 +3,11 @@ import { NextPage } from 'next';
 import { useRef } from 'react';
 import DashboardLayout from '../../../components/layout/DashboardLayout';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import DashboardContracts from '../../../components/dashboard/contracts/DashboardContracts';
-import Footer from '../../../components/landing/footer/Footer';
+import DashboardJobs from '../../../components/dashboard/contracts/DashboardJobs';
 import { Flex } from '@chakra-ui/react';
+import Footer from '../../../components/landing/footer/Footer';
 
-const DashboardContractsPage: NextPage = () => {
+const DashboardJobPage: NextPage = () => {
   const { handleScroll } = useLanding();
   const scrollbarRef = useRef<HTMLElement | null>(null);
 
@@ -24,7 +24,7 @@ const DashboardContractsPage: NextPage = () => {
         onScrollY={handleScroll}
       >
         <Flex w={{base: "100vw", lg: "calc(100vw - 245px)"}} ml="auto">
-          <DashboardContracts />
+          <DashboardJobs />
         </Flex>
         <Flex bgColor="neutral.white" mt={8}>
           <Footer />
@@ -34,4 +34,4 @@ const DashboardContractsPage: NextPage = () => {
   );
 };
 
-export default DashboardContractsPage;
+export default DashboardJobPage;
