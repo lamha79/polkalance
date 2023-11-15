@@ -13,7 +13,7 @@ import {
 import { ContractIds } from '@/deployments/deployments'
 import { CreateJob, CreateJob1 } from '../../../../utility/src';
 
-const FreelancerGallery: FC = () => {
+const CompanyGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const toast = useToast()
   const { setCreateContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
@@ -107,4 +107,4 @@ const FreelancerGallery: FC = () => {
   )
 }
 
-export default FreelancerGallery
+export default CompanyGallery

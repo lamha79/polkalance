@@ -50,16 +50,16 @@ const FreelancerGallery: FC = () => {
   //   }
   // };
   /////////
-  const searchDoingJobs = async () => {
+  const searchJobs = async () => {
     // console.log(api);
     // console.log(contract);
-    // console.log(activeAccount +"=((");
+    console.log(activeAccount?.address);
     setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_doing_jobs_of_freelancer', {}, []);
-      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_doing_jobs_of_freelancer');
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['unqualified']);
+      const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_freelancer_with_status');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
@@ -77,7 +77,7 @@ const FreelancerGallery: FC = () => {
     }
   };
   useEffect(() => {
-    searchDoingJobs();  
+    searchJobs();  
     if (useFormDone) {
       setUseFormDone(false)
     }
@@ -91,7 +91,6 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                // <JobCard2 job={j} key={k} onClick={() => submitResult(parseInt(j.jobId), "ta chia hao chu nhat")} />
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setSubmitModalOpen(true);

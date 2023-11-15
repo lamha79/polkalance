@@ -22,12 +22,12 @@ const CreateContractModal: FC = () => {
   const { createContractModalOpen, setCreateContractModalOpen } = useLanding();
   const {mobileDisplay , tabletDisplay, desktopDisplay} = useResponsive();
 
-  const {
-    disconnect
-  } = useInkathon();
+  // const {
+  //   disconnect
+  // } = useInkathon();
 
   const close = () => {
-    disconnect?.();
+    // disconnect?.();
     setTimeout(() => {
       setCreateContractModalOpen(false);
     }, 200);

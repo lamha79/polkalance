@@ -194,9 +194,9 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
           >
             {
               <>
-                <h1>Freelancer Address: {auctioneer[0]}</h1>
-                <h1>Desired Salary: {auctioneer[1]} TZERO</h1>
-                <h1>Required Deposit Of Company: {auctioneer[1]} TZERO</h1>
+                <h1>Freelancer Address: {auctioneer[0] }</h1>
+                <h1>Desired Salary: {parseInt(auctioneer[1], 10)} TZERO</h1>
+                <h1>Required Deposit Of Company: {parseInt(auctioneer[2])} TZERO</h1>
               </>
             }
       </Text>

@@ -15,16 +15,50 @@ import { CreateJob, CreateJob1 } from '../../../../utility/src';
 
 const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
+  const { push, replace } = useRouter()
   const toast = useToast()
-  const { setAuctionModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone, type} = useLanding();
+  const { setSubmitModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  const searchAuctionJobs = async () => {
+  /////////
+  // const submitResult = async (job_id: number, result: string) => {
+  //   if (!activeAccount || !contract || !activeSigner || !api) {
+  //     return
+  //   }
+  //   // Send transaction
+  //   // setUpdateIsLoading(true)
+  //   try {
+  //     await contractTx(api, activeAccount.address, contract, 'submit', {}, [
+  //       job_id, result
+  //     ])
+  //     toast({
+  //       title: <Text mt={-0.5}>Sunmit success</Text>,
+  //       status: 'success',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   } catch (e: any) {
+  //     const error = e.errorMessage;
+  //     toast({
+  //       title: <Text mt={-0.5}>{error}</Text>,
+  //       status: 'error',
+  //       isClosable: true,
+  //       position: 'top-right',
+  //     })
+  //   }
+  // };
+  /////////
+  const searchDoingJobs = async () => {
+    // console.log(api);
+    // console.log(contract);
+    // console.log(activeAccount +"=((");
+    setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['auctioning']);
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['doing']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_freelancer_with_status');
       const json = JSON.stringify(output, null, 2);
       const list_jobs = JSON.parse(json);
@@ -32,22 +66,24 @@ const FreelancerGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
+      // setSearchJobsResult(output);
     } catch (e) {
-      console.log(e);
-      setJobs([])
+      console.error(e);
+      return ([])
+      // toast.error('Error while fetching greeting. Try again...');
+      // setSearchJobsResult([]);
     } finally {
       setFetchIsLoading(false);
-      console.log(jobs)
-      console.log(jobsFetching)
     }
   };
   useEffect(() => {
-    searchAuctionJobs();  
+    searchDoingJobs();  
     if (useFormDone) {
       setUseFormDone(false)
     }
   }, [contract, api, useFormDone]);
 
+  //////
   return (
     <Flex flexDir="column">
       {!jobsFetching && (
@@ -55,9 +91,10 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
+                // <JobCard2 job={j} key={k} onClick={() => submitResult(parseInt(j.jobId), "ta chia hao chu nhat")} />
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
-                  setAuctionModalOpen(true);
+                  setSubmitModalOpen(true);
                   setJobIdForForm(parseInt(j.jobId));
                 }} />              
               ))}

@@ -25,7 +25,9 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
     { view: '/dashboard/offers', label: 'Find profiles' },
     { view: '/dashboard/jobs', label: 'Open jobs' },
     { view: '/dashboard/auctionjob', label: 'Auction jobs' },
-    { view: '/dashboard/doingjob', label: 'All rewiew jobs' },
+    { view: '/dashboard/doingjob', label: 'Doing jobs' },
+    { view: '/dashboard/reviewjob', label: 'Review jobs' },
+    { view: '/dashboard/negotiations', label: 'Negotiation jobs' },
     // { view: '/dashboard/contracts', label: 'My Contracts' }
   ];
 
@@ -35,7 +37,10 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
     { view: '/dashboard/jobs', label: 'Open jobs' },
     { view: '/dashboard/auctionjob', label: 'Auction jobs' },
     // { view: '/dashboard/contracts', label: 'My Contracts' },
-    { view: '/dashboard/doingjob', label: 'All my doing jobs' }
+    { view: '/dashboard/doingjob', label: 'Doing jobs' },
+    { view: '/dashboard/reviewjob', label: 'Review jobs' },
+    { view: '/dashboard/negotiations', label: 'Negotiation jobs' },
+
   ];
 
   // if (mobileDisplay || tabletDisplay) {

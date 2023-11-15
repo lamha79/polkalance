@@ -69,7 +69,7 @@ export interface CreateJob extends JobKey {
   endTime: string; 
   status: string;
   personCreate: string,
-  result: string
+  result: string,
 }
 
 export interface Job {

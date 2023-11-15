@@ -28,6 +28,7 @@ interface JobCardProps {
   blurred?: boolean;
   onClick?: () => void;
   onClick1?: () => void;
+  onClick2?: () => void;
 }
 const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: JobCardProps) => {
   const { getCategoryColorForSkill } = useColoredBadges();
@@ -211,7 +212,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         >
           Auction
         </Button>}
-        {!mobileDisplay && activeAccountUser && job.status == ("DOING") && <Button
+        {!mobileDisplay && activeAccountUser && job.status == ("DOING")  && type === UserTypeEnum.Freelancer  && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -226,7 +227,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         >
           Submit
         </Button>}
-        {!mobileDisplay && activeAccountUser && job.status == "REVIEW" && <Button
+        {!mobileDisplay && activeAccountUser && job.status == "REVIEW" && type === UserTypeEnum.Company  && <Button
           ml="left"
           variant="outline"
           px="12px !important"
@@ -241,7 +242,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         >
           Reject
         </Button>}
-        {!mobileDisplay && activeAccountUser && job.status == "REVIEW" && <Button
+        {!mobileDisplay && activeAccountUser && job.status == "REVIEW" && type === UserTypeEnum.Company && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -271,6 +272,55 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
         >
           Create Contract
         </Button>}
+
+        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && <Button
+          ml="left"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          Request negotiate
+        </Button>}
+
+        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          Respond negotiate
+        </Button>}
+
+        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          Terminate
+        </Button>}
+
 
       </Flex>
       {mobileDisplay && <Button

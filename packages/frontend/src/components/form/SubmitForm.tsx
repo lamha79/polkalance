@@ -69,7 +69,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     activeAccount
   } = useInkathon()
   const toast = useToast()
-  const {jobSubmitId, setUseFormDone} = useLanding();
+  const {jobIdForForm, setUseFormDone} = useLanding();
 
   // thêm vào
   const [loading, setLoading] = useState(false)
@@ -84,7 +84,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     
     try {
       await contractTx(api, activeAccount.address, contract, 'submit', {}, [
-        jobSubmitId,values.result
+        jobIdForForm,values.result
       ])
       toast({
         title: <Text mt={-0.5}>Submit successfully</Text>,
@@ -94,7 +94,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
       })
       onSubmitSuccess();
     } catch (e: any) {
-      let error = e.errorMessage;
+      const error = e.errorMessage;
       toast({
         title: <Text mt={-0.5}>{error}</Text>,
         status: 'error',
