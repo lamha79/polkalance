@@ -104,7 +104,7 @@ const CreateJobContractForm: FC<CreateJobContractFormProps> = ({ onSubmitSuccess
     if (!activeAccount || !contract || !activeSigner || !api) {
       return false
     }
-    console.log(jobIdForForm);
+    // console.log(jobIdForForm);
     try {
       await contractTx(api, activeAccount.address, contract, 'createContract', {value: values.deposit * DECIMAL_NUMBER}, [
         jobIdForForm, accountForForm, values.rules, values.percent_paid_when_contract_fail, values.duration

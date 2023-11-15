@@ -1592,7 +1592,24 @@ mod polkalance {
             //vì yêu cầu hủy có gắn với doing và review khi quá hạn nên để dễ, hủy job luôn không reopen nữa
             job.status = Status::FINISH;
             self.jobs.insert(job_id, &job);
-
+            //Chỉnh lại trạng thái công việc của onwer_jobs
+            let mut owner_jobs = self.owner_jobs.get(job.person_create.unwrap()).unwrap();
+            for element in owner_jobs.iter_mut() {
+                if element.0 == job_id {
+                    element.1 = Status::FINISH;
+                    break;
+                }
+            }
+            self.owner_jobs.insert(caller, &owner_jobs);
+            //Chỉnh lại trạng thái công việc của freelancer_jobs
+            let mut freelancer_jobs = self.freelancer_jobs.get(job.person_obtain.unwrap()).unwrap();
+            for element in freelancer_jobs.iter_mut() {
+                if element.0 == job_id {
+                    element.1 = Status::FINISH;
+                    break;
+                }
+            }
+             self.freelancer_jobs.insert(job.person_obtain.unwrap(), &freelancer_jobs);
             // Emit the event.
             Self::env().emit_event(JobTerminated {
                 job_id,

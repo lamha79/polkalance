@@ -22,7 +22,7 @@ const FreelancerGallery: FC = () => {
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   const searchAuctionJobs = async () => {
     if (!contract || !api || !activeAccount) return null;
-    setFetchIsLoading(true);
+    setJobsFetching(true);
     try {
       const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['auctioning']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_freelancer_with_status');
@@ -36,9 +36,7 @@ const FreelancerGallery: FC = () => {
       console.log(e);
       setJobs([])
     } finally {
-      setFetchIsLoading(false);
-      console.log(jobs)
-      console.log(jobsFetching)
+      setJobsFetching(false);
     }
   };
   useEffect(() => {

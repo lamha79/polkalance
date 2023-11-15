@@ -88,7 +88,7 @@ const AuctionForm: FC<AuctionFormProps> = ({ onSubmitSuccess }) => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return false
     }
-    console.log(jobIdForForm);
+    // console.log(jobIdForForm);
     try {
       await contractTx(api, activeAccount.address, contract, 'jobAuction', {}, [
         jobIdForForm, values.desired_salary * DECIMAL_NUMBER, values.required_deposit_of_owner * DECIMAL_NUMBER

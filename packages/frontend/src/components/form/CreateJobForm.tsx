@@ -96,7 +96,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
     if (!activeAccount || !contract || !activeSigner || !api) {
       return
     }
-    console.log(values)
+    // console.log(values)
     try {
       await contractTx(api, activeAccount.address, contract, 'create_job', {value: values.budget * DECIMAL_NUMBER}, [
         values.jobTitle,
@@ -114,7 +114,7 @@ const CreateJobForm: FC<CreateJobFormProps> = ({ onSubmitSuccess }) => {
       })
       onSubmitSuccess()
     } catch (e: any) {
-      let error = e.errorMessage
+      const error = e.errorMessage
       toast({
         title: <Text mt={-0.5}>{error}</Text>,
         status: 'error',

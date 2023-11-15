@@ -17,7 +17,7 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace } = useRouter()
   const toast = useToast()
-  const { setSubmitModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  const { setSubmitModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone, type} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -50,13 +50,33 @@ const FreelancerGallery: FC = () => {
   //   }
   // };
   /////////
-  const searchDoingJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount +"=((");
-    setJobsFetching(false) //thêm vào
+  // const searchJobs = async () => {
+  //   console.log(type)
+  //   setJobsFetching(false) //thêm vào
+  //   if (!contract || !api || !activeAccount) return null;
+  //   setFetchIsLoading(true);
+  //   try {
+  //     const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['doing']);
+  //     const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_freelancer_with_status');
+  //     const json = JSON.stringify(output, null, 2);
+  //     const list_jobs = JSON.parse(json);
+  //     const data = list_jobs.Ok;
+  //     const jobs = data as CreateJob[];
+  //     setJobs(jobs)
+  //     if (isError) throw new Error(decodedOutput);
+  //     // setSearchJobsResult(output);
+  //   } catch (e) {
+  //     console.error(e);
+  //     return ([])
+  //     // toast.error('Error while fetching greeting. Try again...');
+  //     // setSearchJobsResult([]);
+  //   } finally {
+  //     setFetchIsLoading(false);
+  //   }
+  // };
+  const searchJobs = async () => {
     if (!contract || !api || !activeAccount) return null;
-    setFetchIsLoading(true);
+    setJobsFetching(true);
     try {
       const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['doing']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_freelancer_with_status');
@@ -66,18 +86,15 @@ const FreelancerGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
-      // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      console.log(e);
+      setJobs([])
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
-    searchDoingJobs();  
+    searchJobs();  
     if (useFormDone) {
       setUseFormDone(false)
     }
@@ -91,7 +108,6 @@ const FreelancerGallery: FC = () => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                // <JobCard2 job={j} key={k} onClick={() => submitResult(parseInt(j.jobId), "ta chia hao chu nhat")} />
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setSubmitModalOpen(true);

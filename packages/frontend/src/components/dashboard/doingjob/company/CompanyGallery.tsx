@@ -82,13 +82,36 @@ const CompanyGallery: FC = () => {
   //   }
   // };
   //////
+  // const searchJobs = async () => {
+  //   // console.log(api);
+  //   // console.log(contract);
+  //   // console.log(activeAccount +"=((");
+  //   setJobsFetching(false) //thêm vào
+  //   if (!contract || !api || !activeAccount) return null;
+  //   setFetchIsLoading(true);
+  //   try {
+  //     const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_owner_with_status', {}, ['doing']);
+  //     const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_owner_with_status');
+  //     const json = JSON.stringify(output, null, 2);
+  //     const list_jobs = JSON.parse(json);
+  //     const data = list_jobs.Ok;
+  //     const jobs = data as CreateJob[];
+  //     setJobs(jobs)
+  //     if (isError) throw new Error(decodedOutput);
+  //     // setSearchJobsResult(output);
+  //   } catch (e) {
+  //     console.error(e);
+  //     return ([])
+  //     // toast.error('Error while fetching greeting. Try again...');
+  //     // setSearchJobsResult([]);
+  //   } finally {
+  //     setFetchIsLoading(false);
+  //   }
+  // };
+
   const searchJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount +"=((");
-    setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
-    setFetchIsLoading(true);
+    setJobsFetching(true);
     try {
       const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_owner_with_status', {}, ['doing']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_owner_with_status');
@@ -98,30 +121,24 @@ const CompanyGallery: FC = () => {
       const jobs = data as CreateJob[];
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
-      // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      console.log(e);
+      setJobs([])
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
+
   useEffect(() => {
-    // setJobs([job]);
-    // alert(isConnected);
-    if (isConnected && activeChain && activeAccount) {
-      searchJobs();
-    }
-    if (isApprovalDone) {
-      setIsApprovalDone(false)
-    }
-    if (isRejectDone) {
-      setIsRejectDone(false)
-    }
+    searchJobs();
+    // if (isApprovalDone) {
+    //   setIsApprovalDone(false)
+    // }
+    // if (isRejectDone) {
+    //   setIsRejectDone(false)
+    // }
     // checkJobProccessing();
-  }, [contract, api, isConnected, activeChain, activeAccount, activeSigner, isApprovalDone, isRejectDone]);
+  }, [contract, api]);
   ////A//
   return (
     <Flex flexDir="column">
