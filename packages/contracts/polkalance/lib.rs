@@ -1355,6 +1355,9 @@ mod polkalance {
             let caller_info = self.personal_account_info.get(&caller);
             // Validate caller is registered
             let caller_info = caller_info.ok_or(JobError::NotRegistered)?;
+            if job.person_obtain == None {
+                return Err(JobError::NotTaked);
+            }
             // Caller is a freelancer?
             if caller_info.role != AccountRole::FREELANCER {
                 if job.person_create.unwrap() != caller {
@@ -1414,20 +1417,22 @@ mod polkalance {
                 .personal_account_info
                 .get(&caller)
                 .ok_or(JobError::NotRegistered)?;
-            match job.requester.unwrap() {
-                i if i == job.person_create.unwrap() => {
+            if job.person_obtain == None {
+                return Err(JobError::NotTaked);
+            }
+            match job.requester {
+                i if i == job.person_create => {
                     if caller != job.person_obtain.unwrap() {
                         return Err(JobError::NotTakeThisJob);
                     }
                 }
-                i if i == job.person_obtain.unwrap() => {
+                i if i == job.person_obtain => {
                     if caller != job.person_create.unwrap() {
                         return Err(JobError::NotAssignThisJob);
                     }
                 }
                 _ => return Err(JobError::NoNegotiator),
             }
-
             match job.status {
                 Status::UNQUALIFIED => {
                     if job.request_negotiation {
@@ -1506,6 +1511,12 @@ mod polkalance {
             // Check job is expired
             job.unqualifier = job.end_time < self.env().block_timestamp();
             let mut _wrong_person = None;
+            if job.status == Status::OPEN || job.status == Status::REOPEN || job.status == Status::AUCTIONING || job.status == Status::CANCELED {
+                return Err(JobError::InvalidTermination)
+            }
+            if job.person_obtain == None {
+                return Err(JobError::NotTaked);
+            }
             let owner = job.person_create.unwrap();
             let freelancer = job.person_obtain.unwrap();
             // Handle different status cases
