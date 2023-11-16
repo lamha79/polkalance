@@ -17,7 +17,7 @@ const FreelancerGallery: FC = () => {
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { push, replace } = useRouter()
   const toast = useToast()
-  const { setSubmitModalOpen, setJobIdForForm, submitModalOpen, useFormDone, setUseFormDone} = useLanding();
+  const { setRequestNegotiateModalOpen, setJobIdForForm, requestNegotiateModalOpen, useFormDone, setUseFormDone} = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
@@ -93,7 +93,7 @@ const FreelancerGallery: FC = () => {
               {jobs?.map((j, k) => (
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
-                  setSubmitModalOpen(true);
+                  setRequestNegotiateModalOpen(true);
                   setJobIdForForm(parseInt(j.jobId));
                 }} />              
               ))}

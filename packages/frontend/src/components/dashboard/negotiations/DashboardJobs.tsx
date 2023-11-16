@@ -41,7 +41,7 @@ const DashboardJobs: FC = () => {
           >
             <Flex flexDir="column" gap={4}>
               <Box textStyle="h2" as="h1" w="100%" textAlign="left">
-                Review jobs
+                Negotiation
               </Box>
               <Flex flexDir="column" gap={6}>
                 <FreelancerGallery />
@@ -60,7 +60,7 @@ const DashboardJobs: FC = () => {
             >
               <Flex flexDir="column" gap={4}>
                 <Box textStyle="h2" as="h1" w="100%" textAlign="left">
-                  Review jobs
+                  Negotiation
                 </Box>
                 <Flex flexDir="column" gap={6}>
                   <CompanyGallery />

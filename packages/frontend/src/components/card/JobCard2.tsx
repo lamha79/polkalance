@@ -35,7 +35,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
   const { desktopDisplay, mobileDisplay } = useResponsive();
   const { activeAccountUser, type } = useLanding();
 
-  let skillsLength = 0;
+  const skillsLength = 0;
   const skillLimit = desktopDisplay ? 45 : mobileDisplay ? 25 : 35
   return (
     <Box
