@@ -21,71 +21,37 @@ const CompanyGallery: FC = () => {
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain} = useInkathon()
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
-  const [isApprovalDone, setIsApprovalDone] = useState<boolean>(false);
-  const [isRejectDone, setIsRejectDone] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  //////
-  // const aprovalJob = async (job_id: number) => {
-  //   if (!activeAccount || !contract || !activeSigner || !api) {
-  //     return
-  //   }
-  //   try {
-  //     await contractTx(api, activeAccount.address, contract, 'approval', {}, [
-  //       job_id
-  //     ])
-  //     toast({
-  //       title: <Text mt={-0.5}>Approval success</Text>,
-  //       status: 'success',
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   } catch (e: any) {
-  //     const error = e.errorMessage;
-  //     toast({
-  //       title: <Text mt={-0.5}>{error}</Text>,
-  //       status: 'error',
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   } finally {
-  //     setIsApprovalDone(true)
-  //   }
-  // };
-
-  // const rejectJob = async (job_id: number) => {
-  //   if (!activeAccount || !contract || !activeSigner || !api) {
-  //     return
-  //   }
-  //   try {
-  //     await contractTx(api, activeAccount.address, contract, 'reject', {}, [
-  //       job_id, 
-  //       ''
-  //     ])
-  //     toast({
-  //       title: <Text mt={-0.5}>Reject success</Text>,
-  //       status: 'success',
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   } catch (e: any) {
-  //     const error = e.errorMessage;
-  //     toast({
-  //       title: <Text mt={-0.5}>{error}</Text>,
-  //       status: 'error',
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   }
-  //   finally {
-  //     setIsRejectDone(true)
-  //   }
-  // };
-  //////
-  const {type, setRequestNegotiateModalOpen, setRespondNegotiateModalOpen, setJobIdForForm} = useLanding();
+  /////////
+  const [terminateDone, setTerminateDone] = useState<boolean>(false);
+  const terminate = async (job_id: number) => {
+    if (!activeAccount || !contract || !activeSigner || !api) {
+      return
+    }
+    try {
+      await contractTx(api, activeAccount.address, contract, 'terminate', {}, [
+        job_id
+      ])
+      toast({
+        title: <Text mt={-0.5}>Terminate successfully</Text>,
+        status: 'success',
+        isClosable: true,
+        position: 'top-right',
+      })
+    } catch (e: any) {
+      const error = e.errorMessage;
+      toast({
+        title: <Text mt={-0.5}>{error}</Text>,
+        status: 'error',
+        isClosable: true,
+        position: 'top-right',
+      })
+    } finally {
+      setTerminateDone(true);
+    }
+  };
+  const {type, setRequestNegotiateModalOpen, setRespondNegotiateModalOpen, setJobIdForForm, jobIdForForm} = useLanding();
   const searchJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount?.address +"=((");
     setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
@@ -114,14 +80,10 @@ const CompanyGallery: FC = () => {
     if (isConnected && activeChain && activeAccount) {
       searchJobs();
     }
-    if (isApprovalDone) {
-      setIsApprovalDone(false)
+    if (terminateDone) {
+      setTerminateDone(false)
     }
-    if (isRejectDone) {
-      setIsRejectDone(false)
-    }
-    // checkJobProccessing();
-  }, [contract, api, isApprovalDone, isRejectDone]);
+  }, [contract, api, terminateDone]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -143,6 +105,10 @@ const CompanyGallery: FC = () => {
                     setRespondNegotiateModalOpen(true);
                     setJobIdForForm(parseInt(j.jobId));
                   }} 
+                  onClick2={() => {
+                    setJobIdForForm(parseInt(j.jobId));
+                    terminate(jobIdForForm);
+                  }}
                 />
               ))}
               
