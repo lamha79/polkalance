@@ -25,13 +25,15 @@ import {
   useRegisteredContract,
 } from '@scio-labs/use-inkathon'
 import { encodeAddress } from '@polkadot/util-crypto'
-import { ConnectButton } from '../../components/web3/ConnectButton'
+import { ConnectButton } from '../web3/ConnectButton'
 import RadioCard from '../radio/RadioCard'
 import RadioCardGroup from '../radio/RadioCardGroup'
 import { shortHash, UserTypeEnum } from '../../utility/src'
 import { useSignUp } from '../hooks/useSignUp'
 //thêm vào 
 import { ContractIds } from '../../deployments/deployments'
+import { useLanding } from '@front-provider/src'
+import { useRouter } from 'next/router'
 
 
 interface RadioUserType {
@@ -45,57 +47,67 @@ const RadioGroupUserType: RadioUserType[] = [
     value: UserTypeEnum.Freelancer,
   },
   {
-    label: 'Company',
+    label: 'Employer',
     value: UserTypeEnum.Company,
   },
 ]
 
+interface Agreement {
+  label: string,
+  value: string,
+}
+
+const AgreementType: Agreement[] = [
+  {
+    label: 'Yes',
+    value: 'true',
+  },
+  {
+    label: 'No',
+    value: 'false',
+  }
+]
+
 interface FormData {
-  email: string
-  firstname: string
-  lastname: string
-  currentUserType: string
-  agreeTOS: boolean
-  agreeDataTreatment: boolean
+  agreement: string,
 }
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  firstname: Yup.string().min(2).required('Firstname required'),
-  lastname: Yup.string().min(2).required('Lastname required'),
-  currentUserType: Yup.string()
-    .oneOf(Object.values(UserTypeEnum), 'Invalid user type')
-    .required('User type is required'),
-  agreeTOS: Yup.bool().oneOf([true], 'Must agree to Terms of Service'),
-  agreeDataTreatment: Yup.bool().oneOf([true], 'Must agree to data treatment policy'),
+  agreement: Yup.string()
+    .oneOf(['true', 'false'], 'Invalid agreement')
+    .required('Agreement is required'),
 })
 
-interface SignupFormProps {
+interface RespondNegotiateFormProps {
   onSubmitSuccess: () => void
 }
 
-const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
+const RespondNegotiateForm: FC<RespondNegotiateFormProps> = ({ onSubmitSuccess }) => {
   const {
     activeAccount
   } = useInkathon()
   const toast = useToast()
-
+  const {jobIdForForm, setUseFormDone} = useLanding();
+  const [selectedValue, setSelectedValue] = useState('');
   // thêm vào
   const [loading, setLoading] = useState(false)
   const { api, activeSigner } = useInkathon()
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  const updateRegister = async (values: FormData) => {
+  const { push } = useRouter()
+  const requestNegotiate = async (values: FormData) => {
         
     if (!activeAccount || !contract || !activeSigner || !api) {
       return false
     }
-    
+    // console.log(values.agreement)
+    const agreement = values.agreement == 'true'? true : false;
+    // console.log(agreement, typeof agreement)
     try {
-      await contractTx(api, activeAccount.address, contract, 'register', {}, [
-        values.firstname + ' ' + values.lastname, values.email, values.currentUserType
+      await contractTx(api, activeAccount.address, contract, 'respond_negotiate', {}, [
+        jobIdForForm, agreement
       ])
       toast({
-        title: <Text mt={-0.5}>Account registered Successfully</Text>,
+        title: <Text mt={-0.5}>Respond successfully</Text>,
         status: 'success',
         isClosable: true,
         position: 'top-right',
@@ -109,26 +121,23 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
         isClosable: true,
         position: 'top-right',
       })
-    } 
+    }finally{
+      setUseFormDone(true)
+    }
   }
 
 
   const onSubmit = async (values: FormData) => {
     if (activeAccount?.address && !loading) {
       setLoading(true)
-      updateRegister(values)
+      requestNegotiate(values)
       setLoading(false)
     }
   }
   return (
     <Formik
       initialValues={{
-        email: '',
-        firstname: '',
-        lastname: '',
-        currentUserType: RadioGroupUserType[0].value,
-        agreeTOS: false,
-        agreeDataTreatment: false,
+        agreement: 'false'
       }}
       validationSchema={validationSchema}
       isInitialValid={false}
@@ -138,61 +147,43 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
     >
       {({ isValid, errors, touched }) => (
         <Form>
-          <FormControl id="email" isRequired mb={6}>
-            <FormLabel>Your mail</FormLabel>
+          {/* <FormControl id="feedback" isRequired mb={6}>
+            <FormLabel>Your Feeback</FormLabel>
             <Field
-              name="email"
-              placeholder="Enter your mail"
+              name="feedback"
+              placeholder="Enter your feedback"
               as={Input}
-              type="email"
-              isInvalid={errors.email && touched.email}
+              type="feedback"
+              isInvalid={errors.feedback && touched.feedback}
             />
-            <ErrorMessage name="email">
+            <ErrorMessage name="feedback">
               {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
             </ErrorMessage>
-          </FormControl>
-          <FormControl id="firstname" isRequired mb={6}>
-            <FormLabel>Your firstname</FormLabel>
+          </FormControl> */}
+          {/* <FormControl id="negotiationPay" isRequired mb={6}>
+            <FormLabel>Your negotiation pay</FormLabel>
             <Field
-              name="firstname"
-              placeholder="Enter your firstname"
+              name="negotiationPay"
+              placeholder="Enter your negotiation pay"
               as={Input}
-              type="text"
-              isInvalid={errors.firstname && touched.firstname}
+              type="negotiationPay"
+              isInvalid={errors.negotiationPay && touched.negotiationPay}
             />
-            <ErrorMessage name="firstname">
-              {(msg) => (
-                <Text mt={1} textStyle="errorMessage">
-                  {msg}
-                </Text>
-              )}
-            </ErrorMessage>
-          </FormControl>
-          <FormControl id="lastname" isRequired mb={6}>
-            <FormLabel>Your lastname</FormLabel>
-            <Field
-              name="lastname"
-              placeholder="Enter your lastname"
-              as={Input}
-              type="text"
-              isInvalid={errors.lastname && touched.lastname}
-            />
-            <ErrorMessage name="lastname">
+            <ErrorMessage name="negotiationPay">
               {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
             </ErrorMessage>
-          </FormControl>
-          <FormControl id="currentUserType" mb={6}>
-            <FormLabel>Your are a</FormLabel>
-            <RadioCardGroup name="currentUserType" display="flex" columnGap={2}>
-              {RadioGroupUserType.map((v, k) => {
+          </FormControl> */}
+          <FormControl>
+            <FormLabel>Do you agree this negotiation?</FormLabel>
+            <RadioCardGroup name="agreement" display="flex" columnGap={2}>
+              {AgreementType.map((v, k) => {
                 return (
-                  <RadioCard key={k} groupName="currentUserType" label={v.label} value={v.value} />
+                  <RadioCard key={k} groupName="agreement" label={v.label} value={v.value} />
                 )
               })}
             </RadioCardGroup>
-            <FormHelperText>You’ll be able to switch at any moment *</FormHelperText>
           </FormControl>
-          <Flex flexDirection="column" mb={4}>
+          {/* <Flex flexDirection="column" mb={4}>
             <FormControl id="agreeTOS" isRequired>
               <Field name="agreeTOS" type="checkbox">
                 {({ field }: FieldProps<string>) => (
@@ -201,7 +192,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
                     isChecked={field.checked}
                     isInvalid={errors.agreeTOS !== undefined && touched.agreeTOS}
                   >
-                    I agree to the Terms of Service
+                    Do you want to repond negotiation?
                   </Checkbox>
                 )}
               </Field>
@@ -209,27 +200,8 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
             <ErrorMessage name="agreeTOS">
               {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
             </ErrorMessage>
-          </Flex>
-          <Flex flexDirection="column" mb={6}>
-            <FormControl id="agreeDataTreatment" isRequired>
-              <Field name="agreeDataTreatment" type="checkbox">
-                {({ field }: FieldProps<string>) => (
-                  <Checkbox
-                    {...field}
-                    isChecked={field.checked}
-                    isInvalid={
-                      errors.agreeDataTreatment !== undefined && touched.agreeDataTreatment
-                    }
-                  >
-                    I agree to the data treatment policy
-                  </Checkbox>
-                )}
-              </Field>
-            </FormControl>
-            <ErrorMessage name="agreeDataTreatment">
-              {(msg) => <Text textStyle="errorMessage">{msg}</Text>}
-            </ErrorMessage>
-          </Flex>
+          </Flex> */}
+          <br />
           <FormControl mb={4}>
             {!activeAccount && (
               <Box fontWeight="600" textAlign="center" px={6} py={2.5} cursor="default">
@@ -272,7 +244,7 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
             loadingText="Waiting for wallet signature"
             spinnerPlacement="end"
           >
-            Register
+            Respond negotiate
           </Button>
         </Form>
       )}
@@ -280,4 +252,4 @@ const SignupForm: FC<SignupFormProps> = ({ onSubmitSuccess }) => {
   )
 }
 
-export default SignupForm
+export default RespondNegotiateForm

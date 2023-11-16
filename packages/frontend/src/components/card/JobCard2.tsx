@@ -30,7 +30,7 @@ interface JobCardProps {
   onClick1?: () => void;
   onClick2?: () => void;
 }
-const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: JobCardProps) => {
+const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, onClick2 }: JobCardProps) => {
   const { getCategoryColorForSkill } = useColoredBadges();
   const { desktopDisplay, mobileDisplay } = useResponsive();
   const { activeAccountUser, type } = useLanding();
@@ -316,7 +316,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           fontWeight="400"
           lineHeight="100%"
           maxH="26px"
-          onClick={() => onClick?.()}
+          onClick={() => onClick1?.()}
         >
           Respond negotiate
         </Button>}
@@ -332,7 +332,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1 }: 
           fontWeight="400"
           lineHeight="100%"
           maxH="26px"
-          onClick={() => onClick?.()}
+          onClick={() => onClick2?.()}
         >
           Terminate
         </Button>}
