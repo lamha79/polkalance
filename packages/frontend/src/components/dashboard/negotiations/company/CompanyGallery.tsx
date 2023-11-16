@@ -50,7 +50,7 @@ const CompanyGallery: FC = () => {
       setTerminateDone(true);
     }
   };
-  const {type, setRequestNegotiateModalOpen, setRespondNegotiateModalOpen, setJobIdForForm, jobIdForForm} = useLanding();
+  const {type, setRequestNegotiateModalOpen, setRespondNegotiateModalOpen, setJobIdForForm, jobIdForForm, useFormDone} = useLanding();
   const searchJobs = async () => {
     setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
@@ -83,7 +83,7 @@ const CompanyGallery: FC = () => {
     if (terminateDone) {
       setTerminateDone(false)
     }
-  }, [contract, api, terminateDone]);
+  }, [contract, api, terminateDone, useFormDone]);
   ////A//
   return (
     <Flex flexDir="column">

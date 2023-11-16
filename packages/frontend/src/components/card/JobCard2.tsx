@@ -115,9 +115,9 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           lineHeight="120%"
           color="neutral.dsGray"
         >
-          PAY: {job.pay} ZERO
+          PAY: {parseInt(job.pay)} TZERO
         </Text>
-        {job.status === "REVIEW" && <Text
+        {job.result !== null && <Text
           fontFamily="Comfortaa"
           fontWeight="700"
           fontSize="14px"
@@ -125,6 +125,33 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           color="neutral.dsGray"
         >
           RESULT: {job.result}
+        </Text>}
+        {job.negotiationPay !== '0' && <Text
+          fontFamily="Comfortaa"
+          fontWeight="700"
+          fontSize="14px"
+          lineHeight="120%"
+          color="neutral.dsGray"
+        >
+          NEGOTIATION PAY: {job.negotiationPay}
+        </Text>}
+        {job.feedback !== '' && <Text
+          fontFamily="Comfortaa"
+          fontWeight="700"
+          fontSize="14px"
+          lineHeight="120%"
+          color="neutral.dsGray"
+        >
+          FEEDBACK: {job.feedback}
+        </Text>}
+        {job.requester !== null && <Text
+          fontFamily="Comfortaa"
+          fontWeight="700"
+          fontSize="14px"
+          lineHeight="120%"
+          color="neutral.dsGray"
+        >
+          REQUESTER: {job.requester}
         </Text>}
       </Flex>
       <Flex mt={2} flexWrap='wrap' rowGap={2}>

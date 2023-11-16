@@ -70,6 +70,9 @@ export interface CreateJob extends JobKey {
   status: string;
   personCreate: string,
   result: string,
+  negotiationPay: string,
+  requester: string,
+  feedback: string,
 }
 
 export interface Job {
