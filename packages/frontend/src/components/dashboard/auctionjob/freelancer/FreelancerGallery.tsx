@@ -33,7 +33,7 @@ const FreelancerGallery: FC = () => {
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       setJobs([])
     } finally {
       setJobsFetching(false);
@@ -44,7 +44,7 @@ const FreelancerGallery: FC = () => {
     if (useFormDone) {
       setUseFormDone(false)
     }
-  }, [contract, api, useFormDone]);
+  }, [contract, api, useFormDone, activeAccount]);
 
   return (
     <Flex flexDir="column">
@@ -55,8 +55,10 @@ const FreelancerGallery: FC = () => {
               {jobs?.map((j, k) => (
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
+                  // console.log(j.pay.replaceAll(',', ''));
+                  // console.log(j.jobId);
                   setAuctionModalOpen(true);
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                 }} />              
               ))}
             </SimpleGrid>

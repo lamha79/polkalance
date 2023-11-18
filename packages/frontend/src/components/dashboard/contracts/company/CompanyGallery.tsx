@@ -123,7 +123,7 @@ const CompanyGallery: FC = () => {
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       setJobs([])
     } finally {
       setJobsFetching(false);
@@ -139,7 +139,7 @@ const CompanyGallery: FC = () => {
     //   setIsRejectDone(false)
     // }
     // checkJobProccessing();
-  }, [contract, api]);
+  }, [contract, api, activeAccount]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -153,7 +153,7 @@ const CompanyGallery: FC = () => {
                   key={k} 
                   onClick={() => {
                     setSignAndObtainModalOpen(true);
-                    setJobIdForForm(parseInt(j.jobId));
+                    setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   }}
                 />
               ))}

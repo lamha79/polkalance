@@ -99,7 +99,7 @@ const CompanyGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       return ([])
       // toast.error('Error while fetching greeting. Try again...');
       // setSearchJobsResult([]);
@@ -120,7 +120,7 @@ const CompanyGallery: FC = () => {
       setIsRejectDone(false)
     }
     // checkJobProccessing();
-  }, [contract, api, isApprovalDone, isRejectDone]);
+  }, [contract, api, isApprovalDone, isRejectDone, activeAccount]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -132,8 +132,8 @@ const CompanyGallery: FC = () => {
                 <JobCard2 
                   job={j} 
                   key={k} 
-                  onClick={() => aprovalJob(parseInt(j.jobId))}
-                  onClick1={() => rejectJob(parseInt(j.jobId))}    
+                  onClick={() => aprovalJob(parseInt(j.jobId.replaceAll(',','')))}
+                  onClick1={() => rejectJob(parseInt(j.jobId.replaceAll(',','')))}    
                 />
               ))}
               

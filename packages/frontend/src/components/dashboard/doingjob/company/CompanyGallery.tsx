@@ -122,7 +122,7 @@ const CompanyGallery: FC = () => {
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       setJobs([])
     } finally {
       setJobsFetching(false);
@@ -138,7 +138,7 @@ const CompanyGallery: FC = () => {
     //   setIsRejectDone(false)
     // }
     // checkJobProccessing();
-  }, [contract, api]);
+  }, [contract, api, activeAccount]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -149,9 +149,7 @@ const CompanyGallery: FC = () => {
               {jobs?.map((j, k) => (
                 <JobCard2 
                   job={j} 
-                  key={k} 
-                  // onClick={() => aprovalJob(parseInt(j.jobId))}
-                  // onClick1={() => rejectJob(parseInt(j.jobId))}    
+                  key={k}
                 />
               ))}
               

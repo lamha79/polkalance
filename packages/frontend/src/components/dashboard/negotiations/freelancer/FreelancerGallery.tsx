@@ -54,10 +54,6 @@ const FreelancerGallery: FC = () => {
   };
   /////////
   const searchJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount?.address);
-    setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
@@ -71,12 +67,10 @@ const FreelancerGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      // console.error(e);
+      return ([]);
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
@@ -87,7 +81,7 @@ const FreelancerGallery: FC = () => {
     if (terminateDone) {
       setTerminateDone(false)
     }
-  }, [contract, api, useFormDone, terminateDone]);
+  }, [contract, api, useFormDone, terminateDone, activeAccount]);
 
   //////
   return (
@@ -100,16 +94,16 @@ const FreelancerGallery: FC = () => {
                 <JobCard2 job={j} key={k} 
                 onClick={() => {
                   // setSubmitDone(true)
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   setRequestNegotiateModalOpen(true);
                 }} 
                 onClick1={() => {
                   // setSubmitDone(true)
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   setRespondNegotiateModalOpen(true);
                 }} 
                 onClick2={() => {
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   terminate(jobIdForForm);
                 }}
                 />              

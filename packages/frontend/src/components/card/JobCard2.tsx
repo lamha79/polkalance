@@ -115,7 +115,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           lineHeight="120%"
           color="neutral.dsGray"
         >
-          PAY: {parseInt(job.pay)} TZERO
+          PAY: {parseInt(job.pay.replaceAll(',', '')) / 1e12} TZERO
         </Text>
         {job.result !== null && <Text
           fontFamily="Comfortaa"
@@ -311,7 +311,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           fontWeight="400"
           lineHeight="100%"
           maxH="26px"
-          onClick={() => onClick?.()}
+          onClick={() => {onClick?.()}}
         >
           See contract information
         </Button>}

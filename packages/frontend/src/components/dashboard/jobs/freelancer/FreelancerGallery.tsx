@@ -20,7 +20,7 @@ const FreelancerGallery: FC = () => {
   const { setAuctionModalOpen, jobIdForForm, setJobIdForForm, useFormDone, setUseFormDone } = useLanding();
   //////
   const { api, activeSigner, activeAccount, isConnected, activeChain } = useInkathon()
-  const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
+  const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
   const [fetchObtain, setFetchObtain] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
   /////////
@@ -53,8 +53,7 @@ const FreelancerGallery: FC = () => {
   };
   /////////
   const searchJobs = async () => {
-    setJobsFetching(false) //thêm vào
-    setFetchIsLoading(true);
+    setJobsFetching(true);
     if (!contract || !api || !activeAccount) return null;
     try {
       const result = await contractQuery(api, activeAccount.address, contract, 'get_all_open_jobs_no_params', {}, []);
@@ -67,10 +66,10 @@ const FreelancerGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       return ([])
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
@@ -78,7 +77,7 @@ const FreelancerGallery: FC = () => {
     if (useFormDone) {
       setUseFormDone(false)
     }
-  }, [contract, api, useFormDone]);
+  }, [contract, api, useFormDone, activeAccount]);
   //////
   return (
     <Flex flexDir="column">
@@ -88,7 +87,7 @@ const FreelancerGallery: FC = () => {
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
                 <JobCard2 job={j} key={k} onClick={() => {
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   setAuctionModalOpen(true);
                 }
                 } />

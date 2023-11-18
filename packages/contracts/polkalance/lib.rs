@@ -868,16 +868,29 @@ mod polkalance {
             let index = owner_jobs.iter().position(|(x, _)| *x == job_id).unwrap();
             owner_jobs[index].1 = Status::BECREATINGCONTRACT;
             self.owner_jobs.insert(caller, &owner_jobs);
+            // //Chỉnh lại trạng thái công việc của freelancer_jobs
+            // if let Some(mut freelancer_jobs) = self.freelancer_jobs.get(party_b){
+            //     if let Some(index) = freelancer_jobs.iter().position(|(x, _)| *x == job_id){
+            //         freelancer_jobs[index].1 = Status::BECREATINGCONTRACT;              //ghi đè
+            //         self.freelancer_jobs.insert(party_b, &freelancer_jobs);
+            //     }
+            // } else {
+            //     let mut freelancer_job = Vec::new();
+            //     freelancer_job.push((job_id, Status::BECREATINGCONTRACT));  
+            //     self.freelancer_jobs.insert(party_b, &freelancer_job);
+            // }
             //Chỉnh lại trạng thái công việc của freelancer_jobs
-            if let Some(mut freelancer_jobs) = self.freelancer_jobs.get(party_b){
-                if let Some(index) = freelancer_jobs.iter().position(|(x, _)| *x == job_id){
-                    freelancer_jobs[index].1 = Status::BECREATINGCONTRACT;              //ghi đè
-                    self.freelancer_jobs.insert(party_b, &freelancer_jobs);
-                }
-            } else {
-                let mut freelancer_job = Vec::new();
-                freelancer_job.push((job_id, Status::BECREATINGCONTRACT));
-                self.freelancer_jobs.insert(party_b, &freelancer_job);
+            let all_freelancer_auction:Vec<AccountId> = self.auction.get(job_id).unwrap().iter().map(|&x| x.0).collect();
+            for freelancer in all_freelancer_auction {
+                if freelancer == party_b {
+                    let mut freelancer_jobs: Vec<(JobId, Status)> = self.freelancer_jobs.get(freelancer).unwrap();
+                    let index = freelancer_jobs.iter().position(|x| x.0 == job_id).unwrap();
+                    freelancer_jobs[index].1 = Status::BECREATINGCONTRACT;
+                    self.freelancer_jobs.insert(freelancer, &freelancer_jobs);
+                }  else {
+                    let freelancer_jobs: Vec<(JobId, Status)> = self.freelancer_jobs.get(freelancer).unwrap().into_iter().filter(|x| x.0 != job_id).collect();
+                    self.freelancer_jobs.insert(freelancer, &freelancer_jobs);
+                }  
             }
             Self::env().emit_event(CreateContract{
                 job_id: job_id,

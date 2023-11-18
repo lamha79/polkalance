@@ -52,7 +52,6 @@ const CompanyGallery: FC = () => {
   };
   const {type, setRequestNegotiateModalOpen, setRespondNegotiateModalOpen, setJobIdForForm, jobIdForForm, useFormDone} = useLanding();
   const searchJobs = async () => {
-    setJobsFetching(false) //thêm vào
     if (!contract || !api || !activeAccount) return null;
     setFetchIsLoading(true);
     try {
@@ -66,12 +65,12 @@ const CompanyGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       return ([])
       // toast.error('Error while fetching greeting. Try again...');
       // setSearchJobsResult([]);
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
@@ -83,7 +82,7 @@ const CompanyGallery: FC = () => {
     if (terminateDone) {
       setTerminateDone(false)
     }
-  }, [contract, api, terminateDone, useFormDone]);
+  }, [contract, api, terminateDone, useFormDone, activeAccount]);
   ////A//
   return (
     <Flex flexDir="column">
@@ -98,15 +97,15 @@ const CompanyGallery: FC = () => {
                   onClick={() => {
                     // setSubmitDone(true)
                     setRequestNegotiateModalOpen(true);
-                    setJobIdForForm(parseInt(j.jobId));
+                    setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   }} 
                   onClick1={() => {
                     // setSubmitDone(true)
                     setRespondNegotiateModalOpen(true);
-                    setJobIdForForm(parseInt(j.jobId));
+                    setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   }} 
                   onClick2={() => {
-                    setJobIdForForm(parseInt(j.jobId));
+                    setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                     terminate(jobIdForForm);
                   }}
                 />

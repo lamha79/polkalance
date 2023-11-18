@@ -180,7 +180,7 @@ const SignAndObtainForm: FC<SignAndObtainProps> = ({ onSubmitSuccess }) => {
       return false
     }
     try {
-      await contractTx(api, activeAccount.address, contract, 'sign_contract_and_obtain', {value: parseInt(requiredDepositOfFreelancer)*1_000_000_000_000}, [jobIdForForm])
+      await contractTx(api, activeAccount.address, contract, 'sign_contract_and_obtain', {value: parseInt(requiredDepositOfFreelancer.replaceAll(',',''))}, [jobIdForForm])
       toast({
         title: <Text mt={-0.5}>Sign and obtain successfully</Text>,
         status: 'success',

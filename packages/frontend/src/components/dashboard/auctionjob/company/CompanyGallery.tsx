@@ -33,7 +33,7 @@ const CompanyGallery: FC = () => {
       setJobs(jobs)
       if (isError) throw new Error(decodedOutput);
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       setJobs([])
     } finally {
       setJobsFetching(false);
@@ -44,7 +44,7 @@ const CompanyGallery: FC = () => {
     if (useFormDone) {
       setUseFormDone(false)
     }
-  }, [contract, api, useFormDone]);
+  }, [contract, api, useFormDone, activeAccount]);
 
   return (
     <Flex flexDir="column">
@@ -56,7 +56,7 @@ const CompanyGallery: FC = () => {
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setCreateContractModalOpen(true);
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                 }} />              
               ))}
             </SimpleGrid>

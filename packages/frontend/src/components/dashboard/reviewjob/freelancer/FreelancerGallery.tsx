@@ -50,13 +50,10 @@ const FreelancerGallery: FC = () => {
   //   }
   // };
   /////////
-  const searchDoingJobs = async () => {
-    // console.log(api);
-    // console.log(contract);
-    // console.log(activeAccount +"=((");
-    setJobsFetching(false) //thêm vào
+  const searchJobs = async () => {
+
     if (!contract || !api || !activeAccount) return null;
-    setFetchIsLoading(true);
+    setJobsFetching(true);
     try {
       const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_freelancer_with_status', {}, ['review']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_freelancer_with_status');
@@ -68,20 +65,20 @@ const FreelancerGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       return ([])
       // toast.error('Error while fetching greeting. Try again...');
       // setSearchJobsResult([]);
     } finally {
-      setFetchIsLoading(false);
+      setJobsFetching(false);
     }
   };
   useEffect(() => {
-    searchDoingJobs();  
+    searchJobs();  
     if (useFormDone) {
       setUseFormDone(false)
     }
-  }, [contract, api, useFormDone]);
+  }, [contract, api, useFormDone, activeAccount]);
 
   //////
   return (
@@ -94,7 +91,7 @@ const FreelancerGallery: FC = () => {
                 <JobCard2 job={j} key={k} onClick={() => {
                   // setSubmitDone(true)
                   setSubmitModalOpen(true);
-                  setJobIdForForm(parseInt(j.jobId));
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                 }} />              
               ))}
             </SimpleGrid>

@@ -108,7 +108,7 @@ const CompanyGallery: FC = () => {
     if (useFormDone) {
       setUseFormDone(false)
     }
-  }, [contract, api, useFormDone]);
+  }, [contract, api, useFormDone, activeAccount, activeSigner]);
   //////
   return (
     <Flex flexDir="column">
