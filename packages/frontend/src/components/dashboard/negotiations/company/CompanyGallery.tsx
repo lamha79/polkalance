@@ -65,10 +65,7 @@ const CompanyGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      // console.error(e);
-      return ([])
-      // toast.error('Error while fetching greeting. Try again...');
-      // setSearchJobsResult([]);
+      setJobs([])
     } finally {
       setJobsFetching(false);
     }

@@ -66,7 +66,7 @@ const FreelancerGallery: FC = () => {
       // setSearchJobsResult(output);
     } catch (e) {
       // console.error(e);
-      return ([])
+      setJobs([])
       // toast.error('Error while fetching greeting. Try again...');
       // setSearchJobsResult([]);
     } finally {

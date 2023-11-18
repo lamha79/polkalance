@@ -23,35 +23,6 @@ const FreelancerGallery: FC = () => {
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
   const [fetchObtain, setFetchObtain] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  /////////
-  const obtainJob = async (job_id: number) => {
-    if (!activeAccount || !contract || !activeSigner || !api) {
-      return
-    }
-    try {
-      await contractTx(api, activeAccount.address, contract, 'obtain', {}, [
-        job_id
-      ])
-      toast({
-        title: <Text mt={-0.5}>Obtain job successfully</Text>,
-        status: 'success',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } catch (e: any) {
-      const error = e.errorMessage;
-      toast({
-        title: <Text mt={-0.5}>{error}</Text>,
-        status: 'error',
-        isClosable: true,
-        position: 'top-right',
-      })
-    }
-    finally {
-      setFetchObtain(true)
-    }
-  };
-  /////////
   const searchJobs = async () => {
     setJobsFetching(true);
     if (!contract || !api || !activeAccount) return null;
@@ -67,7 +38,7 @@ const FreelancerGallery: FC = () => {
       // setSearchJobsResult(output);
     } catch (e) {
       // console.error(e);
-      return ([])
+      setJobs([])
     } finally {
       setJobsFetching(false);
     }

@@ -36,8 +36,7 @@ const FreelancerGallery: FC = () => {
       if (isError) throw new Error(decodedOutput);
       // setSearchJobsResult(output);
     } catch (e) {
-      // console.error(e);
-      return ([])
+      setJobs([])
     } finally {
       setJobsFetching(false);
     }
