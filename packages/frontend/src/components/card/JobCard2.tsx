@@ -239,6 +239,21 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
         >
           Auction
         </Button>}
+        {!mobileDisplay && activeAccountUser && (job.status == "OPEN" || job.status == "REOPEN") && type === UserTypeEnum.Company && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick?.()}
+        >
+          Cancel job
+        </Button>}
         {!mobileDisplay && activeAccountUser && job.status == ("DOING")  && type === UserTypeEnum.Freelancer  && <Button
           ml="auto"
           variant="outline"

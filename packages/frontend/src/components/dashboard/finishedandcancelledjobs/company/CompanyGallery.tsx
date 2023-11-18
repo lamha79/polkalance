@@ -1,6 +1,6 @@
 import { Box, Flex, SimpleGrid, Spinner, useToast, Text } from '@chakra-ui/react'
 import { useJobs, useLanding } from '../../../../front-provider/src'
-import JobCard2 from '../../../../components/card/JobCard2'
+import JobCard2 from '../../../card/JobCard2'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import {
@@ -18,76 +18,15 @@ const CompanyGallery: FC = () => {
   const { push } = useRouter()
   const toast = useToast()
   const { setUseFormDone, useFormDone, setCreateContractModalOpen } = useLanding()
-  //////
+
   const { api, activeSigner, activeAccount, isConnected, activeChain } = useInkathon()
-  // const [fetchIsLoading, setFetchIsLoading] = useState<boolean>(false);
-  // const [fetchSearchJob, setFetchSearchJob] = useState<boolean>(false);
-  const [isCancelledDone, setIsCancelledDone] = useState<boolean>(false);
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-  //////
-  const cancelJob = async (job_id: number) => {
-
-    if (!activeAccount || !contract || !activeSigner || !api) {
-      return
-    }
-    try {
-      await contractTx(api, activeAccount.address, contract, 'cancel', {}, [
-        job_id
-      ])
-      toast({
-        title: <Text mt={-0.5}>Cancel successfully</Text>,
-        status: 'success',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } catch (e: any) {
-      const error = e.errorMessage;
-      toast({
-        title: <Text mt={-0.5}>{error}</Text>,
-        status: 'error',
-        isClosable: true,
-        position: 'top-right',
-      })
-    } finally {
-      setIsCancelledDone(true)
-    }
-  };
-
-  // const rejectJob = async (job_id: number) => {
-
-  //   if (!activeAccount || !contract || !activeSigner || !api) {
-  //     return
-  //   }
-  //   try {
-  //     await contractTx(api, activeAccount.address, contract, 'reject', {}, [
-  //       job_id
-  //     ])
-  //     toast({
-  //       title: <Text mt={-0.5}>Reject success</Text>,
-  //       status: 'success',
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   } catch (e: any) {
-  //     let error = e.errorMessage;
-  //     toast({
-  //       title: <Text mt={-0.5}>{error}</Text>,
-  //       status: 'error',
-  //       isClosable: true,
-  //       position: 'top-right',
-  //     })
-  //   }
-  //   finally {
-  //     setIsRejectDone(true)
-  //   }
-  // };
-  //////
+  
   const searchJobs = async () => {
     if (!contract || !api || !activeAccount) return null;
-    // setFetchIsLoading(true);
     setJobsFetching(true);
     try {
-      const result = await contractQuery(api, activeAccount.address, contract, 'get_all_jobs_of_owner_with_status', {}, ['open']);
+      const result = await contractQuery(api, activeAccount.address, contract, 'get_all_jobs_of_owner_with_status', {}, ['canceled,finish']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_owner_with_status');
       if (isError) throw new Error(decodedOutput);
       const json = JSON.stringify(output, null, 2);
@@ -98,8 +37,6 @@ const CompanyGallery: FC = () => {
     } catch (e) {
       setJobs([])
     } finally {
-      // setFetchIsLoading(false);
-      // setFetchSearchJob(true);
       setJobsFetching(false);
     }
   };
@@ -108,10 +45,7 @@ const CompanyGallery: FC = () => {
     if (useFormDone) {
       setUseFormDone(false)
     }
-    if (isCancelledDone) {
-      setIsCancelledDone(false)
-    }
-  }, [contract, api, useFormDone, activeAccount, activeSigner, isCancelledDone]);
+  }, [contract, api, useFormDone, activeAccount, activeSigner]);
   //////
   return (
     <Flex flexDir="column">
@@ -123,7 +57,6 @@ const CompanyGallery: FC = () => {
                 <JobCard2
                   job={j}
                   key={k}
-                  onClick={() => { cancelJob(parseInt(j.jobId.replaceAll(',',''))) }}
                 />
               ))}
 

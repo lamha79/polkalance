@@ -29,6 +29,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
     { view: '/dashboard/doingjob', label: 'Doing jobs' },
     { view: '/dashboard/reviewjob', label: 'Review jobs' },
     { view: '/dashboard/negotiations', label: 'Negotiation jobs' },
+    { view: '/dashboard/finishedandcancelledjobs', label: 'Finished jobs' },
   ];
 
   const freelanceMenu: MenuElement[] = [
@@ -40,6 +41,7 @@ const DashboardMenuContent: FC<DashboardMenuContentProps> = ({ onCloseMenu }) =>
     { view: '/dashboard/doingjob', label: 'Doing jobs' },
     { view: '/dashboard/reviewjob', label: 'Review jobs' },
     { view: '/dashboard/negotiations', label: 'Negotiation jobs' },
+    { view: '/dashboard/finishedandcancelledjobs', label: 'Finished jobs' },
 
   ];
 
