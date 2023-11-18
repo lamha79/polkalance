@@ -15,6 +15,9 @@ import { useResponsive } from '../hooks/useResponsive';
 import { useLanding } from '@front-provider/src';
 import { UserTypeEnum } from '../../utility/src';
 
+import {
+  useInkathon,
+} from '@scio-labs/use-inkathon'
 ///////
 const getDay = (date: string) => {
   const a = parseInt(date.replace(/,/g, ''));
@@ -34,6 +37,8 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
   const { getCategoryColorForSkill } = useColoredBadges();
   const { desktopDisplay, mobileDisplay } = useResponsive();
   const { activeAccountUser, type } = useLanding();
+
+  const {activeAccount} = useInkathon();
 
   const skillsLength = 0;
   const skillLimit = desktopDisplay ? 45 : mobileDisplay ? 25 : 35
@@ -331,7 +336,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           See contract information
         </Button>}
 
-        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && <Button
+        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && (job.requester == null) && <Button
           ml="left"
           variant="outline"
           px="12px !important"
@@ -347,8 +352,8 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           Request negotiate
         </Button>}
 
-        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && <Button
-          ml="auto"
+        {!mobileDisplay && activeAccountUser && (job.status == "UNQUALIFIED") && (job.requester != null) && (job.requester != activeAccount?.address) && <Button
+          ml="left"
           variant="outline"
           px="12px !important"
           py="2px !important"
