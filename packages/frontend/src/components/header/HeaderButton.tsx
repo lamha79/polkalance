@@ -106,7 +106,7 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
             <IconButton variant="icon" aria-label="Message Icon" icon={<NotificationIcon />} />
           </Flex>
           <Text fontFamily="Comfortaa" fontWeight="600" cursor="initial">
-            {truncateHash(encodeAddress(activeAccount?.address || "", activeChain?.ss58Prefix || 42), 10)}
+            {(activeAccount && activeChain) && truncateHash(encodeAddress(activeAccount?.address || "", activeChain?.ss58Prefix || 42), 10)}
           </Text>
           <Button variant="outline" size="md" onClick={handleLogout}>
             Disconnect
