@@ -60,7 +60,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     allSubstrateWallets.filter((w) => w.platforms.includes(SubstrateWalletPlatform.Browser)),
   )
   const isSSR = useIsSSR()
-  const { activeAccountUser, signupModalOpen, setIsCheckWallet, isCheckWallet } = useLanding();
+  const { setSigninModalOpen, signupModalOpen, setIsCheckWallet, isCheckWallet } = useLanding();
   const { checkExistWallet } = useLogin(signupModalOpen);
   const { signOut } = useConnect();
   useEffect(() => {
@@ -197,6 +197,11 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
         {(accounts || []).map((acc) => {
           const encodedAddress = encodeAddress(acc.address, activeChain?.ss58Prefix || 42)
           const truncatedEncodedAddress = truncateHash(encodedAddress, 10)
+          setTimeout(() => {
+            setSigninModalOpen(false);
+            setIsCheckWallet(false);
+            checkExistWallet?.();
+          }, 200);
           return (
             <MenuItem
               key={encodedAddress}

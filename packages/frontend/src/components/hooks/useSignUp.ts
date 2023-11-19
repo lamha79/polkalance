@@ -1,7 +1,9 @@
+import { signUpWithAlepZeroApi } from '@services/auth';
 import { useCallback } from 'react';
 
 interface SigupProps {
-  address: `0x${string}`;
+  address: `${string}`;
+  chain: `${string}`;
   email: string;
   firstname: string;
   lastname: string;
@@ -11,9 +13,32 @@ interface SigupProps {
 }
 
 export function useSignUp() {
+  // const signUp = useCallback(
+  //   async ({
+  //     address,
+  //     email,
+  //     firstname,
+  //     lastname,
+  //     currentUserType,
+  //     agreeTOS,
+  //     agreeDataTreatment
+  //   }: SigupProps): Promise<boolean | string> => {
+  //     if (address) {
+  //       try {
+  //         return address;
+  //       } catch (error: any) {
+  //         return error.response.data.message;
+  //       }
+  //     }
+  //     return 'Please link your wallet';
+  //   },
+  //   []
+  // );
+
   const signUp = useCallback(
     async ({
       address,
+      chain,
       email,
       firstname,
       lastname,
@@ -21,9 +46,23 @@ export function useSignUp() {
       agreeTOS,
       agreeDataTreatment
     }: SigupProps): Promise<boolean | string> => {
-      if (address) {
+      if (address && chain) {
         try {
-          return address;
+          const nonce = null;
+          const message = "";
+          const signature = message;
+          const res = await signUpWithAlepZeroApi({
+            message,
+            signature,
+            wallet: address,
+            email,
+            firstname,
+            lastname,
+            currentUserType,
+            agreeTOS,
+            agreeDataTreatment
+          });
+          return res;
         } catch (error: any) {
           return error.response.data.message;
         }

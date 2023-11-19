@@ -1,4 +1,4 @@
-import { Button, Flex, IconButton } from '@chakra-ui/react'
+import { Button, Flex, IconButton, Text } from '@chakra-ui/react'
 import Cookies from 'js-cookie';
 import { useCurrentUser, useLanding } from '../../front-provider/src'
 import { FC } from 'react'
@@ -10,6 +10,9 @@ import {
   useInkathon
 } from '@scio-labs/use-inkathon'
 import { ConnectButton } from '@components/web3/ConnectButton';
+import LoginButton from '@components/button/LoginButton';
+import { truncateHash } from '@/utils/truncateHash'
+import { encodeAddress } from '@polkadot/util-crypto'
 
 interface HeaderButtonProps {
   onCloseMenu?: () => void
@@ -17,23 +20,27 @@ interface HeaderButtonProps {
 
 const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
   const { user } = useCurrentUser()
-  const { setSignupModalOpen , activeAccountUser, setActiveAccountUser} = useLanding()
+  const { signupModalOpen, setSignupModalOpen, activeAccountUser, setActiveAccountUser } = useLanding()
   const { push, pathname } = useRouter()
   const { mobileDisplay } = useResponsive()
   const { setUser } = useCurrentUser();
   const {
-    disconnect
+    disconnect,
+    activeAccount,
+    activeChain
   } = useInkathon()
 
   const handleLogout = () => {
     if (mobileDisplay && onCloseMenu) {
       onCloseMenu()
     }
-    disconnect?.();
-    push('/');
-    Cookies.remove('authenticated');
-    setUser(null);
-    setActiveAccountUser(false);
+    setTimeout(() => {
+      disconnect?.();
+      // push('/');
+      Cookies.remove('authenticated');
+      setUser(null);
+      setActiveAccountUser(false);
+    }, 500);
   }
 
   const handleNavigate = () => {
@@ -45,14 +52,15 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
 
   return (
     <Flex justifyContent={{ base: 'center', lg: 'normal' }}>
-        {((!user)) && (
-        <>
-        {/* <LoginButton signupModalOpen={signupModalOpen} mr={{ base: 0, md: 4, xl: 8 }}>
+      {((!user && !activeAccount)) && (
+        <LoginButton signupModalOpen={signupModalOpen}>
           Login
-        </LoginButton> */}
+        </LoginButton>
+      )}
+
+      {(activeAccount && !activeAccountUser) && (
         <ConnectButton />
-        </>
-        )}
+      )}
 
         {!activeAccountUser && <Button
           backgroundColor={'#fdb81e'}
@@ -75,7 +83,7 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
           Sign up
         </Button>}
         
-      {user && activeAccountUser && (
+      {(user && activeAccountUser) && (
         <Flex
           alignItems="center"
           columnGap={{ base: 8, md: 4, xl: 8 }}
@@ -97,7 +105,9 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
             />
             <IconButton variant="icon" aria-label="Message Icon" icon={<NotificationIcon />} />
           </Flex>
-          <ConnectButton />
+          <Text fontFamily="Comfortaa" fontWeight="600" cursor="initial">
+            {truncateHash(encodeAddress(activeAccount?.address || "", activeChain?.ss58Prefix || 42), 10)}
+          </Text>
           <Button variant="outline" size="md" onClick={handleLogout}>
             Disconnect
           </Button>

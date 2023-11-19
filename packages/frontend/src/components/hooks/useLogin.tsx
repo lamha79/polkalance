@@ -18,7 +18,6 @@ function getUser(user: User) {
 
 export const useLogin = (signupModalOpen: boolean) => {
   const { user, setUser } = useContext(CurrentUserContext);
-  const { signIn } = useConnect();
   const { setType, type,  setActiveAccountUser, isCheckWallet, setIsCheckWallet } = useLanding();
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -32,27 +31,6 @@ export const useLogin = (signupModalOpen: boolean) => {
 
   const [fetchIsLoading, setFetchIsLoading] = useState<boolean>();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
-
-  const login = useCallback(
-    async ({ address, chain }: { address: `0x${string}`; chain: `${string}` }) => {
-      setIsLoading(true);
-      const res = await signIn({ address, chain });
-      if (typeof res !== 'string' && res) {
-        setUser(res);
-        setType(res.currentUserType);
-      } else {
-        toast({
-          title: <Text mt={-0.5}>Please Sign up</Text>,
-          description: typeof res === 'string' ? res : null,
-          status: 'info',
-          isClosable: true,
-          position: 'top-right'
-        });
-      }
-      setIsLoading(false);
-    },
-    [setType, setUser, signIn, toast]
-  );
 
    const checkExistWallet = async () => {
     // alert("here")

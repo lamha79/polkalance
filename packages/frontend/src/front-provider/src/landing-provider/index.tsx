@@ -8,6 +8,7 @@ type LandingContextInterface = {
   type: ViewType;
   currentView: string;
   signupModalOpen: boolean;
+  signinModalOpen: boolean;
   createJobModalOpen: boolean;
   submitModalOpen: boolean;
   auctionModalOpen: boolean;
@@ -26,6 +27,7 @@ type LandingContextInterface = {
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
   setSignupModalOpen: (open: boolean) => void;
+  setSigninModalOpen: (open: boolean) => void;
   setCreateJobModalOpen: (open: boolean) => void;
   setSubmitModalOpen: (open: boolean) => void;
   setAuctionModalOpen: (open: boolean) => void;
@@ -47,6 +49,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   type: UserTypeEnum.Freelancer,
   currentView: '',
   signupModalOpen: false,
+  signinModalOpen: false,
   createJobModalOpen: false,
   submitModalOpen: false,
   auctionModalOpen: false,
@@ -63,7 +66,8 @@ export const LandingContext = createContext<LandingContextInterface>({
   respondNegotiateModalOpen: false,
   setType: () => {},
   setCurrentView: () => {},
-  setSignupModalOpen: () => {},
+  setSignupModalOpen: () => { },
+  setSigninModalOpen: () => { },
   setCreateJobModalOpen: () => {},
   setSubmitModalOpen: () => {},
   setAuctionModalOpen: () => {},
@@ -84,6 +88,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [type, setType] = useState<ViewType>(UserTypeEnum.Freelancer);
   const [currentView, setCurrentView] = useState<string>('');
   const [signupModalOpen, setSignupModalOpen] = useState(false);
+  const [signinModalOpen, setSigninModalOpen] = useState(false);
   const [createJobModalOpen, setCreateJobModalOpen] = useState(false);
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [auctionModalOpen, setAuctionModalOpen] = useState(false);
@@ -106,6 +111,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         type,
         currentView,
         signupModalOpen,
+        signinModalOpen,
         createJobModalOpen,
         submitModalOpen,
         auctionModalOpen,
@@ -123,6 +129,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setType,
         setCurrentView,
         setSignupModalOpen,
+        setSigninModalOpen,
         setCreateJobModalOpen,
         setSubmitModalOpen,
         setAuctionModalOpen,
@@ -149,6 +156,7 @@ export function useLanding() {
     type,
     currentView,
     signupModalOpen,
+    signinModalOpen,
     createJobModalOpen,
     submitModalOpen,
     auctionModalOpen,
@@ -166,6 +174,7 @@ export function useLanding() {
     setType,
     setCurrentView,
     setSignupModalOpen,
+    setSigninModalOpen,
     setCreateJobModalOpen,
     setSubmitModalOpen,
     setAuctionModalOpen,
@@ -201,6 +210,7 @@ export function useLanding() {
     type,
     currentView,
     signupModalOpen,
+    signinModalOpen,
     createJobModalOpen,
     submitModalOpen,
     auctionModalOpen,
@@ -219,6 +229,7 @@ export function useLanding() {
     handleViewChange,
     setCurrentView,
     setSignupModalOpen,
+    setSigninModalOpen,
     setCreateJobModalOpen,
     setSubmitModalOpen,
     setAuctionModalOpen,

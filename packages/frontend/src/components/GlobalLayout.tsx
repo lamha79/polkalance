@@ -9,6 +9,7 @@ import { getMyCompanies } from '../services/company';
 import { getMyJobs } from '../services/jobs';
 import CreateJobModal from './modal/CreateJobModal';
 import { User, UserTypeEnum } from '../utility/src';
+import SigninModal from './modal/SigninModal';
 
 export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
   const { user, setUser, setFetchingUser } = useCurrentUser();
@@ -121,6 +122,7 @@ export const GlobalLayout: FC<PropsWithChildren> = ({ children }: PropsWithChild
       color="neutral.black"
     >
       {!user && !isFetching && <SignupModal />}
+      {!user && !isFetching && <SigninModal />}
       <Header />
       {children}
     </Container>
