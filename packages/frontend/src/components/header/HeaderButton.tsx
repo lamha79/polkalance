@@ -54,7 +54,7 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
     <Flex justifyContent={{ base: 'center', lg: 'normal' }}>
       {((!user && !activeAccount)) && (
         <LoginButton signupModalOpen={signupModalOpen}>
-          Login
+          Sign in
         </LoginButton>
       )}
 
@@ -71,7 +71,7 @@ const HeaderButton: FC<HeaderButtonProps> = ({ onCloseMenu }) => {
           lineHeight={'133%'}
           borderRadius={'32'}
           height={"48px"}
-          variant="primary"
+        variant="primary"
           ml={{ base: 0, md: 4, xl: 8 }}
           onClick={() => {
             if (mobileDisplay && onCloseMenu) {

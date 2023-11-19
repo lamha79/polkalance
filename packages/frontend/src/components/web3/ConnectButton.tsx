@@ -35,6 +35,7 @@ import { FiChevronDown, FiExternalLink } from 'react-icons/fi'
 import { useLanding } from '@front-provider/src'
 import { useLogin } from '@components/hooks/useLogin'
 import { useConnect } from '@components/hooks/useConnect'
+import { useResponsive } from '@components/hooks/useResponsive'
 
 export interface ConnectButtonProps {}
 export const ConnectButton: FC<ConnectButtonProps> = () => {
@@ -63,6 +64,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
   const { setSigninModalOpen, signupModalOpen, setIsCheckWallet, isCheckWallet } = useLanding();
   const { checkExistWallet } = useLogin(signupModalOpen);
   const { signOut } = useConnect();
+  const { mobileDisplay } = useResponsive();
   useEffect(() => {
       setIsCheckWallet(false);
   }, []);
@@ -130,7 +132,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
     <Menu>
       <HStack>
         {/* Account Balance */}
-        {(balanceFormatted !== undefined) && (
+        {(balanceFormatted !== undefined && !mobileDisplay) && (
           <Button
             py={6}
             pl={5}

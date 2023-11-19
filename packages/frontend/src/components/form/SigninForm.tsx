@@ -116,7 +116,7 @@ const SigninForm: FC<SigninFormProps> = ({ onSubmitSuccess }) => {
   const onSubmit = async (values: FormData) => {
     if (activeAccount?.address && !loading) {
       setLoading(true)
-      updateRegister(values)
+      // updateRegister(values)
       setLoading(false)
     }
   }
