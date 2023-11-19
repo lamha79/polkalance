@@ -17,6 +17,10 @@ module.exports = {
         mono: ['var(--font-inconsolata)', ...defaultTheme.fontFamily.mono],
       },
     },
+    screens: {
+      'md': "1366px",      
+    },
   },
+
   plugins: [],
 }

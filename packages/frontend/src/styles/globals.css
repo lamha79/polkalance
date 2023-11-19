@@ -25,3 +25,15 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/* Medium devices (tablets, 768px and up) */
+.css-169ifx6 {
+  @media (max-width: 1366px) {
+    padding-right: 30px;
+  }
+}
+.css-1goju3s {
+  @media (max-width: 1366px) {
+    display: none !important;
+  }
+}

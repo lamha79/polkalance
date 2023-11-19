@@ -6,6 +6,7 @@ import GlobalLayout from '../components/GlobalLayout';
 import { darkTheme } from '../themes/src';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import '../assets/scrollbar.css';
+import '../styles/globals.css';
 
 //Import font
 import '@fontsource/comfortaa';
