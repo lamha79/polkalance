@@ -110,8 +110,11 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
                 <MenuItem
                   as={Link}
                   href={w.urls.website}
-                  key={w.id}
-                  tw="bg-transparent opacity-50 hocus:bg-gray-800 hover:(no-underline opacity-70)"
+                    key={w.id}
+                    _hover={{
+                      background: "#fdb81e"
+                    }}
+                    tw="bg-transparent opacity-50 hocus:bg-gray-800 hover:#fdb81e"
                 >
                   <VStack align="start" spacing={0}>
                     <HStack>
@@ -136,12 +139,17 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
           <Button
             py={6}
             pl={5}
+            marginLeft="25px"
             rounded="2xl"
             fontWeight="bold"
             fontSize="sm"
             fontFamily="mono"
             letterSpacing={-0.25}
             pointerEvents="none"
+            backgroundColor={"#fdb81e"}
+            _hover={{
+              background: "#805ad5"
+            }}
           >
             {balanceFormatted}
           </Button>
@@ -156,6 +164,10 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
           pl={5}
           rounded="2xl"
           fontWeight="bold"
+            backgroundColor={"#fdb81e"}
+            _hover={{
+              background: "#805ad5"
+            }}
         >
           <VStack spacing={0.5}>
             <AccountName account={activeAccount} />
@@ -183,7 +195,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
               await switchActiveChain?.(chain)
               toast.success(`Switched to ${chain.name}`)
             }}
-            tw="bg-transparent hocus:bg-gray-800"
+            tw="bg-transparent hocus:#fdb81e"
           >
             <VStack align="start" spacing={0}>
               <HStack>
@@ -213,7 +225,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
                 setIsCheckWallet(false);
                 checkExistWallet?.()
               }}
-              tw="bg-transparent hocus:bg-gray-800"
+              tw="bg-transparent hocus:#fdb81e"
             >
               <VStack align="start" spacing={0}>
                 <HStack>
@@ -234,7 +246,7 @@ export const ConnectButton: FC<ConnectButtonProps> = () => {
             signOut?.();
           }}
           icon={<AiOutlineDisconnect size={18} />}
-          tw="bg-transparent hocus:bg-gray-800"
+          tw="bg-transparent hocus:#fdb81e"
         >
           Disconnect
         </MenuItem>
