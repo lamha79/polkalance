@@ -188,6 +188,7 @@ export const skills = [
       'SQL Server',
       'Cloud Computing',
       'System Administration',
+      'IT',
       'IT Support',
       'Virtualization',
       'Network Security',
