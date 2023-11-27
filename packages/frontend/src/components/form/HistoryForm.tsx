@@ -36,7 +36,7 @@ const HistoryForm: FC = () => {
     if (!contract || !api || !activeAccount) return null;
     setJobsFetching(true);
     try {
-      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_person_with_status', {}, [accountForForm, 'auctioning,becreatingcontract']);
+      const result = await contractQuery(api, activeAccount.address ,contract, 'get_all_jobs_of_person_with_status', {}, [accountForForm, 'auctioning,becreatingcontract,doing,review,unqualified,finish,canceled']);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_all_jobs_of_person_with_status');
       const json = JSON.stringify(output, null, 2);
       const list_auctioneer = JSON.parse(json);
@@ -86,7 +86,7 @@ const JobInfoCard: FC<JobInfoProps> = ({ jobInfo, blurred = false }: JobInfoProp
                 <h1>Id: {jobInfo.jobId}</h1>
                 <h1>Category: {jobInfo.category}</h1>
                 <h1>Status: {jobInfo.status}</h1>
-                <h1>Decription: {jobInfo.description}</h1>             
+                <h1>Decription: {jobInfo.description}</h1>
               </>
             }
       </Text>
