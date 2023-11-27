@@ -13,6 +13,7 @@ import SignAndObtainModal from '@components/modal/SignAndObtainModal';
 import SubmitModal from '@components/modal/SubmitModal';
 import RequestNegotiateModal from '@components/modal/RequestNegotiateModal';
 import RespondNegotiateModal from '@components/modal/RespondNegotiateModal';
+import HistoryModal from '@components/modal/HistoryModal';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -43,6 +44,7 @@ const DashboardLayout: NextPage<DashboardLayoutProps> = ({ children }) => {
         {(user && activeAccountUser) && <SignAndObtainModal />}
         {(user && activeAccountUser) && <RequestNegotiateModal />}
         {(user && activeAccountUser) && <RespondNegotiateModal />}
+        {(user && activeAccountUser) && <HistoryModal/>}
 
         {children}
         {!user && (

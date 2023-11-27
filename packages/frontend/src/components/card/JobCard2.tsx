@@ -317,7 +317,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           maxH="26px"
           onClick={() => onClick?.()}
         >
-          Create Contract
+          See more information
         </Button>}
 
         {!mobileDisplay && activeAccountUser && (job.status == "BECREATINGCONTRACT")  && <Button

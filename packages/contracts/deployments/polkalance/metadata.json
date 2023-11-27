@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xe04aa3b5de002b86692f1f2df5f4c5746d8d43bddb9128b384e91b91563d25ec",
+    "hash": "0xb7b99a2048a76d77849849422cbc32ebba2861dcd3e9e8b228d7fec93d3370ba",
     "language": "ink! 4.3.0",
     "compiler": "rustc 1.71.1",
     "build_info": {
@@ -760,6 +760,41 @@
           "type": 29
         },
         "selector": "0x7fae3e25"
+      },
+      {
+        "args": [
+          {
+            "label": "person_account_id",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "status_string",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "get_all_jobs_of_person_with_status",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 29
+        },
+        "selector": "0xbd8cdbe3"
       },
       {
         "args": [

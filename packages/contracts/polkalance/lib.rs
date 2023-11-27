@@ -8,9 +8,8 @@ mod polkalance {
 
     pub type JobId = u128;
     pub type ReportInfo = String;
-
     const FEE_PERCENTAGE: u8 = 3;
-
+    
     #[ink(event)]
     pub struct Registered {
         #[ink(topic)]
@@ -562,6 +561,50 @@ mod polkalance {
                 return Err(JobError::InvalidQuery);
             };
             Ok(result_jobs)
+        }
+        
+        // get tất cả các job của một người với trạng thái cho trước.
+        //-----------> query trong lịch sử
+        #[ink(message)]
+        pub fn get_all_jobs_of_person_with_status(&self, person_account_id: AccountId, status_string: String) -> Result<Vec<Job>, JobError>{
+            let caller = self.env().caller();
+            let _ = self.personal_account_info.get(caller).ok_or(JobError::NotRegistered)?;
+            let status = Self::string_to_status(status_string);
+            if status.len() == 0 {
+                return Err(JobError::InvalidQuery);
+            };
+            let mut result_jobs = Vec::new();  //tạo vecto rỗng
+            if let Some(person_info) = self.personal_account_info.get(person_account_id){
+                if person_info.role ==  AccountRole::FREELANCER {
+                    if let Some(freelancer_job_id) = self.freelancer_jobs.get(person_account_id) {
+                        let res_id = freelancer_job_id
+                            .into_iter()
+                            .filter(|x| status.contains(&x.1))
+                            .collect::<Vec<(JobId,Status)>>();
+                        for i in res_id {
+                            result_jobs.push(self.jobs.get(i.0).unwrap())
+                        }
+                        return Ok(result_jobs);
+                    } else {
+                        return Ok(result_jobs);
+                    }
+                } else {
+                    if let Some(owner_job_id) = self.owner_jobs.get(person_account_id) {
+                        let res_id = owner_job_id
+                            .into_iter()
+                            .filter(|x| status.contains(&x.1))
+                            .collect::<Vec<(JobId,Status)>>();
+                        for i in res_id {
+                            result_jobs.push(self.jobs.get(i.0).unwrap())
+                        }
+                        return Ok(result_jobs);
+                    } else {
+                        return Ok(result_jobs);
+                    }
+                }
+            } else {
+                return Ok(result_jobs);
+            }
         }
 
         //get tất cả open job theo category để freelancer lọc và chọn việc để đấu giá

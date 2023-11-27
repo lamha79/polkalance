@@ -134,7 +134,7 @@ const CreateContractForm: FC = () => {
   }
   //////////////////////
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
-  const { setCreateJobContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone, jobIdForForm, setAccountForForm} = useLanding();
+  const { setCreateJobContractModalOpen, setJobIdForForm, submitModalOpen, useFormDone, jobIdForForm, setAccountForForm, setHistoryModalOpen} = useLanding();
   const [allAuctioneer, setAllAuctioneer] = useState<Auctioneer[]>([]);
   const {api, activeAccount} = useInkathon();
   const { contract, address: contractAddress } = useRegisteredContract(ContractIds.Polkalance)
@@ -170,9 +170,10 @@ const CreateContractForm: FC = () => {
     auctioneer: Auctioneer;
     blurred?: boolean;
     onClick?: () => void;
+    onClick1?: () => void;
   }
 
-const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick }: AuctioneersProps) => {
+const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick, onClick1 }: AuctioneersProps) => {
   
   return (
     <Box
@@ -183,7 +184,6 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
       bgColor="white"
       cursor="pointer"
       position="relative"
-      onClick={onClick}
     >
       <Text
             fontFamily="Comfortaa"
@@ -197,6 +197,38 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
                 <h1>Freelancer Address: {auctioneer[0] }</h1>
                 <h1>Desired Salary: {parseInt(auctioneer[1].replaceAll(',',''))/1e12} TZERO</h1>
                 <h1>Required Deposit Of Company: {parseInt(auctioneer[2].replaceAll(',',''))/1e12} TZERO</h1>
+                <br />
+                <Button
+                ml="0"
+                variant="outline"
+                px="12px !important"
+                py="2px !important"
+                bgColor="white"
+                borderColor="neutral.gray"
+                fontSize="14px"
+                fontWeight="400"
+                lineHeight="100%"
+                maxH="26px"
+                onClick={() => onClick?.()}
+              >
+                See history
+              </Button>
+                <Button
+                ml="140"
+                variant="outline"
+                px="12px !important"
+                py="2px !important"
+                bgColor="white"
+                borderColor="neutral.gray"
+                fontSize="14px"
+                fontWeight="400"
+                lineHeight="100%"
+                maxH="26px"
+                onClick={() => onClick1?.()}
+              >
+                Create contract
+              </Button>
+              
               </>
             }
       </Text>
@@ -316,9 +348,14 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
         <SimpleGrid columns={{ base: 1, lg: 1 }} spacing={8} w="100%">
            {
               allAuctioneer?.map((j, k) => (
-                <AuctioneersCard auctioneer={j} key={k} onClick={()=>{
-                  setCreateJobContractModalOpen(true);
+                <AuctioneersCard auctioneer={j} key={k} 
+                onClick={()=> {
                   setAccountForForm(j[0]);
+                  setHistoryModalOpen(true);
+                }}
+                onClick1={()=>{
+                  setAccountForForm(j[0]);
+                  setCreateJobContractModalOpen(true);
                 }}/>
               ))
            }

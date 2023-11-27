@@ -23,6 +23,8 @@ type LandingContextInterface = {
   signAndObtainModalOpen: boolean;
   requestNegotiateModalOpen: boolean;
   respondNegotiateModalOpen: boolean;
+  historyModalOpen: boolean;
+
 
   setType: (user: ViewType) => void;
   setCurrentView: (view: string) => void;
@@ -42,6 +44,8 @@ type LandingContextInterface = {
   setSignAndObtainModalOpen: (open: boolean) => void;
   setRequestNegotiateModalOpen: (open: boolean) => void;
   setRespondNegotiateModalOpen: (open: boolean) => void;
+  setHistoryModalOpen: (open: boolean) => void;
+
 
 };
 
@@ -64,6 +68,7 @@ export const LandingContext = createContext<LandingContextInterface>({
   signAndObtainModalOpen: false,
   requestNegotiateModalOpen: false,
   respondNegotiateModalOpen: false,
+  historyModalOpen: false,
   setType: () => {},
   setCurrentView: () => {},
   setSignupModalOpen: () => { },
@@ -82,6 +87,8 @@ export const LandingContext = createContext<LandingContextInterface>({
   setSignAndObtainModalOpen: () => {},
   setRequestNegotiateModalOpen: () => {},
   setRespondNegotiateModalOpen: () => {},
+  setHistoryModalOpen: () => {},
+
 });
 
 export const LandingProvider = ({ children }: { children: ReactNode }) => {
@@ -103,6 +110,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
   const [signAndObtainModalOpen, setSignAndObtainModalOpen] = useState(false);
   const [requestNegotiateModalOpen, setRequestNegotiateModalOpen] = useState(false);
   const [respondNegotiateModalOpen, setRespondNegotiateModalOpen] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
 
   return (
@@ -126,6 +134,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         signAndObtainModalOpen,
         requestNegotiateModalOpen,
         respondNegotiateModalOpen,
+        historyModalOpen,
         setType,
         setCurrentView,
         setSignupModalOpen,
@@ -144,6 +153,7 @@ export const LandingProvider = ({ children }: { children: ReactNode }) => {
         setSignAndObtainModalOpen,
         setRequestNegotiateModalOpen,
         setRespondNegotiateModalOpen,
+        setHistoryModalOpen,
       }}
     >
       {children}
@@ -171,6 +181,7 @@ export function useLanding() {
     signAndObtainModalOpen,
     requestNegotiateModalOpen,
     respondNegotiateModalOpen,
+    historyModalOpen,
     setType,
     setCurrentView,
     setSignupModalOpen,
@@ -189,7 +200,7 @@ export function useLanding() {
     setSignAndObtainModalOpen,
     setRequestNegotiateModalOpen,
     setRespondNegotiateModalOpen,
-
+    setHistoryModalOpen,
   } = useContext(LandingContext);
 
   const handleViewChange = (inView: boolean, entry: IntersectionObserverEntry) => {
@@ -225,6 +236,7 @@ export function useLanding() {
     signAndObtainModalOpen,
     requestNegotiateModalOpen,
     respondNegotiateModalOpen,
+    historyModalOpen,
     setType,
     handleViewChange,
     setCurrentView,
@@ -245,5 +257,6 @@ export function useLanding() {
     setSignAndObtainModalOpen,
     setRequestNegotiateModalOpen,
     setRespondNegotiateModalOpen,
+    setHistoryModalOpen,
   };
 }

@@ -97,7 +97,7 @@ const CreateJobContractForm: FC<CreateJobContractFormProps> = ({ onSubmitSuccess
 
   const { jobs, jobsFetching, setJobsFetching, setJobs} = useJobs()
   const { setAuctionModalOpen, setJobIdForForm, submitModalOpen, useFormDone, jobIdForForm, accountForForm, setUseFormDone} = useLanding();
-  const [allAuctioneer, setAllAuctioneer] = useState<Auctioneer[]>([]);
+  // const [allAuctioneer, setAllAuctioneer] = useState<Auctioneer[]>([]);
 
   const auctionJob = async (values: FormData) => {
      
@@ -138,11 +138,11 @@ const CreateJobContractForm: FC<CreateJobContractFormProps> = ({ onSubmitSuccess
       setLoading(false)
     }
   }
-  interface Auctioneer {
-    0: string;
-    1: string;
-    2: string;
-  }
+  // interface Auctioneer {
+  //   0: string;
+  //   1: string;
+  //   2: string;
+  // }
   
   // const searchAllAuctioneer = async () => {
   //   if (!contract || !api || !activeAccount) return null;
@@ -172,42 +172,42 @@ const CreateJobContractForm: FC<CreateJobContractFormProps> = ({ onSubmitSuccess
   //   // }
   // }, [contract, api, useFormDone]);
 
-  interface AuctioneersProps {
-    auctioneer: Auctioneer;
-    blurred?: boolean;
-    onClick?: () => void;
-  }
+//   interface AuctioneersProps {
+//     auctioneer: Auctioneer;
+//     blurred?: boolean;
+//     onClick?: () => void;
+//   }
 
-const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick }: AuctioneersProps) => {
-  return (
-    <Box
-      p={6}
-      borderColor="neutral.gray"
-      borderWidth="1px"
-      borderRadius="32px"
-      bgColor="white"
-      cursor="pointer"
-      position="relative"
-      onClick={onClick}
-    >
-      <Text
-            fontFamily="Comfortaa"
-            fontWeight="700"
-            fontSize="14px"
-            lineHeight="120%"
-            color="neutral.black"
-          >
-            {
-              <>
-                <h1>Freelancer: {auctioneer[0]}</h1>
-                <h1>Desired Salary: {auctioneer[1]}</h1>
-                <h1>Required Deposit Of Company: {auctioneer[1]}</h1>
-              </>
-            }
-      </Text>
-    </Box>
-  )
-}
+// const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick }: AuctioneersProps) => {
+//   return (
+//     <Box
+//       p={6}
+//       borderColor="neutral.gray"
+//       borderWidth="1px"
+//       borderRadius="32px"
+//       bgColor="white"
+//       cursor="pointer"
+//       position="relative"
+//       onClick={onClick}
+//     >
+//       <Text
+//             fontFamily="Comfortaa"
+//             fontWeight="700"
+//             fontSize="14px"
+//             lineHeight="120%"
+//             color="neutral.black"
+//           >
+//             {
+//               <>
+//                 <h1>Freelancer: {auctioneer[0]}</h1>
+//                 <h1>Desired Salary: {auctioneer[1]}</h1>
+//                 <h1>Required Deposit Of Company: {auctioneer[1]}</h1>
+//               </>
+//             }
+//       </Text>
+//     </Box>
+//   )
+// }
 
 
   return (
