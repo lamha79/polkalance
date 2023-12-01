@@ -39,6 +39,7 @@ import { ContractIds } from '../../deployments/deployments'
 import { useLanding, useJobs} from '@front-provider/src'
 import { useRouter } from 'next/router'
 import JobCard2 from '@components/card/JobCard2'
+import { truncateHash } from '@/utils/truncateHash'
 
 
 // interface RadioUserType {
@@ -176,25 +177,28 @@ const CreateContractForm: FC = () => {
 const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, onClick, onClick1 }: AuctioneersProps) => {
   
   return (
-    <Box
-      p={10}
-      borderColor="neutral.gray"
-      borderWidth="1px"
-      borderRadius="32px"
+    <Flex
+      p={4}
+      borderRadius="24px"
+      flexDir="column"
       bgColor="white"
-      cursor="pointer"
-      position="relative"
+      borderWidth="1px"
+      borderColor="neutral.black"
+      height="150px"
+      w="100%"
     >
+      <Flex mt="auto" alignItems="center" w="100%">
       <Text
             fontFamily="Comfortaa"
             fontWeight="700"
-            fontSize="12px"
-            lineHeight="120%"
-            color="neutral.black"
+          fontSize="16.5px"
+          lineHeight="120%"
+          color="neutral.black"
+
           >
             {
               <>
-                <h1>Freelancer Address: {auctioneer[0] }</h1>
+              <h1>Freelancer Address: {truncateHash(encodeAddress(auctioneer[0] || "", 42), 10)}</h1>
                 <h1>Desired Salary: {parseInt(auctioneer[1].replaceAll(',',''))/1e12} TZERO</h1>
                 <h1>Required Deposit Of Company: {parseInt(auctioneer[2].replaceAll(',',''))/1e12} TZERO</h1>
                 <br />
@@ -232,8 +236,9 @@ const AuctioneersCard: FC<AuctioneersProps> = ({ auctioneer, blurred = false, on
               </>
             }
       </Text>
-    </Box>
-  )
+      </Flex>
+    </Flex>
+  );
 }
 
 
