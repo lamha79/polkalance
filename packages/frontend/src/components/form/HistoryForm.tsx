@@ -74,11 +74,11 @@ const JobInfoCard: FC<JobInfoProps> = ({ jobInfo, blurred = false }: JobInfoProp
       position="relative"
     >
       <Text
-            fontFamily="Comfortaa"
-            fontWeight="700"
-            fontSize="12px"
-            lineHeight="120%"
-            color="neutral.black"
+        fontFamily="Comfortaa"
+        fontWeight="700"
+        fontSize="16.5px"
+        lineHeight="120%"
+        color="neutral.black"
           >
             {
               <>

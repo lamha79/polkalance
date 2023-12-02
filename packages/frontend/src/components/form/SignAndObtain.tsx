@@ -39,6 +39,7 @@ import { ContractIds } from '../../deployments/deployments'
 import { useLanding, useJobs} from '@front-provider/src'
 import { useRouter } from 'next/router'
 import JobCard2 from '@components/card/JobCard2'
+import { truncateHash } from '@/utils/truncateHash'
 
 
 
@@ -255,11 +256,11 @@ const ContractInfoCard: FC<ContractInfoProps> = ({ contractInfo, blurred = false
       onClick={onClick}
     >
       <Text
-            fontFamily="Comfortaa"
-            fontWeight="700"
-            fontSize="12px"
-            lineHeight="120%"
-            color="neutral.black"
+        fontFamily="Comfortaa"
+        fontWeight="700"
+        fontSize="16.5px"
+        lineHeight="120%"
+        color="neutral.black"
           >
             {
               <>
@@ -272,9 +273,9 @@ const ContractInfoCard: FC<ContractInfoProps> = ({ contractInfo, blurred = false
                 percentPaidWhenContractFail: number, 
                 deadlineToSignContract: number, */}
                 <h1>Job Id: {contractInfo.jobId }</h1>
-                <h1>Party A: {contractInfo.partyA}</h1>
+            <h1>Party A: {truncateHash(encodeAddress(contractInfo.partyA || "", 42), 10)}</h1>
                 <h1>Required deposit of Party A: {parseInt(contractInfo.requiredDepositOfPartyA)} TZERO</h1>
-                <h1>Party B: {contractInfo.partyB}</h1>
+            <h1>Party B: {truncateHash(encodeAddress(contractInfo.partyB || "", 42), 10)}</h1>
                 <h1>Required deposit of Party B: {parseInt(contractInfo.requiredDepositOfPartyB)} TZERO</h1>
                 <h1>Rules: {contractInfo.rules}</h1>
                 <h1>Percent company pay freelancer when contract fail: {contractInfo.percentPaidWhenContractFail}%</h1>
