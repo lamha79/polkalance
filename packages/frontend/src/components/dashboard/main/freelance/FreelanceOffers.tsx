@@ -39,9 +39,9 @@ const FreelanceOffers: FC = () => {
           Other jobs that match your interests
         </Box>
         <Box>
-          <Button variant="link" p={0}>
+          {/* <Button variant="link" p={0}>
             See more
-          </Button>
+          </Button> */}
         </Box>
       </Flex>
       {(loading && fetching) && (

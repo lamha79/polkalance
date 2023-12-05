@@ -177,7 +177,7 @@ const JobCard: FC<JobCardProps> = ({ job1, blurred = false, onClick }: JobCardPr
             }
           }
         })}
-        {!mobileDisplay && <Button
+        {/* {!mobileDisplay && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -191,9 +191,9 @@ const JobCard: FC<JobCardProps> = ({ job1, blurred = false, onClick }: JobCardPr
           onClick={() => onClick?.(job1.uuid)}
         >
           See more
-        </Button>}
+        </Button>} */}
       </Flex>
-      {mobileDisplay && <Button
+      {/* {mobileDisplay && <Button
           mt={2}
           variant="outline"
           px="12px !important"
@@ -207,7 +207,7 @@ const JobCard: FC<JobCardProps> = ({ job1, blurred = false, onClick }: JobCardPr
           onClick={() => onClick?.(job1.uuid)}
         >
           See more
-        </Button>}
+        </Button>} */}
       {blurred && (
         <Box
           position="absolute"

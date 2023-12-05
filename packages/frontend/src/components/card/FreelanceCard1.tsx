@@ -201,7 +201,7 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
             }
           }
         })}
-        {!mobileDisplay && <Button
+        {/* {!mobileDisplay && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -215,9 +215,9 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
           onClick={() => onClick?.(user.wallet)}
         >
           See more
-        </Button>}
+        </Button>} */}
       </Flex>
-      {mobileDisplay && <Button
+      {/* {mobileDisplay && <Button
           mt={2}
           variant="outline"
           px="12px !important"
@@ -231,7 +231,7 @@ const FreelanceCard: FC<FreelanceCardProps> = ({
           onClick={() => onClick?.(user.wallet)}
         >
           See more
-        </Button>}
+        </Button>} */}
       {blurred && (
         <Box
           position="absolute"

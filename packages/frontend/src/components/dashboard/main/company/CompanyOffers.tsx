@@ -13,9 +13,9 @@ const CompanyOffers: FC = () => {
           Some offers that might interest you
         </Box>
         <Box>
-          <Button variant="link" p={0}>
+          {/* <Button variant="link" p={0}>
             See more
-          </Button>
+          </Button> */}
         </Box>
       </Flex>
 
