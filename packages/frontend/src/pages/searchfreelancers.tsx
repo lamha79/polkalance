@@ -10,7 +10,9 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  useDisclosure
+  SimpleGrid,
+  useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import toast from 'react-hot-toast'
 import {
@@ -26,6 +28,7 @@ import { useColoredBadges } from '../components/hooks/useColoredBadges';
 import { SearchJobContext } from '../components/hooks/useSearchJob';
 import { CreateJob } from '../utility/src';
 import { SearchFreelancerContext } from '@components/hooks/useSearchFreelancer';
+import FreelanceCard from '@components/card/FreelanceCard';
 
 function getUser(user: User) {
   return user;
@@ -52,7 +55,9 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     setElementByPage,
     setMaxPage,
     setCurPage,
-    setLoading
+    setLoading,
+    freelancers,
+    totalResult,
   } = useContext(SearchFreelancerContext);
 
   const handleItemClick = (filter: string) => {
@@ -77,7 +82,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       newFilters = [...curFilters.filter((v) => v !== filter)];
       setCurFilters(newFilters);
     }
-    console.log(`FILTER :::: ${newFilters}`);
+    // console.log(`FILTER :::: ${newFilters}`);
     if(newFilters.length > 0) {
       searchFreelancers(newFilters[0]);
     }
@@ -108,17 +113,16 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     setLoading(true);
     setElementByPage(1);
     try {
-      console.log(`categoryQuery :::: ${categoryQuery}`);
       const result = await contractQuery(api, '', contract, 'get_freelancer', {}, [categoryQuery]);
       const { output, isError, decodedOutput } = decodeOutput(result, contract, 'get_freelancer');
       if (isError) throw new Error(decodedOutput);
-      console.log(`OUTPUT :::: ${output}`);
+      // console.log(`OUTPUT :::: ${output}`);
       setSearchFreelancersResult(output);
       const json = JSON.stringify(output, null, 2);
-      console.log(`RESULT JSON String :::: ${json}`);
+      // console.log(`RESULT JSON String :::: ${json}`);
       const list_users = JSON.parse(json);
       const data = list_users.Ok;
-      console.log(`DATA :::: ${data}`);
+      // console.log(`DATA :::: ${data}`);
       let _nameJob = "";
       let _firstName = "";
       let _wallet = "";
@@ -149,7 +153,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
         });
         _users.push(retUser);
       }
-      const res =  {users: _users, maxPage: 1, totalResult: 1 };
+      const res =  {users: _users, maxPage: 1, totalResult: _users.length };
       if (res) {
         setCurPage(1);
         setFreelancers([...res.users]);
@@ -292,6 +296,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
                 setFreelancers([])
                 setSearchResults(['No result']);
                 setLoading(false);
+                setTotalResult(0);
                 if (type === UserTypeEnum.Company) {
                   // searchFreelancer.setSearchFilters([])
                 }
@@ -303,6 +308,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               Clear filters
             </Button>
           )}
+          
           {/* {jobs && (
         <SimpleGrid
         columns={{ base: 1, lg: 2 }}
@@ -331,6 +337,28 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       )} */}
       </Flex>
       )}
+      <Flex justifyContent="end">
+        <Text
+          id="total-result"
+          fontSize="16px"
+          fontWeight="700"
+          lineHeight="120%"
+          fontFamily="Comfortaa"
+        >
+          {totalResult} results
+        </Text>
+      </Flex>
+      <Flex flexDir="column" mt={4}>
+            <SimpleGrid columns={{base: 1, lg: 2}} spacing={8} w="100%" position="relative">
+              {freelancers.length > 0 &&
+                freelancers.map((v, k) => (
+                  <FreelanceCard
+                    key={k}
+                    user={v}
+                  />
+                ))}
+            </SimpleGrid>
+          </Flex>
     </Flex>
   )
     

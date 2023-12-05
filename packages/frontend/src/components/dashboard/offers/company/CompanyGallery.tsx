@@ -58,7 +58,7 @@ const CompanyGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
       )}
       {!loading && (
         <>
-          <Flex justifyContent="end">
+          {/* <Flex justifyContent="end">
             <Text
               id="total-result"
               fontSize="16px"
@@ -68,8 +68,8 @@ const CompanyGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
             >
               {totalResult} results
             </Text>
-          </Flex>
-          <Flex flexDir="column" mt={4}>
+          </Flex> */}
+          {/* <Flex flexDir="column" mt={4}>
             <SimpleGrid columns={{base: 1, lg: 2}} spacing={8} w="100%" position="relative">
               {freelancers.length > 0 &&
                 freelancers.map((v, k) => (
@@ -80,7 +80,7 @@ const CompanyGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
                   />
                 ))}
             </SimpleGrid>
-          </Flex>
+          </Flex> */}
           {maxPage > 1 && (
             <Flex justifyContent="center" alignItems="center" mt={6}>
               <Button variant="icon" onClick={prevPage} disabled={curPage === 1}>

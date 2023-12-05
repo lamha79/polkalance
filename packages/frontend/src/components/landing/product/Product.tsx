@@ -43,12 +43,13 @@ const Product: FC = () => {
       <Flex flexDir="column" pt={16}>
         <Flex mx="auto" width={{base: '90%', lg:"80%"}} maxW="1280px" flexDir="column">
           {topContent}
-          <SearchFreelancerProvider>
-            <SearchJobProvider>
-              {(isConnected && activeAccount) && searchContent}
-              {(isConnected && activeAccount) && <Gallery mt={8} />}
-            </SearchJobProvider>
-          </SearchFreelancerProvider>
+          {type == UserTypeEnum.Company && <SearchFreelancerProvider>
+            {searchContent}
+          </SearchFreelancerProvider>}
+          {(type == UserTypeEnum.Freelancer || type == UserTypeEnum.Guest) && <SearchJobProvider>
+              {searchContent}
+              {/* {(isConnected && activeAccount) && <Gallery mt={8} />} */}
+          </SearchJobProvider>}
         </Flex>
         <Partners mt={16} />
       </Flex>

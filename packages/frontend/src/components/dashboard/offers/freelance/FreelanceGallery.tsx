@@ -59,7 +59,7 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
       )}
       {!loading && (
         <>
-          <Flex justifyContent="end">
+          {/* <Flex justifyContent="end">
             <Text
               id="total-result"
               fontSize="16px"
@@ -69,8 +69,8 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
             >
               {totalResult} results
             </Text>
-          </Flex>
-          <Flex flexDir="column" mt={4}>
+          </Flex> */}
+          {/* <Flex flexDir="column" mt={4}>
             <SimpleGrid columns={{base: 1, lg: 2}} spacing={8} w="100%" position="relative">
               {jobs.length > 0 &&
                 jobs.map((v, k) => (
@@ -81,7 +81,7 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
                 ))
                 }
             </SimpleGrid>
-          </Flex>
+          </Flex> */}
           {maxPage > 1 && (
             <Flex justifyContent="center" alignItems="center" mt={6}>
               <Button variant="icon" onClick={prevPage} disabled={curPage === 1}>
@@ -100,7 +100,4 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
 };
 
 export default FreelanceGallery;
-function useContext(SearchJobContext: Context<{ jobs1: CreateJob1[]; jobs: CreateJob[]; setJobs1: (users: CreateJob1[]) => void; setJobs: (users: CreateJob[]) => void; totalResult: number; setTotalResult: (result: number) => void; searchFilters: string[]; setSearchFilters: (filters: string[]) => void; elementByPage: number; setElementByPage: (elementByPage: number) => void; maxPage: number; setMaxPage: (maxPage: number) => void; curPage: number; setCurPage: (curPage: number) => void; loading: boolean; setLoading: (loading: boolean) => void; }>): { jobs: any; } {
-  throw new Error('Function not implemented.');
-}
 

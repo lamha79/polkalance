@@ -11,7 +11,8 @@ import {
   MenuItem,
   MenuList,
   useDisclosure,
-  SimpleGrid
+  SimpleGrid,
+  Text,
 } from '@chakra-ui/react';
 import toast from 'react-hot-toast'
 import {
@@ -51,7 +52,8 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     setMaxPage,
     setCurPage,
     setLoading, 
-    jobs
+    jobs,
+    totalResult,
   } = useContext(SearchJobContext);
 
   const handleItemClick = (filter: string) => {
@@ -255,6 +257,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
                 setJobs([])
                 setSearchResults(['No result']);
                 setLoading(false);
+                setTotalResult(0);
                 if (type === UserTypeEnum.Company) {
                   // searchFreelancer.setSearchFilters([])
                 }
@@ -266,7 +269,21 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               Clear filters
             </Button>
           )}
-          {/* <Flex>
+          
+      </Flex>
+      )}
+      <Flex justifyContent="end">
+            <Text
+              id="total-result"
+              fontSize="16px"
+              fontWeight="700"
+              lineHeight="120%"
+              fontFamily="Comfortaa"
+            >
+              {totalResult} results
+            </Text>
+          </Flex>
+      <Flex>
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
@@ -277,9 +294,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               ))}
             </SimpleGrid>
           )}
-          </Flex> */}
-      </Flex>
-      )}
+          </Flex>
     </Flex>
   )
     
