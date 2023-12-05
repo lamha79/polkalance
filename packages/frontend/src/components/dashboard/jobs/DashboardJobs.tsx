@@ -65,7 +65,7 @@ const DashboardJobs: FC = () => {
                   Open jobs
                 </Box>
                 <Flex flexDir="column" gap={6}>
-                  <CompanyTop onCreate={() => push('')} />
+                  {/* <CompanyTop onCreate={() => push('')} /> */}
                   <CompanyGallery />
                 </Flex>
               </Flex>

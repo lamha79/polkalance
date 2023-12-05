@@ -4,9 +4,11 @@ import Image from 'next/image';
 import AddIcon from '../../../../components/icons/AddIcon';
 import { useRouter } from 'next/router';
 import { useResponsive } from '../../../hooks/useResponsive';
+import { useLanding } from '@front-provider/src';
 
 const CompanyTop: FC = () => {
   const { push } = useRouter();
+  const {setCreateJobModalOpen} = useLanding(); 
   const {mobileDisplay, tabletDisplay, desktopDisplay} = useResponsive();
 
   return (<>
@@ -54,7 +56,7 @@ const CompanyTop: FC = () => {
           color="brand.secondary"
           textAlign="left"
           zIndex="4"
-        >{`Post your first offer`}</Box>
+        >{`Post your offer`}</Box>
         <Box
           w="100%"
           textStyle="body"
@@ -74,7 +76,7 @@ const CompanyTop: FC = () => {
                 <AddIcon />
               </Box>
             }
-            onClick={() => push('/dashboard/jobs/create')}
+            onClick={() => setCreateJobModalOpen(true)}
           >
             Create my offer
           </Button>
@@ -110,7 +112,7 @@ const CompanyTop: FC = () => {
           color="brand.secondary"
           textAlign="center"
           zIndex="4"
-        >{`Post your first offer`}</Box>
+        >{`Post your offer`}</Box>
         <Box
           w="100%"
           textStyle="body"
