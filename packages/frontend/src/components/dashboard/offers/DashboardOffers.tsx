@@ -50,12 +50,12 @@ const DashboardOffers: FC<DashboardOffersProps> = ({ scrollbarRef }) => {
               transition={{ ease: 'easeInOut', duration: 0.3 }}
             >
               <Flex flexDir="column" gap={4}>
-                <Box textStyle="h2" as="h1" w="100%" textAlign="left">
+                {/* <Box textStyle="h2" as="h1" w="100%" textAlign="left">
                   Find work
-                </Box>
+                </Box> */}
                 <Flex flexDir="column" gap={6}>
                   <SearchJobProvider>
-                    <FreelanceTop />
+                    {/* <FreelanceTop /> */}
                     <SearchJobPage />
                     <FreelanceGallery scrollbarRef={scrollbarRef} />
                   </SearchJobProvider>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useContext, useState } from 'react';
+import { FC, useEffect, useRef, useContext, useState} from 'react';
 import {
   Badge,
   Box,
@@ -10,7 +10,8 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  useDisclosure
+  useDisclosure,
+  SimpleGrid
 } from '@chakra-ui/react';
 import toast from 'react-hot-toast'
 import {
@@ -25,6 +26,8 @@ import { mostCommonSkill, UserTypeEnum } from '../utility/src'
 import { useColoredBadges } from '../components/hooks/useColoredBadges';
 import { SearchJobContext } from '../components/hooks/useSearchJob';
 import { CreateJob } from '../utility/src';
+import JobCard2 from '@components/card/JobCard2';
+
 
 const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   const { api } = useInkathon()
@@ -39,7 +42,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { getCategoryColorForSkill, allSkills } = useColoredBadges();
   const [filters, setFilters] = useState<string[]>([])
-  const { type } = useLanding();
+  const { type, setJobIdForForm, setAuctionModalOpen } = useLanding();
   const [curFilters, setCurFilters] = useState<string[]>([]);
   const {
     setJobs,
@@ -47,7 +50,8 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     setElementByPage,
     setMaxPage,
     setCurPage,
-    setLoading
+    setLoading, 
+    jobs
   } = useContext(SearchJobContext);
 
   const handleItemClick = (filter: string) => {
@@ -98,13 +102,13 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       if (isError) throw new Error(decodedOutput);
       setSearchJobsResult(output);
       const json = JSON.stringify(output, null, 2);
-      console.log(`RESULT JSON String :::: ${json}`);
+      // console.log(`RESULT JSON String :::: ${json}`);
       const list_jobs = JSON.parse(json);
       const data = list_jobs.Ok;
-      console.log(`DATA :::: ${data}`);
+      // console.log(`DATA :::: ${data}`);
       if(data) {
         const _jobs= data as CreateJob[];
-      console.log(`JOBS :::: ${_jobs}`);
+      console.log(_jobs);
       let res = null;
       res =  {jobs: _jobs, maxPage: 1, totalResult: 1 };
       if (res) {
@@ -261,32 +265,18 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               Clear filters
             </Button>
           )}
-          {/* {jobs && (
-        <SimpleGrid
-        columns={{ base: 1, lg: 2 }}
-        spacing={8}
-        w="100%"
-        position="relative"
-        zIndex="1"
-        pb={16}
-        {...props}
-      >
-        {jobs.map((v, k) => <JobCard2 key={k} job={v} blurred={k >= blurredAt} />)}
-        {jobs.map((v, k) => (
-            <JobCard2
-              key={k}
-              job={v}
-              blurred={
-                mobileDisplay || tabletDisplay
-                  ? k >= jobs.length - 1
-                  : jobs.length % 2 === 0
-                  ? k >= jobs.length - 2
-                  : k >= jobs.length - 1
-              }
-            />
-          ))}
-      </SimpleGrid>
-      )} */}
+          <Flex>
+          {jobs && jobs?.length > 0 && (
+            <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
+              {jobs?.map((j, k) => (
+                <JobCard2 job={j} key={k} onClick={() => {
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
+                  setAuctionModalOpen(true);
+                }}/>
+              ))}
+            </SimpleGrid>
+          )}
+          </Flex>
       </Flex>
       )}
     </Flex>
