@@ -12,7 +12,6 @@ import { SearchFreelancerProvider } from '../../hooks/useSearchFreelancer';
 import { SearchJobProvider } from '../../hooks/useSearchJob';
 import SearchFreelancerPage from '@pages/searchfreelancers';
 import SearchJobPage from '@pages/searchjobs';
-
 const MotionBox = motion(Box);
 
 interface DashboardOffersProps {

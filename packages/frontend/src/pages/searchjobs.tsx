@@ -76,7 +76,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       newFilters = [...curFilters.filter((v) => v !== filter)];
       setCurFilters(newFilters);
     }
-    console.log(`FILTER :::: ${filter}`);
+    // console.log(`FILTER :::: ${filter}`);
     if(filters.length > 0) {
       searchJobs(filters[0]);
     }
@@ -108,12 +108,13 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       // console.log(`DATA :::: ${data}`);
       if(data) {
         const _jobs= data as CreateJob[];
-      console.log(_jobs);
+      // console.log(_jobs);
       let res = null;
-      res =  {jobs: _jobs, maxPage: 1, totalResult: 1 };
+      res =  {jobs: _jobs, maxPage: 1, totalResult: _jobs.length };
       if (res) {
         setCurPage(1);
-        setJobs([...res.jobs]);
+        setJobs(res.jobs);
+        console.log(jobs);
         setMaxPage(res.maxPage);
         setTotalResult(res.totalResult);
       }
@@ -265,7 +266,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               Clear filters
             </Button>
           )}
-          <Flex>
+          {/* <Flex>
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
@@ -276,7 +277,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
               ))}
             </SimpleGrid>
           )}
-          </Flex>
+          </Flex> */}
       </Flex>
       )}
     </Flex>

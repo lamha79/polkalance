@@ -1,8 +1,10 @@
 import { Box, Button, Flex, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
-import { FC, MutableRefObject } from 'react';
+import { Context, FC, MutableRefObject } from 'react';
 import { useRouter } from 'next/router';
 import { useSearchJob } from '../../../hooks/useSearchJob';
-import JobCard from '../../../../components/card/JobCard';
+import JobCard2 from '../../../../components/card/JobCard2';
+import { CreateJob1, CreateJob } from '@utility/src';
+import { useLanding } from '@front-provider/src';
 
 interface CompanyGalleryProps {
   scrollbarRef: MutableRefObject<HTMLElement | null>;
@@ -10,7 +12,7 @@ interface CompanyGalleryProps {
 
 const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
   const {
-    jobs1,
+    jobs,
     loading,
     maxPage,
     curPage,
@@ -19,7 +21,9 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
     elementByPage,
     searchFilters
   } = useSearchJob(6);
+  
   const { push } = useRouter();
+  const {setJobIdForForm, setAuctionModalOpen} = useLanding();
 
   const handlePageChange = (newPage: number) => {
     handleSearch(newPage, elementByPage, searchFilters);
@@ -68,10 +72,14 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
           </Flex>
           <Flex flexDir="column" mt={4}>
             <SimpleGrid columns={{base: 1, lg: 2}} spacing={8} w="100%" position="relative">
-              {jobs1.length > 0 &&
-                jobs1.map((v, k) => (
-                  <JobCard key={k} job1={v} onClick={(id) => push(`/dashboard/offers/${id}`)} />
-                ))}
+              {jobs.length > 0 &&
+                jobs.map((v, k) => (
+                  <JobCard2 key={k} job={v} onClick={() => {
+                    setJobIdForForm(parseInt(v.jobId.replaceAll(',','')));
+                    setAuctionModalOpen(true);
+                  }}/>
+                ))
+                }
             </SimpleGrid>
           </Flex>
           {maxPage > 1 && (
@@ -92,3 +100,7 @@ const FreelanceGallery: FC<CompanyGalleryProps> = ({ scrollbarRef }) => {
 };
 
 export default FreelanceGallery;
+function useContext(SearchJobContext: Context<{ jobs1: CreateJob1[]; jobs: CreateJob[]; setJobs1: (users: CreateJob1[]) => void; setJobs: (users: CreateJob[]) => void; totalResult: number; setTotalResult: (result: number) => void; searchFilters: string[]; setSearchFilters: (filters: string[]) => void; elementByPage: number; setElementByPage: (elementByPage: number) => void; maxPage: number; setMaxPage: (maxPage: number) => void; curPage: number; setCurPage: (curPage: number) => void; loading: boolean; setLoading: (loading: boolean) => void; }>): { jobs: any; } {
+  throw new Error('Function not implemented.');
+}
+
