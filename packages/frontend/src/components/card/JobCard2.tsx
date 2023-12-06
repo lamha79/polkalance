@@ -304,7 +304,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
         >
           Approval
         </Button>}
-        {/* {!mobileDisplay && activeAccountUser && (job.status == "AUCTIONING") && type === UserTypeEnum.Company && <Button
+        {!mobileDisplay && activeAccountUser && (job.status == "AUCTIONING") && type === UserTypeEnum.Company && <Button
           ml="auto"
           variant="outline"
           px="12px !important"
@@ -318,7 +318,7 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           onClick={() => onClick?.()}
         >
           See more information
-        </Button>} */}
+        </Button>}
 
         {!mobileDisplay && activeAccountUser && (job.status == "BECREATINGCONTRACT")  && <Button
           ml="auto"
