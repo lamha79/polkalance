@@ -384,6 +384,22 @@ const JobCard: FC<JobCardProps> = ({ job, blurred = false, onClick, onClick1, on
           Terminate
         </Button>}
 
+        {!mobileDisplay && (job.status == "OPEN" || job.status == "AUCTIONING") && !activeAccount && <Button
+          ml="auto"
+          variant="outline"
+          px="12px !important"
+          py="2px !important"
+          bgColor="white"
+          borderColor="neutral.gray"
+          fontSize="14px"
+          fontWeight="400"
+          lineHeight="100%"
+          maxH="26px"
+          onClick={() => onClick1?.()}
+        >
+          Apply
+        </Button>}
+
 
       </Flex>
       {/* {mobileDisplay && <Button

@@ -43,7 +43,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { getCategoryColorForSkill, allSkills } = useColoredBadges();
   const [filters, setFilters] = useState<string[]>([])
-  const { type, setJobIdForForm, setAuctionModalOpen } = useLanding();
+  const { type, setJobIdForForm, setAuctionModalOpen, setSignupModalOpen } = useLanding();
   const [curFilters, setCurFilters] = useState<string[]>([]);
   const {
     setJobs,
@@ -287,9 +287,14 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
           {jobs && jobs?.length > 0 && (
             <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={8} w="100%">
               {jobs?.map((j, k) => (
-                <JobCard2 job={j} key={k} onClick={() => {
+                <JobCard2 job={j} key={k} 
+                onClick={() => {
                   setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
                   setAuctionModalOpen(true);
+                }}
+                onClick1={() => {
+                  setJobIdForForm(parseInt(j.jobId.replaceAll(',','')));
+                  setSignupModalOpen(true);
                 }}/>
               ))}
             </SimpleGrid>
