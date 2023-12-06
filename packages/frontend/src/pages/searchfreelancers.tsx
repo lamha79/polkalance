@@ -98,9 +98,9 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   };
 
   const searchFreelancers = async (categoryQuery: string) => {
-    if (!contract || !api || !activeAccount) {
+    if (!contract || !api) {
       let res = null;
-      res =  {jobs: [], maxPage: 1, totalResult: 1 };
+      res =  {jobs: [], maxPage: 1, totalResult: 0 };
       if (res) {
         setCurPage(1);
         setFreelancers([...res.jobs]);
