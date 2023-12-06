@@ -79,8 +79,8 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       setCurFilters(newFilters);
     }
     // console.log(`FILTER :::: ${filter}`);
-    if(filters.length > 0) {
-      searchJobs(filters[0]);
+    if(newFilters.length > 0) {
+      searchJobs(newFilters[0]);
     }
     // if (type === UserTypeEnum.Company) {
     //   searchFreelancer.setSearchFilters(newFilters);
@@ -116,7 +116,6 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       if (res) {
         setCurPage(1);
         setJobs(res.jobs);
-        console.log(jobs);
         setMaxPage(res.maxPage);
         setTotalResult(res.totalResult);
       }
@@ -178,7 +177,8 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
       setTitle('Find the perfect offer');
       setCurFilters([]);
-      setFilters([]);
+      setFilters(["IT"]);
+      searchJobs(filters[0]);
     }
 
     if (type === UserTypeEnum.Company) {
@@ -186,8 +186,7 @@ const SearchJobPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
       setCurFilters([]);
       setFilters(mostCommonSkill);
     }
-  }, [type]);
-
+  }, [type, contract]);
 
   return (
     <Flex flexDir="column" {...props} zIndex="10">

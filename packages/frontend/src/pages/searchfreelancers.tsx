@@ -46,7 +46,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { getCategoryColorForSkill, allSkills } = useColoredBadges();
-  const [filters, setFilters] = useState<string[]>([])
+  const [filters, setFilters] = useState<string[]>(["IT"])
   const { type } = useLanding();
   const [curFilters, setCurFilters] = useState<string[]>([]);
   const {
@@ -161,7 +161,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
         setTotalResult(res.totalResult);
       }
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       toast.error('Error while fetching get all freelancers did jobs. Try again...');
       setSearchFreelancersResult([]);
       setLoading(false);
@@ -212,7 +212,7 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     if (!isOpen) onOpen();
     if (inputRef.current) (inputRef.current as HTMLInputElement).focus();
   };
-
+  // let flag = false;
   useEffect(() => {
     if (type === UserTypeEnum.Freelancer || type === UserTypeEnum.Guest) {
       setTitle('Find the perfect offer');
@@ -223,9 +223,11 @@ const SearchFreelancerPage : FC<FlexProps> = ({ ...props }: FlexProps) => {
     if (type === UserTypeEnum.Company) {
       setTitle('Find the perfect freelancer');
       setCurFilters([]);
-      setFilters(mostCommonSkill);
+      // setFilters(mostCommonSkill);
+      setFilters(["IT"]);
+      searchFreelancers(filters[0]);
     }
-  }, [type]);
+  }, [type, contract]);
 
 
   return (
